@@ -32,19 +32,55 @@
   --wheel-depth: 2.09;
   --wheel-perspective: 2.1;
   --wheel-spread: 0.8695;
+  --wheel-reach: 0.289;
   --wheel-fade: 0.2;
   --wheel-gap: 20px;
   --wheel-card-h-desktop: min(400px, 39dvh);
 }
 
+/*
+ * Derived wheel layout (design/layout-and-motion.md → Project wheel).
+ * Mobile: card fills the width between gutters, but never so tall that it slides under the
+ *   expanded bottom sheet (--sheet-h, Figma 233:4586) on short screens.
+ * Tablet: width capped at the Figma card width.
+ * Desktop: sized by height; the centre column keeps Figma's margin around the card (669 − 553).
+ */
+:root {
+  --sheet-h: 297px;
+  /* Figma's sheet text column (233:4587); side padding flexes 24–40px around it. */
+  --sheet-content-w: 313px;
+  --card-h: min(
+    calc((100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))),
+    calc(
+      (100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap)) /
+        (0.5 + var(--wheel-spread) + var(--wheel-reach))
+    )
+  );
+  --card-w: calc(var(--card-h) * (var(--aspect-card)));
+  --wheel-column: calc(var(--card-w) + var(--container-stack) - var(--spacing-card-w));
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --card-h: min(
+      calc(min(var(--spacing-card-w), 100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))),
+      calc(
+        (100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap)) /
+          (0.5 + var(--wheel-spread) + var(--wheel-reach))
+      )
+    );
+  }
+}
+
 @media (min-width: 75rem) {
   :root {
     --wheel-gap: 60px;
+    --card-h: var(--wheel-card-h-desktop);
   }
 }
 
 /* ---------- Static tokens → utilities ---------- */
-@theme {
+@theme static {
   --*: initial;
 
   --spacing: 4px;
@@ -87,6 +123,7 @@
   --radius-button-lg: 20px;
   --radius-card: 24px;
   --radius-panel: 32px;
+  --radius-panel-inner: 28px;
   --radius-full: 9999px;
 
   --spacing-gutter: 80px;
@@ -97,6 +134,13 @@
   --spacing-logo-w: 80px;
   --spacing-logo-h: 30px;
   --spacing-avatar: 140px;
+  --spacing-avatar-sm: 52px;
+  --spacing-avatar-overlap: 73px;
+  --spacing-banner: 200px;
+  --spacing-gallery-w: 170px;
+  --spacing-gallery-h: 200px;
+  --spacing-gallery-w-sm: 150px;
+  --spacing-gallery-h-sm: 176px;
   --spacing-icon-sm: 18px;
   --spacing-icon-md: 20px;
   --spacing-icon-badge: 16px;

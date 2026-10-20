@@ -47,6 +47,8 @@ export const wheel = {
   perspective: 2.1,
   /** Y(±1) = spread × h + gap. */
   spread: 0.8695,
+  /** Far edge of a ±1 neighbour beyond its centre, × card height (mobile stage offset). */
+  reach: 0.289,
   /** Opacity at ±1 step; reaches 0 at ±1.5. */
   fade: 0.2,
   /** Accumulated wheel deltaY (px) per step. */
