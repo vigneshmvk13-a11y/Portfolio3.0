@@ -41,6 +41,7 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 - LCP is the active card's **poster** image: eager, `fetchpriority="high"`, sized, AVIF/WebP via `astro:assets`. Never the video.
 - Fonts: two `woff2` files, preload the 500 weight, metric-matched fallback (`size-adjust`) to keep CLS at 0.
 - JS: Astro scripts and islands only where needed; Motion only where it animates. Check the homepage bundle after each feature.
+- **Motion at 60fps, always**, including at 4× CPU throttle: `transform`/`opacity` first, prepare before the first moving frame, prove it with `scripts/perf-motion.mjs` (0 missed frames). Details in AGENTS.md → Motion rules.
 - No third-party scripts. (Analytics, if wanted later: Cloudflare Web Analytics, which needs no dependency. Ask first.)
 
 ## Media

@@ -1,0 +1,117 @@
+#!/usr/bin/env node
+/**
+ * Frame-rate check for every homepage motion (AGENTS.md → Motion rules: 60fps).
+ * Drives the system Chrome over the DevTools Protocol with trusted input, records every
+ * requestAnimationFrame timestamp while each motion runs, and reports fps and missed frames.
+ * No dependency. Usage:  node scripts/perf-motion.mjs [baseUrl]
+ * Env: THROTTLE=n  CPU slowdown (e.g. 4 ≈ a mid-range phone)   HEADFUL=1  real window (real GPU vsync)
+ * A frame counts as missed when its interval exceeds 1.5 × the display's frame time.
+ */
+import { spawn } from 'node:child_process';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const BASE = process.argv[2] ?? 'http://127.0.0.1:4321';
+const THROTTLE = Number(process.env.THROTTLE ?? 1);
+const chromePath = process.env.CHROME_PATH ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const profile = await mkdtemp(join(tmpdir(), 'perf-'));
+const flags = ['--hide-scrollbars', '--no-first-run', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'];
+const chrome = spawn(chromePath, process.env.HEADFUL ? flags : ['--headless=new', ...flags]);
+const wsUrl = await new Promise((ok) => chrome.stderr.on('data', (c) => { const m = /DevTools listening on (ws:\/\/\S+)/.exec(String(c)); if (m) ok(m[1]); }));
+const ws = new WebSocket(wsUrl);
+await new Promise((ok) => ws.addEventListener('open', ok, { once: true }));
+let id = 0; const pending = new Map(); const listeners = new Set();
+ws.addEventListener('message', ({ data }) => { const m = JSON.parse(String(data)); if (m.id && pending.has(m.id)) { const p = pending.get(m.id); pending.delete(m.id); m.error ? p.fail(new Error(m.error.message)) : p.ok(m.result); } else for (const l of listeners) l(m); });
+const send = (method, params = {}, sessionId) => new Promise((ok, fail) => { const i = ++id; pending.set(i, { ok, fail }); ws.send(JSON.stringify({ id: i, method, params, sessionId })); });
+const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
+
+// Records rAF timestamps from document start (so the intro is covered) until __perf.stop().
+// Each start() bumps a generation, so a restarted recording never runs two loops at once.
+const RECORDER = `window.__perf = {
+  frames: [], gen: 0,
+  start() { const gen = ++this.gen; this.frames = []; const loop = (t) => { if (this.gen !== gen) return; this.frames.push(t); requestAnimationFrame(loop); }; requestAnimationFrame(loop); },
+  stop() { this.gen++; return this.frames; },
+  /** Frames from the first wheel motion on (for the intro: excludes page load). */
+  sinceMotion() { this.gen++; const t = this.motionAt ?? 0; const i = this.frames.findIndex((f) => f >= t); return this.frames.slice(Math.max(0, i - 1)); },
+};
+document.addEventListener('wheel:start', () => { window.__perf.motionAt ??= performance.now(); });
+window.__perf.start();`;
+
+async function page(width, height, { intro = false } = {}) {
+  const mobile = width < 768;
+  const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
+  const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
+  await send('Page.enable', {}, sessionId);
+  await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: mobile ? 3 : 1, mobile }, sessionId);
+  if (mobile) await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }, sessionId);
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] }, sessionId);
+  if (THROTTLE > 1) await send('Emulation.setCPUThrottlingRate', { rate: THROTTLE }, sessionId);
+  if (!intro) await send('Page.addScriptToEvaluateOnNewDocument', { source: "sessionStorage.setItem('intro-seen', '1')" }, sessionId);
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: RECORDER }, sessionId);
+  const evaluate = async (expression) => (await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }, sessionId)).result.value;
+  return {
+    async goto(path = '/') { const loaded = new Promise((ok) => { const l = (m) => { if (m.sessionId === sessionId && m.method === 'Page.loadEventFired') { listeners.delete(l); ok(); } }; listeners.add(l); }); await send('Page.navigate', { url: BASE + path }, sessionId); await loaded; },
+    eval: evaluate,
+    /** Run `act`, then record frames for `ms`. */
+    async measure(act, ms) { await evaluate('window.__perf.start()'); await act(); await sleep(ms); return evaluate('window.__perf.stop()'); },
+    wheel: (deltaY) => send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: width / 2, y: height / 2, deltaX: 0, deltaY }, sessionId),
+    async drag(x, y0, y1, ms = 200, steps = 12) {
+      await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] }, sessionId);
+      for (let i = 1; i <= steps; i++) { await sleep(ms / steps); await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 + ((y1 - y0) * i) / steps }] }, sessionId); }
+      await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, sessionId);
+    },
+    close: () => send('Target.closeTarget', { targetId }),
+  };
+}
+
+const rows = [];
+function report(name, frames) {
+  const intervals = frames.slice(1).map((t, i) => t - frames[i]).filter((d) => d > 0);
+  const sorted = [...intervals].sort((a, b) => a - b);
+  const frameTime = sorted[Math.floor(sorted.length / 2)] ?? 0; // median ≈ display refresh
+  const missed = intervals.filter((d) => d > frameTime * 1.5).length;
+  const duration = frames.at(-1) - frames[0];
+  rows.push({
+    motion: name,
+    'refresh Hz': Math.round(1000 / frameTime),
+    fps: Math.round(((frames.length - 1) / duration) * 1000),
+    'p95 ms': sorted[Math.floor(sorted.length * 0.95)]?.toFixed(1),
+    'max ms': sorted.at(-1)?.toFixed(1),
+    missed: `${missed}/${intervals.length}`,
+  });
+}
+
+try {
+  const d = await page(1440, 1024);
+  await d.goto('/');
+  await sleep(800);
+  report('desktop: one mouse notch', await d.measure(() => d.wheel(100), 700));
+  report('desktop: rapid notches ×6', await d.measure(async () => { for (let i = 0; i < 6; i++) { await d.wheel(100); await sleep(45); } }, 900));
+  report('desktop: trackpad scroll', await d.measure(async () => { for (let i = 0; i < 40; i++) { await d.wheel(Math.max(3, 30 - i)); await sleep(16); } }, 800));
+  report('desktop: About drawer open', await d.measure(() => d.eval(`document.querySelectorAll('[data-about-open]')[1].click()`), 700));
+  await d.close();
+
+  const di = await page(1440, 1024, { intro: true });
+  await di.goto('/');
+  await sleep(2300);
+  report('desktop: intro (spin + reveal)', await di.eval('window.__perf.sinceMotion()'));
+  await di.close();
+
+  const m = await page(393, 852);
+  await m.goto('/');
+  await sleep(800);
+  report('mobile: swipe + sheet collapse', await m.measure(() => m.drag(196, 450, 250), 900));
+  report('mobile: swipe back + sheet expand', await m.measure(() => m.drag(196, 250, 450), 900));
+  await m.close();
+
+  const mi = await page(393, 852, { intro: true });
+  await mi.goto('/');
+  await sleep(2300);
+  report('mobile: intro (spin + sheet)', await mi.eval('window.__perf.sinceMotion()'));
+  await mi.close();
+} finally {
+  ws.close(); chrome.kill(); await rm(profile, { recursive: true, force: true }).catch(() => {});
+}
+console.log(`CPU throttle ${THROTTLE}×${process.env.HEADFUL ? ', headful' : ', headless'}`);
+console.table(rows);

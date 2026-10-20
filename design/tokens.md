@@ -159,7 +159,8 @@ The spin is keyframed rather than sprung, so its length is fixed: `[0 → turns�
 
 | `motion.ts` | Value | Use |
 |---|---|---|
-| `intro.total` | `2.0` s (ceiling) | Whole sequence (spin 1.2 + last reveal ends ~0.66 later) |
+| `intro.total` | `2.0` s (ceiling) | Whole sequence (≤0.3 prep + spin 1.2 + last reveal ends ~0.66 later; the prep is usually ~0.1) |
+| `intro.decodeWait` | `0.3` s | Longest wait for card covers to decode before the spin (60fps: no first paint mid-spin) |
 | `intro.spinTurns` | `1` | Whole revolutions, so it lands on the first project |
 | `intro.spinDuration` | `1.2` s | Spin, overshoot and settle back |
 | `intro.spinEase` | `[0.3, 0.1, 0.15, 1]` | Fast spin, hard deceleration into the landing |

@@ -62,6 +62,12 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-21 · layout-and-motion · Mouse notches step at once:
+  - One wheel event ≥ 80px springs straight to the next card (no follow-then-wait); rapid notches keep the spring's speed. Trackpads stay scroll-linked.
+  - `spring.wheel` 0.5 → 0.4s.
+  - Why: Vignesh felt a stop between the notch and the next project, and wants it faster.
+- 2026-10-21 · rules · **All motion holds 60fps** (AGENTS.md → Motion rules). New `scripts/perf-motion.mjs` measures it. The intro now decodes covers and pre-paints hidden cards before spinning (`intro.decodeWait`); the renderer skips unchanged writes. Why: Vignesh's standing requirement.
+
 - 2026-10-21 · layout-and-motion · Wheel is now **scroll-linked**:
   - Wheel/trackpad input moves the wheel continuously (one card per `Y(±1)` px of scroll, smoothed by `wheel.follow`), so cards glide through the tilted, faded pose while you scroll.
   - When the scroll goes quiet it snaps: past 80px it moves at least one card in the scroll direction; under that it springs back.

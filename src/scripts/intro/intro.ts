@@ -28,6 +28,26 @@ function revealFrom(element: HTMLElement): string {
   }
 }
 
+/**
+ * Decode every card cover first: a card that paints for the first time mid-spin decodes its image in
+ * that frame and drops it (measured under CPU throttling). Capped so a slow network can't hold the spin.
+ */
+function coversDecoded(): Promise<unknown> {
+  const covers = [...document.querySelectorAll<HTMLImageElement>('[data-wheel-card] img')];
+  return Promise.race([
+    Promise.all(covers.map((img) => img.decode().catch(() => undefined))),
+    new Promise((resolve) => window.setTimeout(resolve, intro.decodeWait * 1000)),
+  ]);
+}
+
+/** Resolves after `count` frames have been produced. */
+function frames(count: number): Promise<void> {
+  return new Promise((resolve) => {
+    const tick = () => (--count <= 0 ? resolve() : requestAnimationFrame(tick));
+    requestAnimationFrame(tick);
+  });
+}
+
 export function runIntro(controller: WheelController): void {
   const root = document.documentElement;
   let done = false;
@@ -59,13 +79,21 @@ export function runIntro(controller: WheelController): void {
   for (const type of SKIP_EVENTS) window.addEventListener(type, skip, { capture: true, passive: true });
 
   controller.enabled = false;
-  const start = controller.position;
-  const end = start + intro.spinTurns * controller.count;
-  controller
-    .animatePosition([end + intro.spinOvershoot, end], {
-      duration: intro.spinDuration * 1000, // animateValue takes ms (unlike animate())
-      times: [0, intro.spinOvershootAt, 1],
-      ease: [intro.spinEase, ease.inOut],
+  // Covers decoded and every card painted (invisibly) before the first moving frame.
+  void coversDecoded()
+    .then(() => {
+      if (!done) controller.prewarm();
+      return frames(2);
     })
-    .then(() => finish(false));
+    .then(() => {
+      if (done) return; // skipped while preparing
+      const end = controller.position + intro.spinTurns * controller.count;
+      controller
+        .animatePosition([end + intro.spinOvershoot, end], {
+          duration: intro.spinDuration * 1000, // animateValue takes ms (unlike animate())
+          times: [0, intro.spinOvershootAt, 1],
+          ease: [intro.spinEase, ease.inOut],
+        })
+        .then(() => finish(false));
+    });
 }

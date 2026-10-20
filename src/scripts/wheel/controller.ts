@@ -186,6 +186,11 @@ export class WheelController {
     running.stop();
   }
 
+  /** Paint every card ahead of a long motion (see WheelRenderer.prewarm). */
+  prewarm(): void {
+    this.renderer.prewarm();
+  }
+
   /** Re-measure after resize and redraw at the current position. */
   refresh(): void {
     this.renderer.measure();

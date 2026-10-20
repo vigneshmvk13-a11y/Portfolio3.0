@@ -27,6 +27,8 @@ export const spring = {
 export const intro = {
   /** Ceiling for the whole sequence. */
   total: 2.0,
+  /** Longest wait for card covers to decode before spinning, so none paints for the first time mid-spin. */
+  decodeWait: 0.3,
   /** Full revolutions; whole numbers, so it lands back on the first project. */
   spinTurns: 1,
   spinDuration: 1.2,

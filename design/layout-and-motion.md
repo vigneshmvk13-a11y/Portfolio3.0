@@ -125,6 +125,8 @@ An automated CDP test (`scripts/test-wheel.mjs`) drives trusted input in Chrome 
 
 4× CPU throttle at 412px: median and p95 frame 16.7ms, no frame over 20ms (headless Chrome; real devices still to test).
 
+**60fps (2026-10-21, `scripts/perf-motion.mjs` on the production build):** 0 missed frames for a mouse notch, rapid notches, trackpad scroll, About drawer, intro (desktop and mobile), and swipe with sheet collapse/expand. That holds at 4× CPU throttle (headless) and unthrottled in a real window. The renderer only writes styles that changed and skips hidden cards. The sheet's `grid-template-rows` transition is a layout animation but measured clean, so it stays. Real phones are still to test.
+
 ## Intro choreography
 
 **Built** (`src/scripts/intro/intro.ts`, values in `tokens.md → Intro timing`). Runs on the first homepage visit per session only. Vignesh's brief (2026-10-21): only the wheel appears first, spins like a slot machine and lands on the first project, then the hero text and TOC appear.
@@ -139,6 +141,7 @@ The earlier proposal's "grow out" phase (gooey cards emerging from the first one
 - An inline `<head>` script in `index.astro` (before first paint) decides whether the intro runs: no `sessionStorage` flag (`intro-seen`, set at that moment), no reduced-motion preference, no deep link (`/#slug`, `/?about`). If so, it sets `html[data-intro="pending"]`, and CSS hides every `[data-intro-reveal]` element (`opacity: 0; visibility: hidden`, so it's also unfocusable and unclickable).
 - A pure-CSS failsafe reveals everything after `--intro-failsafe` (3s), so a failed script can never leave the page without its chrome.
 - The intro module is **lazy-loaded** (0.7 kB gzipped) only when it will run. The spin uses the wheel controller's `animatePosition` (keyframes through Motion's `animateValue`); the reveal uses the native Web Animations API, so it adds no library code.
+- **Prep before the first moving frame** (60fps): decode every card cover (`img.decode()`, capped at `intro.decodeWait`), make hidden cards visible at opacity 0 so their layers are built and painted (`WheelRenderer.prewarm`), wait two frames, then spin. Without it, a cold browser at 4× CPU throttle dropped the spin's first frame (33–61ms); with it, 0 missed frames in 8/8 cold starts.
 - Wheel input is disabled while it runs. Any wheel, keydown, pointerdown or touchstart (capture phase) skips straight to the final state, and the same input is then handled normally (a scroll moves the wheel, ↓ steps).
 - The landing isn't announced in the live region and doesn't set a hash.
 - Reduced motion: no intro; the resting state renders directly. Repeat visits in the session also go straight to rest. `scripts/screenshot.mjs` skips it unless `INTRO=1`; `test-wheel.mjs` skips it except in the intro tests.

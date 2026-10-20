@@ -2,10 +2,12 @@
  * Writes wheel poses to the DOM: transform, opacity, z-index and visibility per frame
  * (no layout reads), and inert/aria-hidden/data-offset only when the active card changes.
  */
-import { poseAt, ringOffset, stepDistance, type Metrics } from './geometry';
+import { poseAt, ringOffset, stepDistance, type CardPose, type Metrics } from './geometry';
 
 export class WheelRenderer {
   private metrics: Metrics = { h: 0, gap: 0 };
+  /** Last pose written per card, so a frame only touches what changed (hidden cards cost nothing). */
+  private written: CardPose[] = [];
 
   constructor(
     private readonly stage: HTMLElement,
@@ -31,13 +33,28 @@ export class WheelRenderer {
     const n = this.cards.length;
     for (let i = 0; i < n; i++) {
       const card = this.cards[i];
-      const d = ringOffset(i, position, n);
-      const pose = poseAt(d, this.metrics);
-      card.style.transform = pose.transform;
-      card.style.opacity = String(pose.opacity);
-      card.style.zIndex = String(pose.zIndex);
-      card.style.visibility = pose.visible ? 'visible' : 'hidden';
+      const pose = poseAt(ringOffset(i, position, n), this.metrics);
+      const last = this.written[i];
+      if (last && !last.visible && !pose.visible) continue;
+      const style = card.style;
+      if (last?.visible !== pose.visible) style.visibility = pose.visible ? 'visible' : 'hidden';
+      if (last?.zIndex !== pose.zIndex) style.zIndex = String(pose.zIndex);
+      if (last?.transform !== pose.transform) style.transform = pose.transform;
+      if (last?.opacity !== pose.opacity) style.opacity = String(pose.opacity);
+      this.written[i] = pose;
     }
+  }
+
+  /**
+   * Make hidden cards visible at opacity 0 so the browser builds their layers and paints them now,
+   * not in the first frame a long motion (the intro spin) reveals them. The next render() restores them.
+   */
+  prewarm(): void {
+    this.written.forEach((pose, i) => {
+      if (pose.visible) return;
+      this.cards[i].style.visibility = 'visible';
+      this.written[i] = { ...pose, visible: true, opacity: 0 };
+    });
   }
 
   /**

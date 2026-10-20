@@ -163,6 +163,7 @@ Keystatic's admin UI and its GitHub mode need server routes, which a static buil
 - Durations, easings and springs come from tokens (`design/tokens.md → Motion`), mirrored in `src/lib/motion.ts`. No magic numbers.
 - **Reduced motion:** no scroll-triggered or scroll-linked animation, no animated 3D tilt, no parallax, no intro. State changes are instant. Navigation that *uses* scroll input (stepping the homepage wheel) still works; it just doesn't animate. The wheel's resting layout (tilted, faded neighbours) is a still image and stays.
 - Load Motion only in the scripts/islands that animate. Check the bundle: the homepage JS should stay small (target < 30 KB gzipped total).
+- **Every motion holds 60fps** (Vignesh, 2026-10-21), including under 4× CPU throttling. Animate `transform` and `opacity`; anything else (layout, filters, `grid-template-rows`) only if `scripts/perf-motion.mjs` shows no missed frames. Prepare before moving, never in the first moving frame (decode images, make layers exist). Add each new motion to `perf-motion.mjs` and report the table.
 
 ## Non-negotiables
 
@@ -211,6 +212,9 @@ node scripts/screenshot.mjs <url> <outDir> [393x852 412x915 1440x1024]
                 # env: FULL_PAGE=1, REDUCED_MOTION=1, DELAY=ms, DPR=n, EVAL="js", SUFFIX=name
 node scripts/test-wheel.mjs [baseUrl]
                 # homepage wheel interaction test (trusted input via DevTools Protocol)
+node scripts/perf-motion.mjs [baseUrl]
+                # fps + missed frames for every homepage motion; env THROTTLE=4 (CPU), HEADFUL=1 (real vsync)
+                # run against `pnpm preview`, not dev
 ```
 
 Headless Chrome reports `prefers-reduced-motion: reduce` by default; both scripts set it explicitly.
