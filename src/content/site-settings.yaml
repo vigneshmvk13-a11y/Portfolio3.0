@@ -1,0 +1,12 @@
+siteName: Vignesh
+titleTemplate: '%s · Vignesh'
+description: I'm Vignesh, Design Leader. Currently leading the mobile experience for wholesale banking.
+nav:
+  about: About
+  resume: Resume
+  contact: Contact
+contact: https://www.linkedin.com/in/vigneshmvk13/
+socials:
+  - label: LinkedIn
+    url: https://www.linkedin.com/in/vigneshmvk13/
+footerCredit: Designed in Figma • Built in Claude

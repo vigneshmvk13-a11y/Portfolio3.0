@@ -1,0 +1,44 @@
+name: Vignesh
+role: Design Leader
+currently: Currently leading the mobile experience for wholesale banking
+affiliations:
+  - name: DNEG
+    logo: ../assets/logos/affiliations/0/logo.png
+  - name: Kotak Mahindra Bank
+    logo: ../assets/logos/affiliations/1/logo.png
+bio:
+  - >-
+    **I’m Vignesh**, a multidisciplinary designer blending **UX, motion, and
+    storytelling** to craft intuitive digital experiences. Currently leading
+    design **@DNEG for Kotak Mahindra’s corporate banking app, Fyn**.
+  - >-
+    When I’m not wireframing workflows, I’m probably making music, lifting at
+    the gym, or storytelling through cinematic videos.
+avatar: ../assets/about/avatar.jpg
+avatarAlt: Portrait of Vignesh
+banner: ../assets/about/banner.jpg
+bannerAlt: ''
+gallery:
+  - image: ../assets/about/gallery/0/image.jpg
+    alt: Vignesh in front of a large illuminated red sign at a night festival
+  - image: ../assets/about/gallery/1/image.jpg
+    alt: Vignesh playing an acoustic guitar on stage
+  - image: ../assets/about/gallery/2/image.jpg
+    alt: Two mirrorless cameras with lenses on a table under blue light
+  - image: ../assets/about/gallery/3/image.jpg
+    alt: Vignesh in sunglasses and a white shirt, looking out from an auto-rickshaw
+  - image: ../assets/about/gallery/4/image.jpg
+    alt: 'Meme: a white kitten with a loading spinner above its head'
+journey:
+  - role: Design Lead
+    years: 2026-Present
+    place: DNEG/ Kotak, Remote
+  - role: UX Consultant
+    years: 2025-2026
+    place: Primethoughts, India
+  - role: UI/UX Designer
+    years: 2022-2025
+    place: DLT ledgers, Singapore/ India
+  - role: Visual designer
+    years: 2018-2022
+    place: Bizzon info solutions/ Edure, India
