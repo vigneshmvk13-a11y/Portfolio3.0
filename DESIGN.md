@@ -60,6 +60,13 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-20 · layout-and-motion · Phase 4: wheel interaction:
+  - Inputs: wheel/trackpad (one step per gesture), touch/pen drag with momentum (mouse doesn't drag), keys, TOC shortest path, neighbour click.
+  - State sync: hash (none for the first project), sheet collapse by direction, focus hand-off, live region, video pause while moving.
+  - Reduced motion is instant.
+  - Uses Motion's `animateValue` instead of `animate`: homepage JS dropped from ~27 kB to ~13 kB gzipped.
+  - Why: brief; budget headroom for the intro.
+
 - 2026-10-20 · components · Phase 3: built the static homepage (Intro, ProjectCard, ProjectWheel resting state, ProjectToc, TocHandle, BottomSheet/left column, FooterBar), AboutDrawer + Gallery + TimelineRow, `/work/[slug]` placeholders, 404. Matched to Figma at 393, 412 and 1440; checked 360, 768, 1280×800, 1920.
 - 2026-10-20 · layout-and-motion · Mobile card height capped to clear the sheet (360×740 overlapped). Desktop centre column derived from card width (1280×800 squeezed the intro). Sheet side padding flexes 24–40px around Figma's 313px text column. About mobile compact header is a state switch, not scroll-linked. Desktop drawer: no scrim, no shadow (as drawn); mobile keeps a scrim. Why: what Figma shows at its own sizes, extended to the other breakpoints.
 - 2026-10-20 · tokens · Added `--wheel-reach`, `--sheet-h`, `--sheet-content-w`, `rounded-panel-inner`, avatar/banner/gallery sizes, derived `--card-h/--card-w/--wheel-column`; `@theme static`.

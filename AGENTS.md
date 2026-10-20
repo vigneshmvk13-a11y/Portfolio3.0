@@ -208,8 +208,12 @@ pnpm preview    # serve dist/
 pnpm check      # astro check + check-media + check-tokens
 node scripts/screenshot.mjs <url> <outDir> [393x852 412x915 1440x1024]
                 # exact-viewport screenshots via system Chrome + DevTools Protocol
-                # env: FULL_PAGE=1, REDUCED_MOTION=1, DELAY=ms, DPR=n
+                # env: FULL_PAGE=1, REDUCED_MOTION=1, DELAY=ms, DPR=n, EVAL="js", SUFFIX=name
+node scripts/test-wheel.mjs [baseUrl]
+                # homepage wheel interaction test (trusted input via DevTools Protocol)
 ```
+
+Headless Chrome reports `prefers-reduced-motion: reduce` by default; both scripts set it explicitly.
 
 `/_system` (tokens and components) and `/keystatic` exist only under `pnpm dev`.
 

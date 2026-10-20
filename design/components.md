@@ -83,7 +83,7 @@ A link to `/work/[slug]` for every status (`rules.md → Content states`). `roun
 States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset.
 
 ### ProjectWheel
-**Figma:** `233:4539` (desktop), `233:4582` (mobile) · **Status:** built (static resting state; interaction in Phase 4)
+**Figma:** `233:4539` (desktop), `233:4582` (mobile) · **Status:** built (interactive; intro in Phase 5)
 
 Replaces ProjectStack. Renders every published card (server-rendered resting state) inside a stage. Client logic lives in `src/scripts/wheel/`:
 - `geometry.ts`: pure maths.
@@ -106,7 +106,7 @@ Emits `wheel:change {index, slug, via}` and `wheel:settle {index}` on the stage 
 Right-edge tab, centre 74px above the viewport centre, one tick per project (active `fill-indicator`, others `fill-fg-secondary`). The Figma shape fits five ticks; more projects need a taller shape. A `<button popovertarget>` opens a native `popover` with the TOC (`variant="popover"`: `gap-0.5`, no dash). The Popover API gives Esc, outside tap and `aria-expanded`; a small script moves focus to the active item. The popover shape is the Figma SVG stretched horizontally (`preserveAspectRatio="none"`, non-scaling 1px stroke), because "Fyn- Wholesale Banking app" doesn't fit the drawn 193px. The 27px tab gets a 44px hit area via `::before`. Closing on selection comes with the wheel (Phase 4).
 
 ### BottomSheet (mobile) / left column (desktop)
-**Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built (collapse driven in Phase 4)
+**Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built
 
 One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Collapsed (`data-collapsed`): the intro row animates `grid-template-rows 1fr → 0fr`. Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
 

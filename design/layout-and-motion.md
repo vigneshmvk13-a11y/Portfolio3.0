@@ -82,19 +82,40 @@ The resting state (active, previous, next, rest hidden) is rendered as static CS
 ### Input
 
 - **Wheel/trackpad:** accumulate `deltaY` (normalised for `deltaMode`). Past `--wheel-step-threshold` (80px), step once and lock input. Unlock only when the wheel has settled **and** wheel events have been quiet for `--wheel-input-quiet` (150ms), so one trackpad flick with its inertia tail can't step twice.
-- **Touch / pen / mouse drag** on the stage (pointer events): `position` follows the finger, with one step = `Y(±1)` pixels. On release, project with the release velocity, round to the nearest card, and spring there (`--spring-wheel`), passing the velocity in.
+- **Touch / pen drag** on the stage (pointer events; mouse uses the wheel, keys and clicks, so dragging never fights link clicks): past a 6px slop, `position` follows the finger, with one step = `Y(±1)` pixels. On release, velocity from the last ~100ms projects 0.2s ahead; the wheel rounds to the nearest card and springs there (`spring.wheel`), carrying the velocity. A drag suppresses the click on the card under the finger.
 - **Keyboard** (focus on body, stage or TOC): ↑/PageUp = previous, ↓/PageDown = next, Home = first, End = last. Enter on the active card follows its link (it's a real `<a>`); Enter with focus on body opens the active card.
-- **TOC:** rotate the shortest way, `delta = ((i − cur + N/2) mod N) − N/2`. With 5 projects that's at most 2 steps, so one intermediate card passes. That's intended (it's a wheel).
-- **Hash:** on settle, `history.replaceState` to `#<slug>`. On load, a hash selects the start project and skips the intro.
+- **TOC:** a plain click rotates the shortest way, `delta = ((i − cur + N/2) mod N) − N/2`; modifier-clicks open the case study. With 5 projects that's at most 2 steps, so one intermediate card passes. That's intended (it's a wheel). The mobile popover closes on selection and focus returns to the handle.
+- **Hash:** on settle, `history.replaceState` to `#<slug>`, or no hash for the first project, so `/` stays canonical. On load, a hash selects the start project: an inline head script hides the wheel until it's placed (3s CSS failsafe), and the intro is skipped. `hashchange` rotates too.
 - Clicking a neighbour is handled on the stage and steps toward it.
+- **Focus:** if focus is on the outgoing card when it turns inert, it moves to the incoming card's link. The live region announces "Name, i of N" on settle (not on load).
+- **Drawer open:** all wheel input is ignored (`drawer:open` / `drawer:close`).
+- **Implementation:** `src/scripts/wheel/*` + `src/scripts/home.ts`. Motion's `animateValue` springs the single number. It's about 11 kB gzipped against about 25 kB for the full `animate`, because the wheel never animates elements directly.
 
 ### Video
 
-Only the settled active card plays its cover. All others are paused and reset. During motion, the active cover keeps its poster (video paused) until settle. `MotionCover`'s controller enforces one playing video.
+Only the settled active card plays its cover. All others are paused and reset. While the wheel moves, every video is paused (posters show) until settle. `MotionCover`'s controller (`setActiveCover`) enforces one playing video.
 
 ### Reduced motion
 
-The resting layout stays (a still image, not motion). Steps are instant: no spring, no momentum (drag snaps on release), and no intro.
+The resting layout stays (a still image, not motion). Steps are instant: no spring, no momentum (the card follows the finger, which is direct manipulation, then snaps on release), and no intro.
+
+### Verified (Phase 4)
+
+An automated CDP test drives trusted input in Chrome against dev and the production build and checks:
+- mouse-wheel step;
+- one step per trackpad flick with an inertia tail;
+- ↑/↓, PageUp/PageDown, Home/End and wrap-around;
+- TOC shortest path (0 → 3 passes through 4);
+- neighbour click and focus hand-off;
+- the drawer blocking input;
+- deep link `/#nova`;
+- swipe up/down and the sheet collapse/expand;
+- a fast flick carrying momentum (2+ steps);
+- popover pick (closes, ticks and label update);
+- reduced motion (instant);
+- no JS errors.
+
+4× CPU throttle at 412px: median and p95 frame 16.7ms, no frame over 20ms (headless Chrome; real devices still to test).
 
 ## Intro choreography
 
