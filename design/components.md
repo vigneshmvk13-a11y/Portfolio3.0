@@ -62,7 +62,7 @@ The only component that renders `<video>`. Props: `mp4?`, `webm?`, `poster?` (an
 ## Home
 
 ### Intro
-**Figma:** `233:4522` (desktop), `233:4587` (mobile) · **Status:** specced
+**Figma:** `233:4522` (desktop), `233:4587` (mobile) · **Status:** built
 
 1. `<h1>`: "I'm Vignesh" `text-fg-primary` + ", Design Leader" `text-fg-secondary`. Mobile `text-h5`, one line, centred; desktop `text-h4`, break after the comma.
 2. Subline `text-body-3 text-fg-secondary`.
@@ -72,7 +72,7 @@ The only component that renders `<video>`. Props: `mp4?`, `webm?`, `poster?` (an
 Gaps: name↔subline `gap-1` mobile / `gap-2` desktop; text↔affiliations `gap-5` / `gap-6`; block↔buttons `gap-12`. Text from `about`/`siteSettings`, not hardcoded.
 
 ### ProjectCard
-**Figma:** component set `228:4583` (desktop variants 553×400, mobile 362×262), e.g. `228:4582` · **Status:** specced
+**Figma:** component set `228:4583` (desktop variants 553×400, mobile 362×262), e.g. `228:4582` · **Status:** built
 
 A link to `/work/[slug]` for every status (`rules.md → Content states`). `rounded-card overflow-hidden aspect-card`.
 
@@ -83,7 +83,7 @@ A link to `/work/[slug]` for every status (`rules.md → Content states`). `roun
 States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset.
 
 ### ProjectWheel
-**Figma:** `233:4539` (desktop), `233:4582` (mobile) · **Status:** specced
+**Figma:** `233:4539` (desktop), `233:4582` (mobile) · **Status:** built (static resting state; interaction in Phase 4)
 
 Replaces ProjectStack. Renders every published card (server-rendered resting state) inside a stage. Client logic lives in `src/scripts/wheel/`:
 - `geometry.ts`: pure maths.
@@ -94,24 +94,24 @@ Replaces ProjectStack. Renders every published card (server-rendered resting sta
 Emits `wheel:change {index, slug, via}` and `wheel:settle {index}` on the stage element; ProjectToc, BottomSheet, the hash sync and MotionCover listen. Stage: `role="region" aria-roledescription="carousel" aria-label="Projects"` plus a polite live region. Behaviour: `layout-and-motion.md → Project wheel`. Vanilla TS (no React island: the state is one number, and React alone would exceed the 30 KB homepage budget).
 
 ### ProjectToc
-**Figma:** `233:4545` · **Status:** specced
+**Figma:** `233:4545` · **Status:** built
 
 `<nav aria-label="Projects">`, `w-side`, `gap-1`. Items: `p-2 rounded-item text-body-3 font-medium`. Each item is an `<a href="/work/slug">`. JS makes a plain click rotate the wheel; modifier-clicks still open the page.
 - Inactive: `text-fg-secondary`. Hover (proposed): `bg-surface-hover`.
 - Active: `bg-surface-selected text-fg-primary`, leading dash 12×2 `bg-indicator rounded-item` with `gap-2`. `aria-current="true"`.
 
 ### TocHandle (mobile)
-**Figma:** `233:4609` (27×80), `233:4714` (193×209) · **Status:** specced
+**Figma:** `233:4609` (27×80), `233:4714` (193×223) · **Status:** built
 
-Right-edge tab with tick lines. A button (`aria-expanded`, `aria-controls`) that opens a popover with the TOC (`p-2`, `gap-0.5`, no dash). The popover shape is an SVG in Figma; download it as is. Closes on selection, outside tap and Esc. Hit area ≥ 44px.
+Right-edge tab, centre 74px above the viewport centre, one tick per project (active `fill-indicator`, others `fill-fg-secondary`). The Figma shape fits five ticks; more projects need a taller shape. A `<button popovertarget>` opens a native `popover` with the TOC (`variant="popover"`: `gap-0.5`, no dash). The Popover API gives Esc, outside tap and `aria-expanded`; a small script moves focus to the active item. The popover shape is the Figma SVG stretched horizontally (`preserveAspectRatio="none"`, non-scaling 1px stroke), because "Fyn- Wholesale Banking app" doesn't fit the drawn 193px. The 27px tab gets a 44px hit area via `::before`. Closing on selection comes with the wheel (Phase 4).
 
-### BottomSheet (mobile)
-**Figma:** `233:4586` expanded, `233:4626` collapsed · **Status:** specced
+### BottomSheet (mobile) / left column (desktop)
+**Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built (collapse driven in Phase 4)
 
-Fixed bottom, `bg-surface-raised`, top corners `rounded-panel`, `border-line-default` top/left/right, `pt-12 px-10 pb-8 gap-8`. Expanded: centred Intro (no buttons) + IconButton row (`lg`). Collapsed: buttons only. Respects `env(safe-area-inset-bottom)`.
+One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Collapsed (`data-collapsed`): the intro row animates `grid-template-rows 1fr → 0fr`. Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
 
 ### FooterBar (desktop)
-**Figma:** `233:4558` · **Status:** specced
+**Figma:** `233:4558` · **Status:** built
 
 Fixed bottom, `px-gutter py-10`, `text-label-3 font-medium`, three-column grid. Left: "Designed in Figma • Built in Claude" (`footerCredit` from siteSettings), `text-fg-secondary`, with "Figma" and "Claude" in `text-fg-strong`. That keeps Figma's two-tone hierarchy one step darker, because Figma's `gray/500` base fails contrast. Centre: "Scroll" `text-fg-secondary`, fades after the first step. Right: empty (grid keeps the centre centred).
 
@@ -120,21 +120,26 @@ Fixed bottom, `px-gutter py-10`, `text-label-3 font-medium`, three-column grid. 
 ## About
 
 ### AboutDrawer
-**Figma:** `234:5386`, mobile `234:5545` / `234:34225` · **Status:** specced
+**Figma:** `234:5386`, mobile `234:5545` / `234:34225` · **Status:** built
 
-Modal `<dialog>`. Desktop: `w-drawer`, inset 40px top/left/bottom, `rounded-panel shadow-panel bg-surface-raised`. Mobile: full screen.
+Modal `<dialog closedby="any">` (JS light-dismiss fallback). Desktop: `w-drawer`, inset 40px top/left/bottom, `rounded-panel bg-surface-raised`, **no scrim, no shadow** (as drawn in `234:4968`). Mobile: bottom sheet 32px from the top, `rounded-t-panel`, `border-line-default`, `p-1` inset, `surface-scrim` backdrop (proposed: the page behind would otherwise compete). Tablet: same sheet, centred, `max-w-drawer`.
 
-1. Header: 200px banner, `close` IconButton top-right (`p-5`).
-2. Avatar `size-avatar rounded-full`, overlapping the banner, inset 20px.
-3. Bio `px-5 py-8 gap-5`, `text-body-2`. Para 1 mixes `text-fg-strong font-medium` spans with `text-fg-secondary`; para 2 `text-fg-secondary`.
-4. Actions: Resume + Contact (`lg-outlined`), `gap-2 pb-8`.
-5. Gallery: horizontal scroll-snap row, 170×200, `rounded-media-sm`, `gap-2`. Keyboard scrollable (`tabindex="0"`, labelled region).
-6. Journey: heading `text-body-1 font-medium text-fg-strong` (`px-5 py-8`), TimelineRow list `gap-3 pb-10`.
+1. Header: `h-banner` (200px) image, `close` IconButton top-right (`p-5`). Mobile: banner `rounded-b-media-sm` inside a `rounded-t-panel-inner` (28px) clip.
+2. Avatar `size-avatar rounded-full`, overlapping the banner by `avatar-overlap` (73px). Centred on mobile, left (`px-5`) on desktop.
+3. Bio from `about.bio` (inline Markdown: `**…**` → `font-medium text-fg-strong`). Desktop `text-body-2` both paragraphs, `px-5 py-8 gap-5`. Mobile: para 1 `text-label-1` regular, others `text-body-3`, `px-4`.
+4. Actions: Resume + Contact (`lg-outlined`), `gap-2`.
+5. Gallery: see Gallery.
+6. Journey: heading "Journey so far", `text-body-1` desktop / `text-label-1` mobile, `font-medium text-fg-strong`; TimelineRow list `gap-3 px-5`.
 
-All content from the `about` singleton. Mobile collapsing header: `layout-and-motion.md`.
+Mobile compact header (`234:34225`): an 84px sticky bar (banner strip, `avatar-sm` 52px avatar left, close right) fades in when the banner block leaves the drawer's scrollport (IntersectionObserver). It's a state switch rather than scroll-linked, so reduced motion only loses the fade. Opening: `@starting-style` transitions (no JS animation). `/?about` opens without the entrance. Fires `drawer:open` / `drawer:close`. All content from the `about` singleton.
+
+### Gallery
+**Figma:** `234:5312` (desktop 170×200), `234:34033` (mobile 150×176) · **Status:** built
+
+Horizontal scroll-snap row, `gap-2`, `rounded-media-sm` images (`object-cover`, 2×/3× sources). Labelled region, `tabindex="0"` for keyboard scrolling, hidden scrollbar, `overscroll-behavior-x: contain`.
 
 ### TimelineRow
-**Figma:** `234:5322` · **Status:** specced
+**Figma:** `234:5322` · **Status:** built
 
 Role (`text-label-3 font-medium text-fg-strong`, flex 1) · years (`text-label-2 text-fg-secondary`) · place (`text-label-2 text-fg-secondary`, flex 1, right). `pb-3`, `border-b border-line-default` except last. Mobile: role, then "years • place" below (`234:5601`). Render as a `<dl>` or list, not a table.
 
@@ -143,7 +148,7 @@ Role (`text-label-3 font-medium text-fg-strong`, flex 1) · years (`text-label-2
 ## Case study
 
 ### CaseStudyPlaceholder (template)
-**Figma:** none · **Status:** proposed
+**Figma:** none · **Status:** built (placeholder)
 
 Until real designs: `bg-surface-page`, column `max-w-prose` centred. Back Button ("All work"), MotionCover full width, title `text-h4`, meta row (role, timeline, tags) `text-label-2 text-fg-secondary`, and `text-body-2`: "This case study is being written." No invented content. `nda` status replaces the line with how to request access (contact from `siteSettings`). Figma has copy for that (`206:18486`): "This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and design decisions are available for discussion during a private portfolio walkthrough."
 

@@ -5,7 +5,7 @@ Written mobile-first, matching how the CSS is authored. All durations, easings, 
 ## Mobile home (base, designed at 393×852; check 360 and 412 too)
 
 - `bg-surface-page-mobile`. One viewport-height composition (`h-dvh`). The document doesn't scroll; vertical swipes step the project wheel.
-- Wheel stage: full width, `px-gutter-mobile`. Card width = viewport − 2 × `gutter-mobile`, height from `aspect-card` (553:400). The active card's centre sits at `pt-10` + 1.1585 × card height + `--wheel-gap-mobile` from the top. That reproduces Figma at 393: the top neighbour's far edge at 40px, the active card at y = 227.
+- Wheel stage: full width. Card width = viewport − 2 × `gutter-mobile`, height from `aspect-card` (553:400), **capped** so the card never slides under the expanded sheet: `h ≤ (100dvh − --sheet-h − safe-area − pt-10 − 2·gap) / 1.6585`. The cap doesn't apply at 393×852 (Figma holds exactly) but does at 360×740. The active card's centre sits at `pt-10` + (spread + reach) × h + gap from the top. That reproduces Figma at 393: the top neighbour's far edge at 40px, the active card at y = 227.
 - BottomSheet fixed at the bottom, overlapping the lower neighbour (as drawn). Collapsed, it reveals the lower neighbour (`233:4621`).
 - TocHandle fixed to the right edge at ~37% of the viewport height.
 - Use `dvh`/`svh`, not `vh`, for anything tied to the viewport (mobile browser chrome).
@@ -26,7 +26,7 @@ One viewport-height composition. The document doesn't scroll; scroll input steps
 |_______________________ FooterBar (fixed) _______________________|
 ```
 
-- Grid `grid-cols-[1fr_var(--container-stack)_1fr]`, centred with `max-w-page`. Arbitrary values are allowed **only** when every value inside is a token `var()`; `check-tokens.mjs` whitelists that pattern and the `(--token)` shorthand.
+- Grid `grid-cols-[1fr_var(--wheel-column)_1fr]`, centred with `max-w-page`. `--wheel-column = card-w + (669 − 553)`: exactly Figma's 669 at a 400px card, and it shrinks with the card on shorter viewports, so the side columns don't get squeezed (at a fixed 669, 1280×800 wrapped the name onto four lines). Arbitrary values are allowed **only** when every value inside is a token `var()` or a grid keyword; `check-tokens.mjs` whitelists that pattern and the `(--token)` shorthand.
 - `h-dvh`, `bg-surface-page`.
 - Side content capped at `max-w-side`.
 - Card height = `min(400px, 39dvh)` (`--wheel-card-h-desktop`), width from the aspect. At 1024 tall that's Figma's 400; shorter viewports scale the card down so slices of both neighbours stay visible.
@@ -114,11 +114,15 @@ The resting layout stays (a still image, not motion). Steps are instant: no spri
 
 ## About drawer
 
-- Open: scrim fades in (`--duration-base`); panel from `translateX(-24px)`, opacity 0 → rest over `--duration-slow`, `--ease-in-out`. Mobile: from `translateY(24px)`.
-- Close: reverse over `--duration-base`.
-- Background is inert and doesn't scroll (`<dialog>.showModal()`); the wheel controller disables input while it's open.
-- Mobile collapse on scroll: the banner shrinks 200 → ~64px, the avatar shrinks 140 → ~32px and docks top-left, close stays pinned top-right (`234:5601`). Scroll-linked, so **reduced motion gets the compact header as a static sticky bar instead**.
-- Deep link: `/?about` opens it on load (no entrance animation on load).
+- Open: panel from `translateX(-24px)` (desktop) or `translateY(24px)` (mobile/tablet), opacity 0 → rest over `--duration-slow`, `--ease-in-out`, via CSS `@starting-style` (no JS animation). Mobile scrim fades in over `--duration-base`; desktop has no scrim (Figma `234:4968`).
+- Close: reverse over `--duration-base`. Esc, outside click (`closedby="any"` plus a JS fallback) and the close button all close it; focus returns to the trigger.
+- Background is inert (`<dialog>.showModal()`); the wheel controller disables input while it's open (`drawer:open` / `drawer:close`).
+- Mobile compact header (`234:34225`): once the banner block scrolls out of the drawer, an 84px sticky bar (banner strip, 52px avatar left, close right) fades in. It's a **state switch**, not scroll-linked, so reduced motion only loses the fade. The earlier scroll-linked shrink (200 → 64) is dropped: it's more motion for the same information.
+- Deep link: `/?about` opens it on load (no entrance animation).
+
+## TOC handle (mobile)
+
+Native `popover`, anchored to the right edge at the handle's height. It opens over the wheel and closes on Esc, outside tap or (Phase 4) selection. Focus moves to the active item on open.
 
 ## Bottom sheet (mobile)
 

@@ -103,6 +103,14 @@ Named spacing:
 | `--spacing-avatar` | 140px | About avatar |
 | `--spacing-icon-sm` / `--spacing-icon-md` | 18px / 20px | Icon glyphs |
 | `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
+| `--spacing-avatar-sm` | 52px | Avatar in the mobile drawer's compact header |
+| `--spacing-avatar-overlap` | 73px | How far the avatar overlaps the banner (140 − 67) |
+| `--spacing-banner` | 200px | About banner height |
+| `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
+| `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
+| `--sheet-h` | 297px | Expanded bottom sheet height (Figma 233:4586); reserves room under the wheel |
+| `--sheet-content-w` | 313px | Sheet text column; side padding flexes 24–40px around it |
+| `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 
 ## Radius
 
@@ -114,6 +122,7 @@ Named spacing:
 | `rounded-button-lg` | 20px | Mobile/drawer icon buttons |
 | `rounded-card` | 24px | Project card, logo pills |
 | `rounded-panel` | 32px | Drawer, sheet top |
+| `rounded-panel-inner` | 28px | Inside a `p-1` panel (32 − 4): mobile drawer banner |
 | `rounded-full` | 9999px | Avatar |
 
 ## Effects
@@ -168,6 +177,7 @@ Geometry derived in `layout-and-motion.md → Project wheel`. `h` is the measure
 | `--wheel-depth` | `2.09` | `wheel.depth = 2.09` | Ring radius R, × card height |
 | `--wheel-perspective` | `2.1` | `wheel.perspective = 2.1` | Per-card perspective P, × card height |
 | `--wheel-spread` | `0.8695` | `wheel.spread = 0.8695` | Y(±1) = spread × h + gap |
+| `--wheel-reach` | `0.289` | `wheel.reach = 0.289` | Far edge of a ±1 neighbour beyond its centre, × h (positions the mobile stage) |
 | `--wheel-fade` | `0.2` | `wheel.fade = 0.2` | Opacity at ±1 step; 0 by ±1.5 |
 | `--wheel-gap` | `20px` mobile / `60px` desktop | read from CSS | Gap between active card and neighbour (`gap-5` / `gap-15`) |
 | `--wheel-card-h-desktop` | `min(400px, 39dvh)` | — | Desktop card height |
@@ -184,4 +194,4 @@ Geometry derived in `layout-and-motion.md → Project wheel`. `h` is the measure
 
 ## Implementation
 
-The tables above are the spec; `src/styles/global.css` is the implementation (Tailwind v4: primitives in `:root`, reset namespaces, semantic tokens in `@theme` / `@theme inline`). The CSS isn't duplicated here, so the two can't drift. Change a table first, then `global.css` and `motion.ts`.
+The tables above are the spec; `src/styles/global.css` is the implementation (Tailwind v4: primitives in `:root`, reset namespaces, semantic tokens in `@theme static` / `@theme inline`). `static` makes Tailwind emit every theme variable even when no utility uses it, because the wheel geometry reads them from CSS. The CSS isn't duplicated here, so the two can't drift. Change a table first, then `global.css` and `motion.ts`.
