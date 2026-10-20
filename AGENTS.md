@@ -37,7 +37,7 @@ Case study designs exist in Figma but come later. Until then `/work/[slug]` rend
 | Layer | Choice | Notes |
 |---|---|---|
 | Framework | **Astro**, `output: 'static'` | No SSR, no adapter, no server runtime in production |
-| Language | **TypeScript strict** (`astro/tsconfigs/strict`) | |
+| Language | **TypeScript strict** (`astro/tsconfigs/strict`) | Pinned to 6.x: `@astrojs/check` 0.9 doesn't support TypeScript 7 yet |
 | Styling | **Tailwind CSS v4** via `@tailwindcss/vite` | Theme is the token set in `design/tokens.md`. Default palette, radii, fonts, shadows and breakpoints are **reset**, so only our tokens exist as utilities |
 | Animation | **Motion** (motion.dev) | Vanilla `animate`/`scroll` API in Astro `<script>` blocks; the React API only inside React islands. Never ship it on pages that don't animate |
 | Interactivity | **React islands**, sparingly | Only for genuinely stateful UI (case-study prototypes later). Homepage interactions use vanilla TS first; propose an island only if vanilla gets unmaintainable |
@@ -54,6 +54,8 @@ Case study designs exist in Figma but come later. Until then `/work/[slug]` rend
 `astro`, `typescript`, `@astrojs/check`, `@astrojs/mdx`, `@astrojs/react`, `react`, `react-dom`, `@types/react`, `@types/react-dom`, `tailwindcss`, `@tailwindcss/vite`, `motion`, `@keystatic/core`, `@keystatic/astro`, `@astrojs/sitemap`.
 
 Anything else (Playwright, Lighthouse CLI, Prettier, ESLint, an OG-image generator) needs a one-line ask with the reason. Prefer a small script in `scripts/` using Node built-ins over a package.
+
+Transitive packages the approved set pulls in are fine: Keystatic's required peers (`react-aria`, `react-stately`, `@keystar/ui`, auto-installed by pnpm, dev admin only), and `sharp` (Astro's image service; one-off asset scripts may use it).
 
 ## Project structure (approved 2026-10-20)
 
@@ -188,7 +190,7 @@ Keystatic's admin UI and its GitHub mode need server routes, which a static buil
 
 ## Verification
 
-- After each component/page: compare against the Figma screenshot at 393×852, 412×915 and 1440×1024. Static screenshots use the system Chrome in headless mode (`--headless --screenshot --window-size`), so no dependency. Playwright isn't approved; ask only if mid-animation captures are needed.
+- After each component/page: compare against the Figma screenshot at 393×852, 412×915 and 1440×1024 with `scripts/screenshot.mjs`. It drives the system Chrome over the DevTools Protocol (plain `--window-size` can't go below ~500px wide in headless Chrome). No dependency; Playwright isn't approved.
 - Before marking a page done: Lighthouse mobile run (Chrome DevTools or PageSpeed Insights on the preview URL), keyboard walk-through, reduced-motion pass, `pnpm check` clean.
 
 ## Commits and communication
@@ -204,7 +206,12 @@ pnpm dev        # dev server + Keystatic admin at /keystatic
 pnpm build      # static build to dist/
 pnpm preview    # serve dist/
 pnpm check      # astro check + check-media + check-tokens
+node scripts/screenshot.mjs <url> <outDir> [393x852 412x915 1440x1024]
+                # exact-viewport screenshots via system Chrome + DevTools Protocol
+                # env: FULL_PAGE=1, REDUCED_MOTION=1, DELAY=ms, DPR=n
 ```
+
+`/_system` (tokens and components) and `/keystatic` exist only under `pnpm dev`.
 
 ## First tasks, in order
 

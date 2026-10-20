@@ -30,6 +30,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `--gray-black` | `gray/black` | `#000000` |
 | `--lime-200` | `lime/200` | `#CAE6A0` |
 | `--overlay-84` | (not a variable) | `rgb(84 84 84 / 0.8)` |
+| `--scrim-24` | (not a variable) | `rgb(0 0 0 / 0.24)` **(proposed)** |
 
 ### Semantic
 
@@ -41,7 +42,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-selected` | `--gray-100` | Active TOC item |
 | `surface-hover` | `--gray-100` **(proposed)** | Hover on TOC items and text buttons |
 | `surface-caption` | `--overlay-84` | Card caption bar |
-| `surface-scrim` | `rgb(0 0 0 / 0.24)` **(proposed)** | Behind the drawer |
+| `surface-scrim` | `--scrim-24` **(proposed)** | Behind the drawer |
 | `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |
 | `fg-primary` | `--gray-black` | Name, active TOC |
 | `fg-strong` | `--gray-900` | Emphasis in About, timeline roles |
@@ -77,7 +78,7 @@ Override weight with `font-medium` / `font-regular`. Nothing below 12px. Case-st
 
 ## Spacing
 
-Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20** (= 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 60, 80px). `check-tokens.mjs` flags other steps.
+Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20** (= 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80px). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
 
 Named spacing:
 
@@ -101,6 +102,7 @@ Named spacing:
 | `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills |
 | `--spacing-avatar` | 140px | About avatar |
 | `--spacing-icon-sm` / `--spacing-icon-md` | 18px / 20px | Icon glyphs |
+| `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
 
 ## Radius
 

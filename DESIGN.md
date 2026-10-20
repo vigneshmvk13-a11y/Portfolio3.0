@@ -28,7 +28,7 @@ Figma names map to primitives: `gray/700` → `--gray-700`; `Heading/H4` → `te
 | Area | State |
 |---|---|
 | Tokens | v0.3: wheel geometry, springs, intro timings, badge added |
-| Components | Specced from homepage + About; foundation and case-study components proposed; none built |
+| Components | Foundation built (see `/_system` in dev); homepage, About and case-study components specced |
 | Case study pages | Content model defined; visuals not designed yet; placeholders only |
 | Tablet (768–1199) | Not designed; interim rule in `layout-and-motion.md` |
 | Dark mode | Not designed. Don't build |
@@ -56,6 +56,9 @@ Agents: add to this list; don't resolve on your own.
 ## Changelog
 
 Newest first. Date · branch · change · why.
+
+- 2026-10-20 · tokens · Built `global.css` (Tailwind 4.3, `--*: initial` reset, so only our tokens exist). Added `--scrim-24`, `--spacing-icon-badge` (16px), spacing step 2.5 (button gap). The fallback font is size-adjusted Arial (400: 100.51%, 500: 103.34%), measured against site copy.
+- 2026-10-20 · components · Built IconButton, Button, Link, LogoPill, Badge, MotionCover; `/_system` page. Phosphor icons recoloured to `currentColor`.
 
 - 2026-10-20 · layout-and-motion · "Project stack" → **"Project wheel"**: a virtual ring (continuous position, per-card transforms with their own vanishing point, wraps for any count) fitted to the Figma neighbour: step 38.1°, depth 2.09h, perspective 2.1h. Mobile uses the same wheel. Added **Intro choreography**. Why: homepage brief; a shared-perspective cylinder can't reproduce the Figma neighbour, and nested `preserve-3d` breaks the caption's backdrop blur in Safari.
 - 2026-10-20 · rules · Principle 4 gains one exception: a ≤2s, once-per-session, skippable intro (none under reduced motion). Reduced motion keeps the static tilted layout. Why: Vignesh approved the intro; the spin teaches that the wheel scrolls.

@@ -11,7 +11,7 @@ Build order: **foundation** (IconButton, Button, Link, LogoPill, Badge, MotionCo
 ## Foundation
 
 ### IconButton
-**Figma:** `178:1441`, mobile `233:4704`, drawer `234:5306` · **Status:** specced
+**Figma:** `178:1441`, mobile `233:4704`, drawer `234:5306` · **Status:** built
 
 Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`ChatCircleDots`), Close (`X`).
 
@@ -29,27 +29,27 @@ States (proposed): hover → `border-line-strong`, icon `text-fg-primary` (`--du
 Props: `icon`, `label` (required, becomes `aria-label`), `variant`, `href?` (renders `<a>`), `external?` (adds `target="_blank" rel="noopener"` and "opens in new tab" to the label).
 
 ### Button
-**Figma:** `178:1441` has label/leading/trailing options · **Status:** proposed
+**Figma:** `178:1441` has label/leading/trailing options · **Status:** built (proposed design)
 
 Text button for case studies and the placeholder ("All work", "Request access"). Same surface, border and radius as IconButton `sm`; `text-label-1 font-medium text-fg-secondary`; optional leading/trailing icon, gap `gap-2.5` (10px, add to the step list if used). One variant until a design needs more.
 
 ### Link
-**Figma:** none · **Status:** proposed
+**Figma:** none · **Status:** built (proposed design)
 
 Inline text link inside prose. `text-fg-strong`, underline `decoration-line-strong underline-offset-4`, hover → `decoration-fg-strong`. External links get a trailing ↗ icon and "opens in new tab" in visually hidden text. Never colour-only.
 
 ### LogoPill
-**Figma:** `144:52` (DNEG), `144:49` (Kotak) · **Status:** specced
+**Figma:** `144:52` (DNEG), `144:49` (Kotak) · **Status:** built
 
 `w-logo-w h-logo-h rounded-card`. Raster in Figma; request SVGs, otherwise export 2× and 3× through `astro:assets`. Alt "DNEG", "Kotak Mahindra Bank".
 
 ### Badge
-**Figma:** `230:4637` (NDA, with Lock), `230:4652` (Coming soon) · **Status:** specced
+**Figma:** `230:4637` (NDA, with Lock), `230:4652` (Coming soon) · **Status:** built
 
 Pill top-right on ProjectCard, inset `p-6` from the card corner. `bg-surface-badge rounded-full py-2`, `text-label-3 font-medium text-fg-strong`. Without icon: `px-4`. With icon (16px Phosphor Lock, fill weight): `pl-3 pr-4 gap-1`. Variants come from `status`: `nda` → Lock + "NDA protected"; `coming-soon` → "Coming soon". Other statuses render nothing. It's the one colour in the chrome (confirmed).
 
 ### MotionCover
-**Figma:** card covers · **Status:** proposed (spec from the media rules)
+**Figma:** card covers · **Status:** built (video playback untested: no cover videos exist yet)
 
 The only component that renders `<video>`. Props: `mp4?`, `webm?`, `poster?` (an `astro:assets` image from `src/assets/covers/<slug>/`), `alt`, `priority?` (eager poster for LCP), `active` (controls play). Without `mp4`/`webm` it renders the poster only. Without a poster it renders a neutral `bg-surface-selected` block (plus `TODO(content)` in dev).
 
