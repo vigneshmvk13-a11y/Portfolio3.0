@@ -1,0 +1,41 @@
+/* General Sans (Fontshare, ITF Free Font License), self-hosted. 400 + 500 only. */
+@font-face {
+  font-family: "General Sans";
+  src: url("/fonts/GeneralSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "General Sans";
+  src: url("/fonts/GeneralSans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Metric-matched fallback so the swap doesn't shift layout (CLS 0).
+ * size-adjust = General Sans / Arial advance width over sample copy from the site;
+ * ascent/descent/line-gap = General Sans hhea metrics (1010/240/100 per 1000) ÷ size-adjust.
+ */
+@font-face {
+  font-family: "General Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Helvetica"), local("Roboto");
+  font-weight: 400;
+  size-adjust: 100.51%;
+  ascent-override: 100.49%;
+  descent-override: 23.88%;
+  line-gap-override: 9.95%;
+}
+
+@font-face {
+  font-family: "General Sans Fallback";
+  src: local("Arial"), local("ArialMT"), local("Helvetica"), local("Roboto");
+  font-weight: 500;
+  size-adjust: 103.34%;
+  ascent-override: 97.74%;
+  descent-override: 23.22%;
+  line-gap-override: 9.68%;
+}

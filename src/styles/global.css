@@ -1,0 +1,209 @@
+/*
+ * Token layer. Spec: design/tokens.md (change it there first).
+ * Primitives live in :root with no utilities; semantic tokens live in @theme,
+ * which is reset first so only our tokens exist as utilities.
+ */
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* ---------- Primitives (no utilities) ---------- */
+:root {
+  --gray-white: #ffffff;
+  --gray-50: #f3f3f3;
+  --gray-100: #e8e8e8;
+  --gray-200: #dddddd;
+  --gray-300: #c6c6c6;
+  --gray-500: #868686;
+  --gray-700: #5e5e5e;
+  --gray-900: #282828;
+  --gray-black: #000000;
+  --lime-200: #cae6a0;
+  --overlay-84: rgb(84 84 84 / 0.8);
+  --scrim-24: rgb(0 0 0 / 0.24);
+
+  /* Motion (mirrored in src/lib/motion.ts) */
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+  --intro-failsafe: 3s;
+
+  /* Wheel geometry (mirrored in src/lib/motion.ts; derivation in layout-and-motion.md) */
+  --wheel-step: 38.1deg;
+  --wheel-depth: 2.09;
+  --wheel-perspective: 2.1;
+  --wheel-spread: 0.8695;
+  --wheel-fade: 0.2;
+  --wheel-gap: 20px;
+  --wheel-card-h-desktop: min(400px, 39dvh);
+}
+
+@media (min-width: 75rem) {
+  :root {
+    --wheel-gap: 60px;
+  }
+}
+
+/* ---------- Static tokens → utilities ---------- */
+@theme {
+  --*: initial;
+
+  --spacing: 4px;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-desktop: 75rem;
+
+  --font-sans: "General Sans", "General Sans Fallback", ui-sans-serif, system-ui, sans-serif;
+  --default-font-family: var(--font-sans);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+
+  --text-h4: 2rem;
+  --text-h4--line-height: 2.375rem;
+  --text-h4--letter-spacing: -0.2px;
+  --text-h4--font-weight: 500;
+  --text-h5: 1.5rem;
+  --text-h5--line-height: 1.875rem;
+  --text-h5--letter-spacing: -0.15px;
+  --text-h5--font-weight: 500;
+  --text-body-1: 1.125rem;
+  --text-body-1--line-height: 1.75rem;
+  --text-body-2: 1rem;
+  --text-body-2--line-height: 1.5rem;
+  --text-body-3: 0.875rem;
+  --text-body-3--line-height: 1.25rem;
+  --text-label-1: 1rem;
+  --text-label-1--line-height: 1.375rem;
+  --text-label-1--letter-spacing: -0.18px;
+  --text-label-1--font-weight: 500;
+  --text-label-2: 0.875rem;
+  --text-label-2--line-height: 1.25rem;
+  --text-label-2--letter-spacing: -0.16px;
+  --text-label-3: 0.75rem;
+  --text-label-3--line-height: 1rem;
+  --text-label-3--letter-spacing: -0.12px;
+
+  --radius-item: 8px;
+  --radius-button-sm: 12px;
+  --radius-media-sm: 16px;
+  --radius-button-lg: 20px;
+  --radius-card: 24px;
+  --radius-panel: 32px;
+  --radius-full: 9999px;
+
+  --spacing-gutter: 80px;
+  --spacing-gutter-inner: 40px;
+  --spacing-gutter-mobile: 20px;
+  --spacing-card-w: 553px;
+  --spacing-card-h: 400px;
+  --spacing-logo-w: 80px;
+  --spacing-logo-h: 30px;
+  --spacing-avatar: 140px;
+  --spacing-icon-sm: 18px;
+  --spacing-icon-md: 20px;
+  --spacing-icon-badge: 16px;
+
+  --container-page: 1736px;
+  --container-stack: 669px;
+  --container-side: 265.5px;
+  --container-drawer: 576px;
+  --container-prose: 720px;
+
+  --aspect-card: 553 / 400;
+
+  --blur-caption: 12.5px;
+  --shadow-panel: 0 24px 64px rgb(0 0 0 / 0.12);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ---------- Semantic colour (references primitives) ---------- */
+@theme inline {
+  --color-surface-page: var(--gray-50);
+  --color-surface-page-mobile: var(--gray-white);
+  --color-surface-raised: var(--gray-white);
+  --color-surface-selected: var(--gray-100);
+  --color-surface-hover: var(--gray-100);
+  --color-surface-caption: var(--overlay-84);
+  --color-surface-scrim: var(--scrim-24);
+  --color-surface-badge: var(--lime-200);
+  --color-fg-primary: var(--gray-black);
+  --color-fg-strong: var(--gray-900);
+  --color-fg-secondary: var(--gray-700);
+  --color-fg-tertiary: var(--gray-500);
+  --color-fg-on-media: var(--gray-white);
+  --color-line-subtle: var(--gray-100);
+  --color-line-default: var(--gray-200);
+  --color-line-strong: var(--gray-300);
+  --color-indicator: var(--gray-black);
+  --color-focus: var(--gray-900);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-fg-secondary);
+    background-color: var(--color-surface-page-mobile);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (min-width: 75rem) {
+    html {
+      background-color: var(--color-surface-page);
+    }
+  }
+
+  /* One focus treatment everywhere (rules.md → Accessibility). */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  [data-focus-offset="lg"]:focus-visible {
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Visible until focused, then pinned top-left (rules.md: skip link on every page). */
+  .skip-link {
+    position: absolute;
+    top: calc(var(--spacing) * 2);
+    left: calc(var(--spacing) * 2);
+    z-index: 100;
+    transform: translateY(-200%);
+    padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+    border-radius: var(--radius-button-sm);
+    background: var(--color-surface-raised);
+    color: var(--color-fg-primary);
+  }
+
+  .skip-link:focus-visible {
+    transform: none;
+  }
+
+  /* Missing content marker. Rendered only in dev (see components/dev/Todo.astro). */
+  .todo-content {
+    outline: 1px dashed var(--color-fg-primary);
+    background: var(--color-surface-badge);
+    color: var(--color-fg-strong);
+    font-family: ui-monospace, monospace;
+    font-size: var(--text-label-3);
+  }
+}
