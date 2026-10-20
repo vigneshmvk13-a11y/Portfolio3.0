@@ -1,0 +1,57 @@
+---
+/**
+ * Square button with one Phosphor icon. design/components.md → IconButton.
+ * Renders <a> when `href` is set, otherwise <button type="button">.
+ * Extra attributes (data-*, aria-controls, aria-expanded…) pass through.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'sm' | 'lg' | 'lg-outlined' | 'close';
+
+interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
+  icon: (props: { class?: string }) => unknown;
+  /** Accessible name; becomes aria-label. */
+  label: string;
+  variant?: Variant;
+  href?: string;
+  /** Opens in a new tab and says so in the accessible name. */
+  external?: boolean;
+}
+
+const { icon: Icon, label, variant = 'sm', href, external = false, class: className, ...rest } = Astro.props;
+
+const variants: Record<Variant, { box: string; icon: string }> = {
+  sm: { box: 'p-4 rounded-button-sm border border-line-subtle hover:border-line-strong', icon: 'size-icon-sm' },
+  lg: { box: 'p-5 rounded-button-lg', icon: 'size-icon-md' },
+  'lg-outlined': { box: 'p-5 rounded-button-lg border border-line-default hover:border-line-strong', icon: 'size-icon-sm' },
+  close: { box: 'p-4 rounded-media-sm border border-line-default hover:border-line-strong', icon: 'size-icon-sm' },
+};
+
+const classes = [
+  'inline-flex shrink-0 items-center justify-center bg-surface-raised text-fg-secondary',
+  'transition-[border-color,color,scale] duration-(--duration-fast) ease-out',
+  'hover:text-fg-primary active:scale-96',
+  variants[variant].box,
+  className,
+];
+const accessibleName = external ? `${label} (opens in new tab)` : label;
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={classes}
+      aria-label={accessibleName}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener' : undefined}
+      {...(rest as HTMLAttributes<'a'>)}
+    >
+      <Icon class={variants[variant].icon} />
+    </a>
+  ) : (
+    <button type="button" class:list={classes} aria-label={accessibleName} {...rest}>
+      <Icon class={variants[variant].icon} />
+    </button>
+  )
+}

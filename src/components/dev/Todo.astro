@@ -1,0 +1,15 @@
+---
+/** Visible "TODO(content): …" marker in dev; renders nothing in production builds. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+{
+  import.meta.env.DEV && (
+    <span class:list={['todo-content inline-block px-1', className]}>
+      TODO(content): <slot />
+    </span>
+  )
+}

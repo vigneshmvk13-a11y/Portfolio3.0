@@ -1,0 +1,49 @@
+---
+/**
+ * Text button for case studies and placeholders ("All work", "Request access").
+ * Same surface as IconButton `sm`. design/components.md → Button.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type IconComponent = (props: { class?: string }) => unknown;
+
+interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
+  href?: string;
+  external?: boolean;
+  leadingIcon?: IconComponent;
+  trailingIcon?: IconComponent;
+}
+
+const { href, external = false, leadingIcon: Leading, trailingIcon: Trailing, class: className, ...rest } = Astro.props;
+
+const classes = [
+  'inline-flex items-center gap-2.5 p-4 rounded-button-sm border border-line-subtle bg-surface-raised',
+  'text-label-1 font-medium text-fg-secondary',
+  'transition-[border-color,color,scale] duration-(--duration-fast) ease-out',
+  'hover:border-line-strong hover:text-fg-primary active:scale-96',
+  className,
+];
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={classes}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener' : undefined}
+      {...(rest as HTMLAttributes<'a'>)}
+    >
+      {Leading && <Leading class="size-icon-sm" />}
+      <slot />
+      {external && <span class="sr-only">(opens in new tab)</span>}
+      {Trailing && <Trailing class="size-icon-sm" />}
+    </a>
+  ) : (
+    <button type="button" class:list={classes} {...rest}>
+      {Leading && <Leading class="size-icon-sm" />}
+      <slot />
+      {Trailing && <Trailing class="size-icon-sm" />}
+    </button>
+  )
+}
