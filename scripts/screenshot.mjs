@@ -12,6 +12,8 @@
  *   FULL_PAGE=1      capture the whole document, not just the viewport
  *   DELAY=ms         wait after load (default 800)
  *   DPR=n            device pixel ratio (default 1)
+ *   EVAL="js"        run in the page after load (e.g. open a popover), then wait DELAY again
+ *   SUFFIX=name      appended to the file name
  */
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -116,6 +118,11 @@ try {
     await send('Page.navigate', { url }, sessionId);
     await loaded;
     await new Promise((ok) => setTimeout(ok, delay));
+    if (process.env.EVAL) {
+      // e.g. EVAL="document.querySelector('[data-toc-handle]').click()"
+      await send('Runtime.evaluate', { expression: process.env.EVAL, userGesture: true }, sessionId);
+      await new Promise((ok) => setTimeout(ok, delay));
+    }
 
     const params = { format: 'png' };
     if (process.env.FULL_PAGE) {
@@ -128,7 +135,8 @@ try {
       params.clip = { x: 0, y: 0, width, height: fullHeight, scale: 1 };
     }
     const { data } = await send('Page.captureScreenshot', params, sessionId);
-    const file = resolve(join(outDir, `${slug}-${width}.png`));
+    const suffix = process.env.SUFFIX ? `-${process.env.SUFFIX}` : '';
+    const file = resolve(join(outDir, `${slug}-${width}${suffix}.png`));
     await writeFile(file, Buffer.from(data, 'base64'));
     console.log(file);
     await send('Target.closeTarget', { targetId });
