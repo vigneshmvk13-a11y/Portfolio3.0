@@ -1,0 +1,45 @@
+---
+/** Horizontal photo row in the About drawer (Figma 234:5312). Keyboard-scrollable labelled region. */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  images: { image: ImageMetadata; alt: string }[];
+  class?: string;
+}
+
+const { images, class: className } = Astro.props;
+---
+
+{
+  images.length > 0 && (
+    <div
+      class:list={['gallery flex snap-x snap-mandatory gap-2 overflow-x-auto', className]}
+      role="region"
+      aria-label="Photos"
+      tabindex="0"
+    >
+      {images.map(({ image, alt }) => (
+        <Image
+          src={image}
+          alt={alt}
+          width={170}
+          height={200}
+          densities={[2, 3]}
+          fit="cover"
+          class="h-gallery-h-sm w-gallery-w-sm shrink-0 snap-start rounded-media-sm object-cover desktop:h-gallery-h desktop:w-gallery-w"
+        />
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .gallery {
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .gallery::-webkit-scrollbar {
+    display: none;
+  }
+</style>

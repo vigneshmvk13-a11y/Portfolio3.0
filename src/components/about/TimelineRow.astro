@@ -1,0 +1,28 @@
+---
+/**
+ * One Journey row (Figma 234:5322 desktop, 234:5267 mobile).
+ * Desktop: role · years · place in one row. Mobile: role, then "years • place" below.
+ */
+interface Props {
+  role: string;
+  years: string;
+  place: string;
+  last?: boolean;
+}
+
+const { role, years, place, last = false } = Astro.props;
+---
+
+<li
+  class:list={[
+    'flex flex-col gap-1 pb-3 desktop:flex-row desktop:items-center desktop:justify-between desktop:gap-0',
+    !last && 'border-b border-line-default',
+  ]}
+>
+  <p class="text-label-2 font-medium text-fg-strong desktop:flex-1 desktop:text-label-3">{role}</p>
+  <p class="flex gap-1 text-label-3 desktop:contents desktop:text-label-2">
+    <span class="whitespace-nowrap">{years}</span>
+    <span aria-hidden="true" class="desktop:hidden">•</span>
+    <span class="desktop:flex-1 desktop:text-right">{place}</span>
+  </p>
+</li>
