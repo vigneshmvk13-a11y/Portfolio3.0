@@ -145,7 +145,7 @@ Role (`text-label-3 font-medium text-fg-strong`, flex 1) · years (`text-label-2
 ### CaseStudyPlaceholder (template)
 **Figma:** none · **Status:** proposed
 
-Until real designs: `bg-surface-page`, column `max-w-prose` centred. Back Button ("All work"), MotionCover full width, title `text-h4`, meta row (role, timeline, tags) `text-label-2 text-fg-secondary`, and `text-body-2`: "This case study is being written." No invented content. `nda` status replaces the line with how to request access (contact from `siteSettings`).
+Until real designs: `bg-surface-page`, column `max-w-prose` centred. Back Button ("All work"), MotionCover full width, title `text-h4`, meta row (role, timeline, tags) `text-label-2 text-fg-secondary`, and `text-body-2`: "This case study is being written." No invented content. `nda` status replaces the line with how to request access (contact from `siteSettings`). Figma has copy for that (`206:18486`): "This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and design decisions are available for discussion during a private portfolio walkthrough."
 
 ### DecisionBlock
 **Figma:** to be designed with the case studies · **Status:** proposed (structure only)

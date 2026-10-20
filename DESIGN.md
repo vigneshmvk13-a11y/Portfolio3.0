@@ -57,6 +57,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-20 · content · SEO descriptions for all five case studies, trimmed (≤160) from the case-study copy in Figma page `127:233` (Vignesh asked to trim, not rewrite). Gallery photo 5 (kitten meme) kept by Vignesh. Cover videos come later; alt text awaits Vignesh's review.
+
 - 2026-10-20 · tokens · Built `global.css` (Tailwind 4.3, `--*: initial` reset, so only our tokens exist). Added `--scrim-24`, `--spacing-icon-badge` (16px), spacing step 2.5 (button gap). The fallback font is size-adjusted Arial (400: 100.51%, 500: 103.34%), measured against site copy.
 - 2026-10-20 · components · Built IconButton, Button, Link, LogoPill, Badge, MotionCover; `/_system` page. Phosphor icons recoloured to `currentColor`.
 
