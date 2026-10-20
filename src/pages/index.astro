@@ -1,0 +1,43 @@
+---
+/**
+ * Phase 2 scaffold: proves the content pipeline (Keystatic → content collections → astro:assets)
+ * end to end. Replaced by the full homepage in Phase 3.
+ */
+import Base from '../layouts/Base.astro';
+import MotionCover from '../components/media/MotionCover.astro';
+import Badge from '../components/ui/Badge.astro';
+import { getAbout, getPublishedCaseStudies } from '../lib/content';
+
+const about = await getAbout();
+const [first, ...rest] = await getPublishedCaseStudies();
+---
+
+<Base class="bg-surface-page-mobile desktop:bg-surface-page">
+  <main id="main" class="mx-auto flex max-w-(--spacing-card-w) flex-col gap-10 px-gutter-mobile py-10">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-h5 desktop:text-h4 text-fg-primary">
+        I'm {about.name}, <span class="text-fg-secondary">{about.role}</span>
+      </h1>
+      <p class="text-body-3">{about.currently}</p>
+    </div>
+    {
+      first && (
+        <article class="relative aspect-card overflow-hidden rounded-card">
+          <MotionCover
+            class="size-full"
+            poster={first.data.heroVideo.poster}
+            alt={first.data.heroVideo.alt}
+            mp4={first.data.heroVideo.mp4}
+            webm={first.data.heroVideo.webm}
+            priority
+            active
+          />
+          <Badge status={first.data.status} class="absolute top-6 right-6" />
+        </article>
+      )
+    }
+    <ul class="flex flex-col gap-1 text-body-3 font-medium">
+      {rest.map((entry) => <li>{entry.data.tocLabel}</li>)}
+    </ul>
+  </main>
+</Base>
