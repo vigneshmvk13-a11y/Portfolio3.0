@@ -13,6 +13,16 @@ const { footerCredit } = await getSiteSettings();
   class="pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto hidden max-w-page grid-cols-3 items-center px-gutter py-10 text-label-3 font-medium desktop:grid"
 >
   <p class="pointer-events-auto" set:html={renderInline(footerCredit, 'font-medium text-fg-strong')} />
-  <p class="text-center" data-scroll-hint>Scroll</p>
+  <p class="scroll-hint text-center" data-scroll-hint>Scroll</p>
   <span aria-hidden="true"></span>
 </footer>
+
+<style>
+  /* Fades after the first step the user takes (src/scripts/home.ts). */
+  .scroll-hint {
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .scroll-hint[data-hidden] {
+    opacity: 0;
+  }
+</style>

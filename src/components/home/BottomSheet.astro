@@ -68,19 +68,27 @@ const resumeTodo = resume ? undefined : 'todo-content';
     padding-bottom: calc(var(--spacing) * 8 + env(safe-area-inset-bottom));
   }
 
-  /* Collapsed state (233:4626): the intro rows animate shut; buttons stay. Driven in Phase 4. */
+  /*
+   * Collapsed state (233:4626): the intro fades, then its row animates shut; buttons stay.
+   * Driven by wheel direction (src/scripts/sheet.ts). Mobile and tablet only.
+   */
   .bottom-sheet__intro {
     grid-template-rows: 1fr;
     transition:
       grid-template-rows var(--duration-base) var(--ease-in-out),
       opacity var(--duration-fast) var(--ease-out);
   }
-  .bottom-sheet[data-collapsed] .bottom-sheet__intro {
-    grid-template-rows: 0fr;
-    opacity: 0;
+  .bottom-sheet {
+    transition: row-gap var(--duration-base) var(--ease-in-out);
   }
-  .bottom-sheet[data-collapsed] {
-    row-gap: 0;
+  @media (width < 75rem) {
+    .bottom-sheet[data-collapsed] .bottom-sheet__intro {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+    .bottom-sheet[data-collapsed] {
+      row-gap: 0;
+    }
   }
 
   @media (min-width: 75rem) {

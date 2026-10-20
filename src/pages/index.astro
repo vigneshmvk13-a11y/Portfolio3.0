@@ -2,7 +2,6 @@
 /**
  * Homepage (Figma section 233:4731): who (left), the project wheel (centre), the index (right).
  * Mobile: the wheel fills the screen, the intro lives in the bottom sheet, the index in the TOC handle.
- * Phase 3: static resting state. Wheel interaction arrives in Phase 4.
  */
 import Base from '../layouts/Base.astro';
 import BottomSheet from '../components/home/BottomSheet.astro';
@@ -14,12 +13,18 @@ import AboutDrawer from '../components/about/AboutDrawer.astro';
 import { getPublishedCaseStudies } from '../lib/content';
 
 const entries = await getPublishedCaseStudies();
+// Slugs other than the first: a hash naming one of these means "start somewhere else".
+const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
 ---
 
 <Base class="home h-dvh overflow-hidden bg-surface-page-mobile desktop:bg-surface-page">
-  <div
-    class="mx-auto h-dvh max-w-page desktop:grid desktop:grid-cols-[1fr_var(--wheel-column)_1fr]"
-  >
+  <script is:inline slot="head" define:vars={{ deepLinkSlugs }}>
+    if (deepLinkSlugs.includes(decodeURIComponent(location.hash.slice(1)))) {
+      document.documentElement.dataset.wheelPending = '';
+    }
+  </script>
+
+  <div class="mx-auto h-dvh max-w-page desktop:grid desktop:grid-cols-[1fr_var(--wheel-column)_1fr]">
     <div class="desktop:flex desktop:items-center desktop:pr-gutter-inner desktop:pl-gutter">
       <BottomSheet />
     </div>
@@ -39,3 +44,8 @@ const entries = await getPublishedCaseStudies();
   <FooterBar />
   <AboutDrawer />
 </Base>
+
+<script>
+  import { initHome } from '../scripts/home';
+  initHome();
+</script>

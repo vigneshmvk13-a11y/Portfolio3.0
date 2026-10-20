@@ -91,6 +91,30 @@ const offsetOf = (index: number) => {
     visibility: visible;
   }
 
+  /* Once the controller drives the cards (inline transforms), hint the compositor. */
+  .wheel[data-live] .wheel-card {
+    will-change: transform, opacity;
+  }
+
+  /* Touch drags move the wheel, not the page (stage only; the sheet and drawer scroll natively). */
+  .wheel {
+    touch-action: none;
+  }
+
+  /*
+   * Deep link (/#slug): the head script marks the page so the wheel stays hidden until the
+   * controller has placed it, instead of flashing project 1. CSS reveals it anyway after 3s.
+   */
+  html[data-wheel-pending]:not([data-wheel-ready]) .wheel {
+    opacity: 0;
+    animation: wheel-reveal 0s var(--intro-failsafe) forwards;
+  }
+  @keyframes wheel-reveal {
+    to {
+      opacity: 1;
+    }
+  }
+
   .wheel-card[data-offset='-2'] {
     --d: -2;
   }
