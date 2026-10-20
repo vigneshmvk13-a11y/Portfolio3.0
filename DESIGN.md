@@ -44,6 +44,8 @@ Agents: add to this list; don't resolve on your own.
 14. **Bio emphasis differs by breakpoint in Figma:** desktop bolds "I'm Vignesh" and the whole "@DNEG for Kotak Mahindra's corporate banking app, Fyn"; mobile bolds only "Vignesh", "@DNEG", "Kotak mahindra", "Fyn". One CMS field can hold one version; using desktop.
 15. **Mobile TOC labels:** Figma's mobile popover uses a shorter "Fyn- Wholesale Banking". There's one `tocLabel`, so the popover widens to fit "Fyn- Wholesale Banking app". Shorten the label everywhere, or keep it?
 
+16. **Reduced motion on Windows:** turning off Windows "Animation effects" (often done for speed, not accessibility) makes Chrome report `prefers-reduced-motion: reduce`. Those visitors get instant wheel steps and no intro. Keep it instant (current rule), or give reduced motion a short opacity crossfade between cards (no spatial movement)?
+
 ### Resolved (2026-10-20)
 
 1. **Project list:** the desktop list, in that order (Data mapping, Fyn, Nova, Prime compass, Gyst). The mobile TOC is stale.

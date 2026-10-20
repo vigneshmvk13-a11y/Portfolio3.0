@@ -34,9 +34,11 @@ export function initHome(): WheelController | null {
   const status = stage.querySelector<HTMLElement>('[data-wheel-status]');
   const scrollHint = document.querySelector<HTMLElement>('[data-scroll-hint]');
 
+  // No video while moving, including a scroll that tilts the card and returns.
+  stage.addEventListener('wheel:start', () => setActiveCover(null));
+
   stage.addEventListener('wheel:change', (event) => {
     const { via } = (event as CustomEvent<WheelDetail>).detail;
-    setActiveCover(null); // no video while moving
     if (via !== 'init' && via !== 'hash' && via !== 'intro') scrollHint?.setAttribute('data-hidden', '');
   });
 

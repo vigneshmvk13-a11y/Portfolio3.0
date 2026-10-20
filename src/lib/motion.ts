@@ -51,8 +51,10 @@ export const wheel = {
   reach: 0.289,
   /** Opacity at ±1 step; reaches 0 at ±1.5. */
   fade: 0.2,
-  /** Accumulated wheel deltaY (px) per step. */
+  /** Wheel deltaY (px) a gesture must travel to commit to the next card. */
   stepThreshold: 80,
-  /** Seconds of wheel silence before input unlocks after a step. */
+  /** Seconds of wheel silence that end a gesture (snap; under reduced motion, unlock). */
   inputQuiet: 0.15,
+  /** Time constant (s) of the wheel chasing scroll input; smooths mouse-wheel notches. */
+  follow: 0.07,
 } as const;

@@ -3,11 +3,16 @@
  * Everything else (inputs, TOC, hash, sheet, video, intro) talks to this.
  *
  * Events on the stage element:
+ *   wheel:start  { index, slug, via }        motion began (spring, scroll follow, drag, intro)
  *   wheel:change { index, slug, from, via }  rounded index changed (also mid-animation)
  *   wheel:settle { index, slug, via }        motion finished at an index
  */
-import { animateValue, type AnimationPlaybackControls, type ValueAnimationOptions } from 'motion';
-import { spring } from '../../lib/motion';
+import {
+  animateValue,
+  type AnimationPlaybackControlsWithThen as Controls,
+  type ValueAnimationOptions,
+} from 'motion';
+import { spring, wheel } from '../../lib/motion';
 import { prefersReducedMotion } from '../../lib/reduced-motion';
 import { activeIndex, shortestDelta } from './geometry';
 import { WheelRenderer } from './render';
@@ -26,9 +31,13 @@ export class WheelController {
   readonly count: number;
   readonly slugs: string[];
   private renderer: WheelRenderer;
-  private animation: AnimationPlaybackControls | null = null;
+  private animation: Controls | null = null;
   /** Integer position the running animation is heading to. */
   private target: number | null = null;
+  /** Where scroll input has taken the wheel; the wheel chases it (null when not following). */
+  private followTarget: number | null = null;
+  private followFrame = 0;
+  private followVelocity = 0;
   private current = 0;
   private lastIndex = 0;
   /** Disabled while the drawer is open or the intro runs. */
@@ -51,7 +60,21 @@ export class WheelController {
   }
 
   get moving(): boolean {
-    return this.animation !== null;
+    return this.animation !== null || this.following;
+  }
+
+  get following(): boolean {
+    return this.followTarget !== null;
+  }
+
+  /** Integer position the wheel is at or heading to. */
+  get destination(): number {
+    return Math.round(this.target ?? this.current);
+  }
+
+  /** Speed while following scroll input, positions/s (carried into the snap). */
+  get velocity(): number {
+    return this.followVelocity;
   }
 
   /** Place the wheel without animation (load, hash restore, reduced motion, intro skip). */
@@ -77,7 +100,33 @@ export class WheelController {
   /** Direct manipulation (drag): follow the input exactly. */
   setPosition(position: number, via: Via): void {
     this.stop();
+    this.begin(via);
     this.set(position, via);
+  }
+
+  /**
+   * Scroll-linked movement: chase `target` with exponential smoothing (time constant `wheel.follow`),
+   * so mouse-wheel notches glide instead of jumping. Doesn't settle; the input snaps when it goes quiet.
+   */
+  follow(target: number, via: Via): void {
+    if (this.animation) this.stop();
+    this.begin(via);
+    this.followTarget = target;
+    if (this.followFrame) return;
+    let last: number | null = null;
+    const tick = (now: number) => {
+      const goal = this.followTarget;
+      if (goal === null) return;
+      const dt = last === null ? 1 / 60 : Math.max(0.001, (now - last) / 1000);
+      last = now;
+      const previous = this.current;
+      const next = previous + (goal - previous) * (1 - Math.exp(-dt / wheel.follow));
+      const arrived = Math.abs(goal - next) < 0.0005;
+      this.followVelocity = arrived ? 0 : (next - previous) / dt;
+      this.set(arrived ? goal : next, via);
+      this.followFrame = arrived ? 0 : requestAnimationFrame(tick);
+    };
+    this.followFrame = requestAnimationFrame(tick);
   }
 
   /** Spring to `target` (an integer position), optionally carrying the release velocity (positions/s). */
@@ -89,52 +138,48 @@ export class WheelController {
       this.settle(via);
       return;
     }
-    this.stage.dataset.moving = '';
+    this.begin(via);
     const controls = animateValue<number>({
       keyframes: [this.current, target],
       ...spring.wheel,
       velocity,
       onUpdate: (value) => this.set(value, via),
     });
-    this.animation = controls;
-    controls.then(() => {
-      if (this.animation !== controls) return;
-      this.animation = null;
-      this.set(target, via);
-      this.settle(via);
-    });
+    this.track(controls, target, via);
   }
 
-  /** Free-form animation of the position (the intro spin), resolved when finished. */
+  /**
+   * Keyframed animation of the position (the intro spin), resolved when finished.
+   * Keyframes run on from the current position; the last one is where the wheel settles.
+   */
   animatePosition(
-    to: number,
+    keyframes: number[],
     options: Omit<ValueAnimationOptions<number>, 'keyframes' | 'onUpdate'>,
     via: Via = 'intro',
-  ): AnimationPlaybackControls {
+  ): Controls {
     this.stop();
+    const to = keyframes[keyframes.length - 1];
     this.target = to;
-    this.stage.dataset.moving = '';
+    this.begin(via);
     const controls = animateValue<number>({
       ...options,
-      keyframes: [this.current, to],
+      keyframes: [this.current, ...keyframes],
       onUpdate: (value) => this.set(value, via),
     });
-    this.animation = controls;
-    controls.then(() => {
-      if (this.animation !== controls) return;
-      this.animation = null;
-      this.set(to, via);
-      this.settle(via);
-    });
+    this.track(controls, to, via);
     return controls;
   }
 
+  /** Halt any motion where it is. The caller then places the wheel (jumpTo, springTo…), which settles it. */
   stop(): void {
+    if (this.followFrame) cancelAnimationFrame(this.followFrame);
+    this.followFrame = 0;
+    this.followTarget = null;
+    this.followVelocity = 0;
     if (!this.animation) return;
     const running = this.animation;
     this.animation = null;
     running.stop();
-    delete this.stage.dataset.moving;
   }
 
   /** Re-measure after resize and redraw at the current position. */
@@ -146,6 +191,23 @@ export class WheelController {
   /** Finger travel for one step, px. */
   get stepPx(): number {
     return this.renderer.stepPx;
+  }
+
+  private track(controls: Controls, to: number, via: Via): void {
+    this.animation = controls;
+    controls.then(() => {
+      if (this.animation !== controls) return;
+      this.animation = null;
+      this.set(to, via);
+      this.settle(via);
+    });
+  }
+
+  /** Marks the stage as moving and announces it once per movement (covers pause). */
+  private begin(via: Via): void {
+    if ('moving' in this.stage.dataset) return;
+    this.stage.dataset.moving = '';
+    this.emit('wheel:start', { index: this.index, slug: this.slugs[this.index], via });
   }
 
   private set(position: number, via: Via): void {

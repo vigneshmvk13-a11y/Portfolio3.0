@@ -81,7 +81,12 @@ The resting state (active, previous, next, rest hidden) is rendered as static CS
 
 ### Input
 
-- **Wheel/trackpad:** accumulate `deltaY` (normalised for `deltaMode`). Past `--wheel-step-threshold` (80px), step once and lock input. Unlock only when the wheel has settled **and** wheel events have been quiet for `--wheel-input-quiet` (150ms), so one trackpad flick with its inertia tail can't step twice.
+- **Wheel/trackpad (scroll-linked):** the wheel moves *with* the scroll, like a page. `deltaY` (normalised for `deltaMode`) moves a target by `deltaY / Y(±1)` positions, so one card height plus gap of scroll is one project. The wheel chases that target with exponential smoothing (`wheel.follow`, 70ms), so mouse-wheel notches glide and trackpad input tracks the fingers. Cards pass continuously through the tilted, faded neighbour pose; there's no canned step animation. When wheel events go quiet for `wheel.inputQuiet` (150ms, including any trackpad inertia tail), the gesture **snaps** with `spring.wheel`, carrying the current speed:
+  - travelled < `wheel.stepThreshold` (80px): spring back to the starting card;
+  - otherwise: move `max(1, round(travelled))` cards in the scroll direction. One mouse notch (≈100px) is one project; a long trackpad flick can travel several.
+  - Scrolling again during a snap starts the new gesture from where the snap is heading, so quick notches add up instead of fighting the spring.
+  - Direction: scrolling down moves the focused card up and brings the next one in from below; scrolling up does the reverse.
+  - Reduced motion: no scroll-linked movement. Accumulate past 80px, step once (instantly), lock until quiet.
 - **Touch / pen drag** on the stage (pointer events; mouse uses the wheel, keys and clicks, so dragging never fights link clicks): past a 6px slop, `position` follows the finger, with one step = `Y(±1)` pixels. On release, velocity from the last ~100ms projects 0.2s ahead; the wheel rounds to the nearest card and springs there (`spring.wheel`), carrying the velocity. A drag suppresses the click on the card under the finger.
 - **Keyboard** (focus on body, stage or TOC): ↑/PageUp = previous, ↓/PageDown = next, Home = first, End = last. Enter on the active card follows its link (it's a real `<a>`); Enter with focus on body opens the active card.
 - **TOC:** a plain click rotates the shortest way, `delta = ((i − cur + N/2) mod N) − N/2`; modifier-clicks open the case study. With 5 projects that's at most 2 steps, so one intermediate card passes. That's intended (it's a wheel). The mobile popover closes on selection and focus returns to the handle.
@@ -93,7 +98,7 @@ The resting state (active, previous, next, rest hidden) is rendered as static CS
 
 ### Video
 
-Only the settled active card plays its cover. All others are paused and reset. While the wheel moves, every video is paused (posters show) until settle. `MotionCover`'s controller (`setActiveCover`) enforces one playing video.
+Only the settled active card plays its cover. All others are paused and reset. From the moment the wheel starts moving (`wheel:start`, including a scroll that tilts the card and springs back), every video is paused (posters show) until settle. `MotionCover`'s controller (`setActiveCover`) enforces one playing video.
 
 ### Reduced motion
 

@@ -1,6 +1,7 @@
 /**
  * Wheel inputs. design/layout-and-motion.md → Project wheel → Input.
- * - wheel/trackpad: accumulate deltaY, one step per threshold, locked until settled + quiet;
+ * - wheel/trackpad: the wheel follows the scroll and snaps to a card when it goes quiet
+ *   (reduced motion: accumulate deltaY, one instant step per threshold, locked until quiet);
  * - touch/pen drag: follow the finger, release with momentum, snap to the nearest card;
  * - keyboard: ↑/↓, PageUp/PageDown, Home/End, Enter opens the active card;
  * - click on a neighbour (they're inert, so the stage gets the click): step towards it.
@@ -19,10 +20,18 @@ export function bindWheelInput(controller: WheelController): void {
   const { stage } = controller;
 
   // ---------- Wheel / trackpad ----------
+  // Full motion: the wheel moves with the scroll (one card per stepPx of deltaY), then snaps when
+  // the gesture goes quiet. Reduced motion: no scroll-linked movement, one instant step per gesture.
   let accumulated = 0;
   let locked = false;
   let lastWheelAt = 0;
   let quietTimer = 0;
+
+  /** Integer position the current gesture started from; null between gestures. */
+  let gestureFrom: number | null = null;
+  /** Where the gesture has taken the wheel, in positions. */
+  let scrollTarget = 0;
+  let snapTimer = 0;
 
   const unlockWhenQuiet = () => {
     window.clearTimeout(quietTimer);
@@ -35,10 +44,40 @@ export function bindWheelInput(controller: WheelController): void {
     if (locked) unlockWhenQuiet();
   });
 
+  /**
+   * End of a gesture: land on a whole card. Past the commit distance the wheel moves at least one
+   * card in the scroll direction (so one mouse notch is one project), otherwise it returns.
+   */
+  const snap = () => {
+    const from = gestureFrom;
+    gestureFrom = null;
+    if (from === null || !controller.following) return; // a key, TOC click or the intro took over
+    const travelled = scrollTarget - from;
+    const committed = Math.abs(travelled) * controller.stepPx >= wheel.stepThreshold;
+    const steps = committed ? Math.sign(travelled) * Math.max(1, Math.round(Math.abs(travelled))) : 0;
+    controller.springTo(from + steps, 'wheel', controller.velocity);
+  };
+
   window.addEventListener(
     'wheel',
     (event) => {
       if (!controller.enabled || event.ctrlKey) return; // ctrlKey = pinch-zoom on trackpads
+      const unit = event.deltaMode === 1 ? LINE_HEIGHT_PX : event.deltaMode === 2 ? window.innerHeight : 1;
+      const deltaY = event.deltaY * unit;
+
+      if (!prefersReducedMotion()) {
+        // A new gesture starts from where the wheel is heading, so scrolling again during a snap adds to it.
+        if (gestureFrom === null || !controller.following) {
+          gestureFrom = controller.destination;
+          scrollTarget = gestureFrom;
+        }
+        scrollTarget += deltaY / controller.stepPx;
+        controller.follow(scrollTarget, 'wheel');
+        window.clearTimeout(snapTimer);
+        snapTimer = window.setTimeout(snap, wheel.inputQuiet * 1000);
+        return;
+      }
+
       const now = performance.now();
       if (now - lastWheelAt > wheel.inputQuiet * 1000) accumulated = 0; // new gesture
       lastWheelAt = now;
@@ -46,8 +85,7 @@ export function bindWheelInput(controller: WheelController): void {
         unlockWhenQuiet();
         return;
       }
-      const unit = event.deltaMode === 1 ? LINE_HEIGHT_PX : event.deltaMode === 2 ? window.innerHeight : 1;
-      accumulated += event.deltaY * unit;
+      accumulated += deltaY;
       if (Math.abs(accumulated) >= wheel.stepThreshold) {
         const direction = Math.sign(accumulated);
         accumulated = 0;

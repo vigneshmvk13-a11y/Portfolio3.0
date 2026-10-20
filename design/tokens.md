@@ -181,8 +181,9 @@ Geometry derived in `layout-and-motion.md → Project wheel`. `h` is the measure
 | `--wheel-fade` | `0.2` | `wheel.fade = 0.2` | Opacity at ±1 step; 0 by ±1.5 |
 | `--wheel-gap` | `20px` mobile / `60px` desktop | read from CSS | Gap between active card and neighbour (`gap-5` / `gap-15`) |
 | `--wheel-card-h-desktop` | `min(400px, 39dvh)` | — | Desktop card height |
-| — | — | `wheel.stepThreshold = 80` | Accumulated wheel `deltaY` (px) per step |
-| — | — | `wheel.inputQuiet = 0.15` | s of wheel silence before unlocking |
+| — | — | `wheel.stepThreshold = 80` | Wheel `deltaY` (px) a gesture must travel to commit to the next card (reduced motion: per step) |
+| — | — | `wheel.inputQuiet = 0.15` | s of wheel silence that ends a gesture (snap; reduced motion: unlock) |
+| — | — | `wheel.follow = 0.07` | s, time constant of the wheel chasing scroll input (smooths mouse notches) |
 
 ## Breakpoints (mobile-first)
 

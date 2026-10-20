@@ -38,7 +38,9 @@ async function page(width, height, { reduced = false, mobile = width < 768 } = {
   listeners.add((m) => { if (m.sessionId === sessionId && m.method === 'Runtime.exceptionThrown') errors.push(m.params.exceptionDetails.exception?.description ?? m.params.exceptionDetails.text); });
   const p = {
     sessionId, targetId, errors,
-    async goto(path) { const loaded = new Promise((ok) => { const l = (m) => { if (m.sessionId === sessionId && m.method === 'Page.loadEventFired') { listeners.delete(l); ok(); } }; listeners.add(l); }); await send('Page.navigate', { url: BASE + path }, sessionId); await loaded; await sleep(600); },
+    async goto(path, wait = 600) { const loaded = new Promise((ok) => { const l = (m) => { if (m.sessionId === sessionId && m.method === 'Page.loadEventFired') { listeners.delete(l); ok(); } }; listeners.add(l); }); await send('Page.navigate', { url: BASE + path }, sessionId); await loaded; await sleep(wait); },
+    /** Inline opacity the renderer wrote on card i (1 = front, --wheel-fade at ±1). */
+    opacity(i) { return this.eval(`Number(document.querySelectorAll('[data-wheel-card]')[${i}].style.opacity)`); },
     async eval(expr) { const r = await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true }, sessionId); return r.result.value; },
     state() { return this.eval(`(() => { const s = document.querySelector('[data-wheel]'); return { index: s?.dataset.index, moving: 'moving' in (s?.dataset ?? {}), hash: location.hash, toc: document.querySelector('[data-toc="side"] [aria-current]')?.textContent.trim(), sheet: document.querySelector('[data-bottom-sheet]')?.hasAttribute('data-collapsed'), active: document.querySelector('[data-wheel-card]:not([inert])')?.dataset.slug, status: document.querySelector('[data-wheel-status]')?.textContent, focus: document.activeElement?.closest('[data-wheel-card]')?.dataset.slug ?? document.activeElement?.tagName }; })()`); },
     wheel(deltaY, x = width / 2, y = height / 2) { return send('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY }, sessionId); },
@@ -62,19 +64,46 @@ try {
   let s = await d.state();
   check('desktop: starts at index 0, no hash', s.index === '0' && s.hash === '', JSON.stringify(s));
 
+  // Scroll-linked: a slow trackpad scroll moves the wheel part-way while the fingers are moving.
+  for (let i = 0; i < 6; i++) { await d.wheel(20); await sleep(16); }
+  await sleep(60);
+  let o = await d.opacity(0);
+  s = await d.state();
+  check('wheel follows the scroll mid-gesture (front card part-way to its neighbour state)', o > 0.6 && o < 0.97 && s.moving, `opacity=${o} ${JSON.stringify(s)}`);
+  await sleep(900);
+  s = await d.state();
+  check('120px of scroll commits to the next card', s.index === '1', JSON.stringify(s));
+  await d.key('Home', 'Home', 36); await sleep(900);
+
+  // A nudge below the commit distance springs back.
+  for (let i = 0; i < 3; i++) { await d.wheel(10); await sleep(16); }
+  await sleep(900);
+  s = await d.state();
+  check('small nudge (30px) returns to the same card', s.index === '0' && s.hash === '' && (await d.opacity(0)) === 1, JSON.stringify(s));
+
   await d.wheel(100);
   await sleep(80);
   await d.shot('mid-step-1440.png');
+  o = await d.opacity(0);
+  check('mouse notch glides (no jump)', o > 0.7 && o < 1, `opacity=${o}`);
   await sleep(900);
   s = await d.state();
   check('mouse wheel notch steps once to Fyn', s.index === '1' && s.hash === '#fyn' && s.toc?.startsWith('Fyn'), JSON.stringify(s));
   check('live region announces', s.status === 'Fyn- Wholesale Banking app, 2 of 5', s.status);
 
-  // Trackpad flick: many small deltas with an inertia tail → exactly one step.
+  // Trackpad flick with an inertia tail (765px in all): the wheel travels with it, ~1.9 cards → 2.
   for (let i = 0; i < 30; i++) { await d.wheel(Math.max(4, 40 - i)); await sleep(16); }
   await sleep(1000);
   s = await d.state();
-  check('trackpad flick with inertia steps exactly once', s.index === '2', JSON.stringify(s));
+  check('trackpad flick travels with the scroll distance (2 cards)', s.index === '3', JSON.stringify(s));
+
+  // Scrolling again during the snap adds to it rather than fighting it.
+  await d.wheel(100); await sleep(220); await d.wheel(100);
+  await sleep(1000);
+  s = await d.state();
+  check('second notch during the snap continues forward', s.index === '0', JSON.stringify(s));
+  await d.key('ArrowDown', 'ArrowDown', 40); await sleep(900);
+  await d.key('ArrowDown', 'ArrowDown', 40); await sleep(900);
 
   await d.key('ArrowUp', 'ArrowUp', 38); await sleep(900);
   s = await d.state(); check('ArrowUp steps back', s.index === '1', s.index);
@@ -144,6 +173,9 @@ try {
   await r.wheel(100); await sleep(60);
   s = await r.state();
   check('reduced motion: step is instant', s.index === '1' && !s.moving, JSON.stringify(s));
+  await r.wheel(30); await sleep(20); await r.wheel(30); await sleep(60);
+  s = await r.state();
+  check('reduced motion: no scroll-linked movement', s.index === '1' && (await r.opacity(1)) === 1, JSON.stringify(s));
   await r.close();
 } finally {
   ws.close(); chrome.kill(); await rm(profile, { recursive: true, force: true }).catch(() => {});
