@@ -1,0 +1,63 @@
+---
+/**
+ * Case-study placeholder template (design/components.md → CaseStudyPlaceholder).
+ * Real case-study designs come later; until then: back link, cover, title, meta, status line.
+ */
+import Base from './Base.astro';
+import Button from '../components/ui/Button.astro';
+import MotionCover from '../components/media/MotionCover.astro';
+import Badge from '../components/ui/Badge.astro';
+import ArrowLeft from '../components/icons/ArrowLeft.astro';
+import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
+import { getSiteSettings, type CaseStudy } from '../lib/content';
+
+interface Props {
+  entry: CaseStudy;
+}
+
+const { entry } = Astro.props;
+const { title, subtitle, status, role, timeline, tags, heroVideo, seoDescription, ogImage, cardMeta } = entry.data;
+const { contact, nav } = await getSiteSettings();
+const meta = [role, timeline, ...tags].filter(Boolean);
+---
+
+<Base title={title} description={seoDescription} ogImage={ogImage} class="min-h-dvh bg-surface-page">
+  <main id="main" class="mx-auto flex max-w-prose flex-col gap-8 px-gutter-mobile py-10 desktop:py-20">
+    <Button href={`/#${entry.id}`} leadingIcon={ArrowLeft} class="self-start">All work</Button>
+
+    <div class="relative aspect-card overflow-hidden rounded-card">
+      <MotionCover
+        class="size-full"
+        poster={heroVideo.poster}
+        alt={heroVideo.alt}
+        mp4={heroVideo.mp4}
+        webm={heroVideo.webm}
+        sizes="(min-width: 48rem) 720px, calc(100vw - 40px)"
+        priority
+        active
+      />
+      <Badge status={status} class="absolute top-6 right-6" />
+    </div>
+
+    <header class="flex flex-col gap-2">
+      <h1 class="text-h5 text-fg-primary desktop:text-h4">{subtitle}</h1>
+      {(meta.length > 0 || cardMeta) && <p class="text-label-2">{meta.length > 0 ? meta.join(' • ') : cardMeta}</p>}
+    </header>
+
+    {
+      status === 'nda' ? (
+        <div class="flex flex-col items-start gap-6">
+          <p class="text-body-2">
+            This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and design
+            decisions are available for discussion during a private portfolio walkthrough.
+          </p>
+          <Button href={contact} external={contact.startsWith('https://')} trailingIcon={ArrowUpRight}>
+            {nav.contact}
+          </Button>
+        </div>
+      ) : (
+        <p class="text-body-2">This case study is being written.</p>
+      )
+    }
+  </main>
+</Base>

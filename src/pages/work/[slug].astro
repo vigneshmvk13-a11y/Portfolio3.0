@@ -1,0 +1,13 @@
+---
+import CaseStudy from '../../layouts/CaseStudy.astro';
+import { getPublishedCaseStudies } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const entries = await getPublishedCaseStudies();
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+---
+
+<CaseStudy entry={entry} />

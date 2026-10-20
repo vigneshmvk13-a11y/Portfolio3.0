@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import ArrowLeft from '../components/icons/ArrowLeft.astro';
+---
+
+<Base title="Page not found" noindex class="min-h-dvh bg-surface-page">
+  <main id="main" class="mx-auto flex min-h-dvh max-w-prose flex-col items-start justify-center gap-6 px-gutter-mobile">
+    <h1 class="text-h4 text-fg-primary">Page not found</h1>
+    <p class="text-body-2">This page doesn't exist. The work is on the homepage.</p>
+    <Button href="/" leadingIcon={ArrowLeft}>All work</Button>
+  </main>
+</Base>
