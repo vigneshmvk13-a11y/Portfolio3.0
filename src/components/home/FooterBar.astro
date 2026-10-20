@@ -1,0 +1,18 @@
+---
+/**
+ * Desktop footer bar (Figma 233:4558): credit left, "Scroll" hint centred. Empty right column keeps
+ * the hint centred. Credit uses fg-secondary/fg-strong (Figma's gray/500 fails contrast).
+ */
+import { getSiteSettings } from '../../lib/content';
+import { renderInline } from '../../lib/inline-markdown';
+
+const { footerCredit } = await getSiteSettings();
+---
+
+<footer
+  class="pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto hidden max-w-page grid-cols-3 items-center px-gutter py-10 text-label-3 font-medium desktop:grid"
+>
+  <p class="pointer-events-auto" set:html={renderInline(footerCredit, 'font-medium text-fg-strong')} />
+  <p class="text-center" data-scroll-hint>Scroll</p>
+  <span aria-hidden="true"></span>
+</footer>

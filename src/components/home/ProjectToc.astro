@@ -1,0 +1,53 @@
+---
+/**
+ * Project table of contents (Figma 233:4545 desktop; inside the TocHandle popover on mobile, 233:4714).
+ * Items are real links to the case studies; the wheel controller (Phase 4) turns a plain click into a rotation.
+ */
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entries: CaseStudy[];
+  /** `side`: desktop right column (dash on active). `popover`: mobile list (no dash, tighter gap). */
+  variant?: 'side' | 'popover';
+  activeIndex?: number;
+  class?: string;
+}
+
+const { entries, variant = 'side', activeIndex = 0, class: className } = Astro.props;
+---
+
+<ol class:list={['flex flex-col', variant === 'side' ? 'gap-1' : 'gap-0.5', className]} data-toc={variant}>
+  {
+    entries.map((entry, index) => {
+      const active = index === activeIndex;
+      return (
+        <li>
+          <a
+            href={`/work/${entry.id}/`}
+            class:list={[
+              'toc-item flex items-center gap-2 rounded-item p-2 text-body-3 font-medium whitespace-nowrap',
+              'transition-[background-color,color] duration-(--duration-base) ease-out',
+              active ? 'bg-surface-selected text-fg-primary' : 'text-fg-secondary hover:bg-surface-hover',
+            ]}
+            data-toc-item
+            data-index={index}
+            aria-current={active ? 'true' : undefined}
+          >
+            {variant === 'side' && <span class="toc-dash h-0.5 w-3 shrink-0 rounded-item bg-indicator" aria-hidden="true" />}
+            {entry.data.tocLabel}
+          </a>
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style>
+  /* The dash only shows on the active item; it takes no space otherwise (Figma 233:4546). */
+  .toc-dash {
+    display: none;
+  }
+  [aria-current='true'] .toc-dash {
+    display: block;
+  }
+</style>

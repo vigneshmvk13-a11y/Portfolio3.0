@@ -1,0 +1,111 @@
+---
+/**
+ * Mobile TOC handle (Figma 233:4609 collapsed, 233:4714 expanded).
+ * A button on the right edge with one tick per project (active tick dark), opening a native
+ * popover with the project list. Shapes are the Figma SVGs, recoloured with tokens.
+ * Esc, outside tap and aria-expanded come from the Popover API; the script moves focus in.
+ */
+import ProjectToc from './ProjectToc.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entries: CaseStudy[];
+  activeIndex?: number;
+}
+
+const { entries, activeIndex = 0 } = Astro.props;
+// The Figma shape fits five ticks (10px apart from y=18); more projects need a taller shape.
+const ticks = entries.slice(0, 5);
+---
+
+<button
+  type="button"
+  class="toc-handle fixed right-0 z-30 desktop:hidden"
+  popovertarget="toc-popover"
+  aria-label={`Projects, ${activeIndex + 1} of ${entries.length}`}
+  data-toc-handle
+>
+  <svg width="27" height="80" viewBox="0 0 27 80" aria-hidden="true" focusable="false" class="block">
+    <path
+      class="fill-surface-raised stroke-line-strong"
+      stroke-width="1"
+      d="M13.5 8C20.9553 8 27 4.41821 27 0V8V72V80C27 75.5818 20.9553 72 13.5 72C8.3574 72 5.7861 72 3.88718 70.8618C2.75874 70.1855 1.81453 69.2413 1.13817 68.1128C0 66.2139 0 63.6426 0 58.5V21.5C0 16.3574 0 13.7861 1.13817 11.8872C1.81453 10.7587 2.75874 9.81453 3.88718 9.13817C5.7861 8 8.3574 8 13.5 8Z"
+    ></path>
+    {
+      ticks.map((_, i) => (
+        <rect
+          x="4"
+          y={18 + i * 10}
+          width="19"
+          height="4"
+          rx="2"
+          class={i === activeIndex ? 'fill-indicator' : 'fill-fg-secondary'}
+          data-toc-tick={i}
+        />
+      ))
+    }
+  </svg>
+</button>
+
+<div id="toc-popover" popover class="toc-popover" aria-label="Projects" role="dialog">
+  <!-- Figma shape, stretched horizontally to fit the longest label (stroke stays 1px). -->
+  <svg
+    class="absolute inset-0 size-full"
+    viewBox="0 0 193 223"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      class="fill-surface-raised stroke-line-strong"
+      stroke-width="1"
+      vector-effect="non-scaling-stroke"
+      d="M193 8.5V0C193 4.69434 189.194 8.5 184.5 8.5H176H16C7.16344 8.5 0 15.6634 0 24.5L0 198.5C0 207.337 7.16344 214.5 16 214.5H176H184.5C189.194 214.5 193 218.306 193 223V214.5V8.5Z"
+    ></path>
+  </svg>
+  <nav aria-label="Projects" class="relative w-full">
+    <ProjectToc entries={entries} variant="popover" activeIndex={activeIndex} />
+  </nav>
+</div>
+
+<style>
+  /* Centre of the handle sits 74px above the viewport centre (Figma 233:4608). */
+  .toc-handle {
+    top: calc(50% - var(--spacing) * 18.5);
+    translate: 0 -50%;
+  }
+  /* Extend the 27px-wide tab to a 44px hit area (rules.md → touch targets). */
+  .toc-handle::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 calc(var(--spacing) * -4.25);
+  }
+
+  .toc-popover {
+    position: fixed;
+    inset: auto 0 auto auto;
+    top: calc(50% - var(--spacing) * 18.5);
+    translate: 0 -50%;
+    /* Figma shape is 193×223; it widens to the longest label. Right padding clears the edge tabs. */
+    min-width: 193px;
+    width: max-content;
+    height: 223px;
+    margin: 0;
+    padding: 0 calc(var(--spacing) * 4) 0 calc(var(--spacing) * 2);
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .toc-popover:popover-open {
+    display: flex;
+    align-items: center;
+  }
+</style>
+
+<script>
+  const popover = document.getElementById('toc-popover');
+  popover?.addEventListener('toggle', (event) => {
+    if ((event as ToggleEvent).newState !== 'open') return;
+    popover.querySelector<HTMLElement>('[aria-current="true"]')?.focus();
+  });
+</script>

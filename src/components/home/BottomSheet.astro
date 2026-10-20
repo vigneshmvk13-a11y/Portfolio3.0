@@ -1,0 +1,91 @@
+---
+/**
+ * Mobile: fixed bottom sheet with the Intro and the action buttons (Figma 233:4586, collapsed 233:4626).
+ * Desktop: the same element becomes the static left column (Figma 233:4520).
+ * One Intro in the DOM, so there's one h1. The two button rows swap by breakpoint
+ * (display:none removes the hidden one from the accessibility tree).
+ */
+import Intro from './Intro.astro';
+import IconButton from '../ui/IconButton.astro';
+import User from '../icons/User.astro';
+import File from '../icons/File.astro';
+import ChatCircleDots from '../icons/ChatCircleDots.astro';
+import { getSiteSettings } from '../../lib/content';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const { nav, contact, resume } = await getSiteSettings();
+const contactIsExternal = contact.startsWith('https://');
+// No PDF yet: the button exists in dev only, outlined as a TODO, and is left out of production.
+const showResume = Boolean(resume) || import.meta.env.DEV;
+const resumeHref = resume ?? '#todo-resume';
+const resumeLabel = resume ? nav.resume : `${nav.resume} (TODO(content): resume PDF)`;
+const resumeTodo = resume ? undefined : 'todo-content';
+---
+
+<header
+  class:list={[
+    'bottom-sheet fixed inset-x-0 bottom-0 z-20 mx-auto flex flex-col items-center gap-8',
+    'rounded-t-panel border border-b-0 border-line-default bg-surface-raised pt-12',
+    'tablet:max-w-(--spacing-card-w)',
+    'desktop:static desktop:z-auto desktop:mx-0 desktop:max-w-side desktop:items-start desktop:gap-12',
+    'desktop:rounded-none desktop:border-0 desktop:bg-transparent desktop:p-0',
+    className,
+  ]}
+  data-bottom-sheet
+>
+  <div class="bottom-sheet__intro grid w-full desktop:block">
+    <div class="min-h-0">
+      <Intro />
+    </div>
+  </div>
+
+  <div class="flex gap-2 desktop:hidden">
+    <IconButton icon={User} label={nav.about} variant="lg" data-about-open aria-haspopup="dialog" aria-controls="about" />
+    {showResume && <IconButton icon={File} label={resumeLabel} variant="lg" href={resumeHref} external={Boolean(resume)} class={resumeTodo} />}
+    <IconButton icon={ChatCircleDots} label={nav.contact} variant="lg" href={contact} external={contactIsExternal} />
+  </div>
+
+  <div class="hidden gap-2 desktop:flex">
+    <IconButton icon={User} label={nav.about} data-about-open aria-haspopup="dialog" aria-controls="about" />
+    {showResume && <IconButton icon={File} label={resumeLabel} href={resumeHref} external={Boolean(resume)} class={resumeTodo} />}
+    <IconButton icon={ChatCircleDots} label={nav.contact} href={contact} external={contactIsExternal} />
+  </div>
+
+</header>
+
+<style>
+  /*
+   * Safe area under the sheet's buttons (iPhone home indicator). Side padding keeps Figma's
+   * 313px text column at 393 (40px each side) and shrinks to 24px on narrower phones, so the
+   * name stays on one line and the sheet keeps its designed height.
+   */
+  .bottom-sheet {
+    padding-inline: clamp(var(--spacing) * 6, (100vw - var(--sheet-content-w)) / 2, var(--spacing) * 10);
+    padding-bottom: calc(var(--spacing) * 8 + env(safe-area-inset-bottom));
+  }
+
+  /* Collapsed state (233:4626): the intro rows animate shut; buttons stay. Driven in Phase 4. */
+  .bottom-sheet__intro {
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows var(--duration-base) var(--ease-in-out),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+  .bottom-sheet[data-collapsed] .bottom-sheet__intro {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  .bottom-sheet[data-collapsed] {
+    row-gap: 0;
+  }
+
+  @media (min-width: 75rem) {
+    .bottom-sheet {
+      padding: 0;
+    }
+  }
+</style>

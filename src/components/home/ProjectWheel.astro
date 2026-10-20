@@ -1,0 +1,106 @@
+---
+/**
+ * The project wheel in its resting state (Figma 233:4539 desktop, 233:4582 mobile).
+ * Geometry: design/layout-and-motion.md → Project wheel. Server-rendered from the same tokens the
+ * client controller uses, so it matches Figma at first paint and without JS.
+ */
+import ProjectCard from './ProjectCard.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entries: CaseStudy[];
+  class?: string;
+}
+
+const { entries, class: className } = Astro.props;
+const total = entries.length;
+
+/** Signed ring distance from the first (active) card, wrapped into [-N/2, N/2). */
+const offsetOf = (index: number) => {
+  const half = Math.floor(total / 2);
+  return ((index + half) % total) - half;
+};
+---
+
+<section
+  class:list={['wheel', className]}
+  data-wheel
+  aria-roledescription="carousel"
+  aria-label="Projects"
+>
+  {entries.map((entry, index) => <ProjectCard entry={entry} index={index} total={total} offset={offsetOf(index)} />)}
+  <p class="sr-only" aria-live="polite" data-wheel-status></p>
+</section>
+
+<style is:global>
+  /* Card size (--card-w/--card-h) is derived in global.css :root, per breakpoint. */
+  .wheel {
+    /* Mobile: top neighbour's far edge sits pt-10 below the top (Figma 233:4581). */
+    --wheel-centre-y: calc(
+      var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)
+    );
+    position: relative;
+    height: 100%;
+  }
+
+  @media (min-width: 75rem) {
+    .wheel {
+      --wheel-centre-y: 50%;
+    }
+  }
+
+  /*
+   * Per-card transform with its own vanishing point (perspective() inside the transform):
+   *   translateY(Y) perspective(P) translateZ(Z) rotateX(-d·step)
+   *   Y = sin(d·step)/sin(step) × (spread·h + gap),  Z = depth·h·(cos(d·step) − 1),  P = perspective·h
+   * The client controller writes the same transform with a continuous d.
+   */
+  .wheel-card {
+    --d: 0;
+    position: absolute;
+    top: var(--wheel-centre-y);
+    left: 50%;
+    width: var(--card-w);
+    height: var(--card-h);
+    translate: -50% -50%;
+    transform: translateY(
+        calc(
+          sin(var(--d) * var(--wheel-step)) / sin(var(--wheel-step)) *
+            (var(--wheel-spread) * var(--card-h) + var(--wheel-gap))
+        )
+      )
+      perspective(calc(var(--wheel-perspective) * var(--card-h)))
+      translateZ(calc(var(--wheel-depth) * var(--card-h) * (cos(var(--d) * var(--wheel-step)) - 1)))
+      rotateX(calc(var(--d) * var(--wheel-step) * -1));
+    backface-visibility: hidden;
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .wheel-card[data-offset='0'] {
+    z-index: 3;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .wheel-card[data-offset='-1'],
+  .wheel-card[data-offset='1'] {
+    z-index: 2;
+    opacity: var(--wheel-fade);
+    visibility: visible;
+  }
+
+  .wheel-card[data-offset='-2'] {
+    --d: -2;
+  }
+  .wheel-card[data-offset='-1'] {
+    --d: -1;
+  }
+  .wheel-card[data-offset='1'] {
+    --d: 1;
+  }
+  .wheel-card[data-offset='2'] {
+    --d: 2;
+  }
+</style>

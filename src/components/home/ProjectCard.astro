@@ -1,0 +1,56 @@
+---
+/**
+ * One card on the project wheel (Figma component set 228:4583).
+ * The wheel positions it via data-offset; only the active card (offset 0) is interactive.
+ */
+import MotionCover from '../media/MotionCover.astro';
+import Badge from '../ui/Badge.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entry: CaseStudy;
+  index: number;
+  total: number;
+  /** Signed distance from the active card on the ring (0 = active). */
+  offset: number;
+}
+
+const { entry, index, total, offset } = Astro.props;
+const { subtitle, cardMeta, status, heroVideo, tocLabel } = entry.data;
+const active = offset === 0;
+---
+
+<article
+  class="wheel-card"
+  data-wheel-card
+  data-index={index}
+  data-slug={entry.id}
+  data-offset={offset}
+  aria-roledescription="slide"
+  aria-label={`${tocLabel}, ${index + 1} of ${total}`}
+  aria-hidden={active ? undefined : 'true'}
+  inert={!active}
+>
+  <a
+    href={`/work/${entry.id}/`}
+    class="group relative block size-full overflow-hidden rounded-card"
+    data-focus-offset="lg"
+  >
+    <MotionCover
+      class="size-full transition-[scale] duration-(--duration-slow) ease-out group-hover:scale-103"
+      poster={heroVideo.poster}
+      alt={heroVideo.alt}
+      mp4={heroVideo.mp4}
+      webm={heroVideo.webm}
+      priority={index === 0}
+      active={active}
+    />
+    <Badge status={status} class="absolute top-6 right-6" />
+    <div
+      class="absolute inset-x-0 bottom-0 flex items-start gap-6 bg-surface-caption px-8 py-4 text-fg-on-media backdrop-blur-caption desktop:gap-5"
+    >
+      <p class="line-clamp-2 min-w-0 flex-1 text-label-2 font-medium desktop:line-clamp-1">{subtitle}</p>
+      {cardMeta && <p class="shrink-0 text-right text-label-3 whitespace-nowrap desktop:text-label-2">{cardMeta}</p>}
+    </div>
+  </a>
+</article>
