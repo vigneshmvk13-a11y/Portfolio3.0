@@ -111,9 +111,12 @@ try {
     await send('Page.enable', {}, sessionId);
     await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: dpr, mobile }, sessionId);
     if (mobile) await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }, sessionId);
-    if (process.env.REDUCED_MOTION) {
-      await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }, sessionId);
-    }
+    // Headless Chrome reports reduced motion by default; be explicit either way.
+    await send(
+      'Emulation.setEmulatedMedia',
+      { features: [{ name: 'prefers-reduced-motion', value: process.env.REDUCED_MOTION ? 'reduce' : 'no-preference' }] },
+      sessionId,
+    );
     const loaded = once('Page.loadEventFired', sessionId);
     await send('Page.navigate', { url }, sessionId);
     await loaded;
