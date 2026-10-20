@@ -37,8 +37,10 @@ export class WheelController {
   /** Where scroll input has taken the wheel; the wheel chases it (null when not following). */
   private followTarget: number | null = null;
   private followFrame = 0;
-  private followVelocity = 0;
   private current = 0;
+  /** Measured speed (positions/s) and when position was last set, so retargets keep their momentum. */
+  private speed = 0;
+  private lastSetAt = 0;
   private lastIndex = 0;
   /** Disabled while the drawer is open or the intro runs. */
   enabled = true;
@@ -72,9 +74,9 @@ export class WheelController {
     return Math.round(this.target ?? this.current);
   }
 
-  /** Speed while following scroll input, positions/s (carried into the snap). */
+  /** Current speed, positions/s (0 at rest). Carried into the next spring when motion is retargeted. */
   get velocity(): number {
-    return this.followVelocity;
+    return this.moving ? this.speed : 0;
   }
 
   /** Place the wheel without animation (load, hash restore, reduced motion, intro skip). */
@@ -122,15 +124,18 @@ export class WheelController {
       const previous = this.current;
       const next = previous + (goal - previous) * (1 - Math.exp(-dt / wheel.follow));
       const arrived = Math.abs(goal - next) < 0.0005;
-      this.followVelocity = arrived ? 0 : (next - previous) / dt;
       this.set(arrived ? goal : next, via);
       this.followFrame = arrived ? 0 : requestAnimationFrame(tick);
     };
     this.followFrame = requestAnimationFrame(tick);
   }
 
-  /** Spring to `target` (an integer position), optionally carrying the release velocity (positions/s). */
-  springTo(target: number, via: Via, velocity = 0): void {
+  /**
+   * Spring to `target` (an integer position). It starts at the wheel's current speed unless given a
+   * release velocity (positions/s), so retargeting mid-motion (rapid notches, a key during a snap) never
+   * stalls the wheel and restarts it.
+   */
+  springTo(target: number, via: Via, velocity = this.velocity): void {
     this.stop();
     this.target = target;
     if (prefersReducedMotion()) {
@@ -175,7 +180,6 @@ export class WheelController {
     if (this.followFrame) cancelAnimationFrame(this.followFrame);
     this.followFrame = 0;
     this.followTarget = null;
-    this.followVelocity = 0;
     if (!this.animation) return;
     const running = this.animation;
     this.animation = null;
@@ -211,6 +215,11 @@ export class WheelController {
   }
 
   private set(position: number, via: Via): void {
+    const now = performance.now();
+    const dt = (now - this.lastSetAt) / 1000;
+    // Same-frame repeats keep the last reading; a long gap means the wheel was at rest.
+    if (dt > 0.001) this.speed = dt < 0.1 ? (position - this.current) / dt : 0;
+    this.lastSetAt = now;
     this.current = position;
     this.renderer.render(position);
     const index = this.index;
@@ -224,6 +233,7 @@ export class WheelController {
 
   private settle(via: Via): void {
     this.target = null;
+    this.speed = 0;
     delete this.stage.dataset.moving;
     // Keep the number small so long sessions don't accumulate float error.
     if (Math.abs(this.current) > this.count * 8) {

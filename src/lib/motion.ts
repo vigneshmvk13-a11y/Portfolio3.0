@@ -17,7 +17,7 @@ export const ease = {
 
 /** Motion springs in `visualDuration` (s) + `bounce` form. */
 export const spring = {
-  wheel: { type: 'spring', visualDuration: 0.5, bounce: 0.12 },
+  wheel: { type: 'spring', visualDuration: 0.4, bounce: 0.12 },
 } as const;
 
 /**

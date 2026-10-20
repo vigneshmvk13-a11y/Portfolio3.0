@@ -84,11 +84,14 @@ try {
   check('small nudge (30px) returns to the same card', s.index === '0' && s.hash === '' && (await d.opacity(0)) === 1, JSON.stringify(s));
 
   await d.wheel(100);
-  await sleep(80);
-  await d.shot('mid-step-1440.png');
+  await sleep(50);
   o = await d.opacity(0);
-  check('mouse notch glides (no jump)', o > 0.7 && o < 1, `opacity=${o}`);
-  await sleep(900);
+  check('mouse notch glides at once (no jump, no pause)', o > 0.3 && o < 0.99, `opacity=${o}`);
+  await d.shot('mid-step-1440.png');
+  await sleep(100);
+  s = await d.state();
+  check('mouse notch: next project in focus within 200ms (no pause)', s.active === 'fyn', JSON.stringify(s));
+  await sleep(700);
   s = await d.state();
   check('mouse wheel notch steps once to Fyn', s.index === '1' && s.hash === '#fyn' && s.toc?.startsWith('Fyn'), JSON.stringify(s));
   check('live region announces', s.status === 'Fyn- Wholesale Banking app, 2 of 5', s.status);
@@ -104,6 +107,12 @@ try {
   await sleep(1000);
   s = await d.state();
   check('second notch during the snap continues forward', s.index === '0', JSON.stringify(s));
+  // Spinning the mouse wheel: each notch is one project, the spring keeps its speed.
+  for (let i = 0; i < 3; i++) { await d.wheel(100); await sleep(40); }
+  await sleep(900);
+  s = await d.state();
+  check('rapid notches ×3 move three projects', s.index === '3', JSON.stringify(s));
+  await d.key('Home', 'Home', 36); await sleep(900);
   await d.key('ArrowDown', 'ArrowDown', 40); await sleep(900);
   await d.key('ArrowDown', 'ArrowDown', 40); await sleep(900);
 

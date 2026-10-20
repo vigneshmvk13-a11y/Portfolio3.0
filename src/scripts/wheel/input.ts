@@ -1,7 +1,8 @@
 /**
  * Wheel inputs. design/layout-and-motion.md → Project wheel → Input.
- * - wheel/trackpad: the wheel follows the scroll and snaps to a card when it goes quiet
- *   (reduced motion: accumulate deltaY, one instant step per threshold, locked until quiet);
+ * - mouse wheel: each notch springs straight to the next card (rapid notches keep the momentum);
+ * - trackpad: the wheel follows the scroll and snaps to a card when it goes quiet
+ *   (reduced motion, both: accumulate deltaY, one instant step per threshold, locked until quiet);
  * - touch/pen drag: follow the finger, release with momentum, snap to the nearest card;
  * - keyboard: ↑/↓, PageUp/PageDown, Home/End, Enter opens the active card;
  * - click on a neighbour (they're inert, so the stage gets the click): step towards it.
@@ -45,8 +46,8 @@ export function bindWheelInput(controller: WheelController): void {
   });
 
   /**
-   * End of a gesture: land on a whole card. Past the commit distance the wheel moves at least one
-   * card in the scroll direction (so one mouse notch is one project), otherwise it returns.
+   * End of a trackpad gesture: land on a whole card. Past the commit distance the wheel moves at
+   * least one card in the scroll direction, otherwise it returns.
    */
   const snap = () => {
     const from = gestureFrom;
@@ -66,8 +67,18 @@ export function bindWheelInput(controller: WheelController): void {
       const deltaY = event.deltaY * unit;
 
       if (!prefersReducedMotion()) {
+        const inTrackpadGesture = gestureFrom !== null && controller.following;
+        // A mouse notch (one event ≥ the commit distance, or line/page units) is a whole step: spring to
+        // the next card at once, with no follow-then-wait. Rapid notches retarget the spring and keep its
+        // speed. Large events inside a running trackpad gesture (inertia) stay scroll-linked.
+        if (!inTrackpadGesture && (event.deltaMode !== 0 || Math.abs(deltaY) >= wheel.stepThreshold)) {
+          window.clearTimeout(snapTimer);
+          gestureFrom = null;
+          controller.step(Math.sign(deltaY), 'wheel');
+          return;
+        }
         // A new gesture starts from where the wheel is heading, so scrolling again during a snap adds to it.
-        if (gestureFrom === null || !controller.following) {
+        if (!inTrackpadGesture) {
           gestureFrom = controller.destination;
           scrollTarget = gestureFrom;
         }
