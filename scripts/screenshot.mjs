@@ -14,6 +14,7 @@
  *   DPR=n            device pixel ratio (default 1)
  *   EVAL="js"        run in the page after load (e.g. open a popover), then wait DELAY again
  *   SUFFIX=name      appended to the file name
+ *   INTRO=1          let the homepage intro run (skipped by default)
  */
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -117,6 +118,10 @@ try {
       { features: [{ name: 'prefers-reduced-motion', value: process.env.REDUCED_MOTION ? 'reduce' : 'no-preference' }] },
       sessionId,
     );
+    // The homepage intro runs once per session; skip it so shots show the resting state (INTRO=1 keeps it).
+    if (!process.env.INTRO) {
+      await send('Page.addScriptToEvaluateOnNewDocument', { source: "try { sessionStorage.setItem('intro-seen', '1') } catch {}" }, sessionId);
+    }
     const loaded = once('Page.loadEventFired', sessionId);
     await send('Page.navigate', { url }, sessionId);
     await loaded;

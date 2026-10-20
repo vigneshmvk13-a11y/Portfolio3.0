@@ -27,7 +27,7 @@ Figma names map to primitives: `gray/700` → `--gray-700`; `Heading/H4` → `te
 
 | Area | State |
 |---|---|
-| Tokens | v0.3: wheel geometry, springs, intro timings, badge added |
+| Tokens | v0.4: scroll-follow constant; intro timings rebuilt for the slot-machine spin |
 | Components | Foundation, homepage (static) and About built; case-study components specced |
 | Case study pages | Content model defined; visuals not designed yet; placeholders only |
 | Tablet (768–1199) | Not designed; interim rule in `layout-and-motion.md` |
@@ -61,6 +61,18 @@ Agents: add to this list; don't resolve on your own.
 ## Changelog
 
 Newest first. Date · branch · change · why.
+
+- 2026-10-21 · layout-and-motion · Wheel is now **scroll-linked**:
+  - Wheel/trackpad input moves the wheel continuously (one card per `Y(±1)` px of scroll, smoothed by `wheel.follow`), so cards glide through the tilted, faded pose while you scroll.
+  - When the scroll goes quiet it snaps: past 80px it moves at least one card in the scroll direction; under that it springs back.
+  - New `wheel:start` event pauses covers as soon as anything moves.
+  - Reduced motion keeps the old instant one-step-per-gesture.
+  - Why: Vignesh's brief ("when scrolling I need to see the wheel moving").
+- 2026-10-21 · layout-and-motion · **Intro built** as a slot-machine spin:
+  - Only the wheel shows; it makes one revolution with an overshoot "clunk" and lands on project 1. Then the hero text, TOC and footer reveal (staggered; the mobile sheet slides up).
+  - The gooey "grow out" phase and its springs (`emerge`, `squash`, `spinLand`) are dropped.
+  - Why: Vignesh's brief.
+- 2026-10-21 · tokens · `wheel.follow`; `intro.spinTurns/spinDuration/spinOvershoot/spinOvershootAt/revealDuration/revealStagger/revealRise`. Note: Motion's `animateValue` takes ms for `duration`.
 
 - 2026-10-20 · layout-and-motion · Phase 4: wheel interaction:
   - Inputs: wheel/trackpad (one step per gesture), touch/pen drag with momentum (mouse doesn't drag), keys, TOC shortest path, neighbour click.

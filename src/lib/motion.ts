@@ -18,19 +18,29 @@ export const ease = {
 /** Motion springs in `visualDuration` (s) + `bounce` form. */
 export const spring = {
   wheel: { type: 'spring', visualDuration: 0.5, bounce: 0.12 },
-  emerge: { type: 'spring', visualDuration: 0.6, bounce: 0.35 },
-  squash: { type: 'spring', visualDuration: 0.35, bounce: 0.5 },
-  spinLand: { type: 'spring', visualDuration: 0.4, bounce: 0.25 },
 } as const;
 
-/** Intro choreography timeline, in seconds from start. */
+/**
+ * Intro choreography (design/layout-and-motion.md → Intro choreography), seconds.
+ * Slot-machine spin: whole turns, a small overshoot past the first card, settle back; then reveal.
+ */
 export const intro = {
+  /** Ceiling for the whole sequence. */
   total: 2.0,
-  emerge: [0, 0.7],
-  emergeStagger: 0.06,
-  spin: [0.7, 1.6],
-  spinEase: [0.12, 0.8, 0.2, 1],
-  settle: [1.5, 1.9],
+  /** Full revolutions; whole numbers, so it lands back on the first project. */
+  spinTurns: 1,
+  spinDuration: 1.2,
+  /** Fast spin decelerating hard into the landing. */
+  spinEase: [0.3, 0.1, 0.15, 1],
+  /** Positions past the landing card before settling back (the reel's "clunk"). */
+  spinOvershoot: 0.12,
+  /** Fraction of the spin spent reaching the overshoot. */
+  spinOvershootAt: 0.82,
+  /** Hero text, TOC and footer appear after the landing. */
+  revealDuration: 0.5,
+  revealStagger: 0.08,
+  /** px the desktop columns rise while fading in. */
+  revealRise: 12,
   failsafe: 3,
 } as const;
 

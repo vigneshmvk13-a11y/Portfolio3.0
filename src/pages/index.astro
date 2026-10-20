@@ -19,8 +19,22 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
 
 <Base class="home h-dvh overflow-hidden bg-surface-page-mobile desktop:bg-surface-page">
   <script is:inline slot="head" define:vars={{ deepLinkSlugs }}>
-    if (deepLinkSlugs.includes(decodeURIComponent(location.hash.slice(1)))) {
-      document.documentElement.dataset.wheelPending = '';
+    const root = document.documentElement;
+    const deepLink = deepLinkSlugs.includes(decodeURIComponent(location.hash.slice(1)));
+    if (deepLink) root.dataset.wheelPending = '';
+    // Intro (src/scripts/intro): once per session, never with reduced motion or a deep link (/#slug, /?about).
+    try {
+      const skip =
+        deepLink ||
+        new URLSearchParams(location.search).has('about') ||
+        matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        sessionStorage.getItem('intro-seen');
+      if (!skip) {
+        sessionStorage.setItem('intro-seen', '1');
+        root.dataset.intro = 'pending';
+      }
+    } catch {
+      // Storage blocked: no intro.
     }
   </script>
 
@@ -33,7 +47,7 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
       <ProjectWheel entries={entries} />
     </main>
 
-    <div class="hidden desktop:flex desktop:items-center desktop:pr-gutter desktop:pl-gutter-inner">
+    <div class="hidden desktop:flex desktop:items-center desktop:pr-gutter desktop:pl-gutter-inner" data-intro-reveal="rise">
       <nav aria-label="Projects" class="w-full max-w-side">
         <ProjectToc entries={entries} />
       </nav>
@@ -44,6 +58,24 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
   <FooterBar />
   <AboutDrawer />
 </Base>
+
+<style is:global>
+  /*
+   * Intro pending (head script above): only the wheel shows until it lands. The chrome is hidden
+   * (and not focusable or clickable); CSS reveals it after --intro-failsafe if the intro never runs.
+   */
+  html[data-intro='pending'] [data-intro-reveal] {
+    opacity: 0;
+    visibility: hidden;
+    animation: intro-failsafe 0s var(--intro-failsafe) forwards;
+  }
+  @keyframes intro-failsafe {
+    to {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+</style>
 
 <script>
   import { initHome } from '../scripts/home';

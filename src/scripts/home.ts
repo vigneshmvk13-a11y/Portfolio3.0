@@ -1,6 +1,6 @@
 /**
  * Homepage wiring: builds the wheel controller and connects inputs, TOC, hash, sheet, video,
- * the live region, focus and the drawer. Exposes the controller for the intro (Phase 5).
+ * the live region, focus and the drawer, and lazy-loads the intro when it will run.
  */
 import { WheelController, type WheelDetail } from './wheel/controller';
 import { bindWheelInput } from './wheel/input';
@@ -46,8 +46,8 @@ export function initHome(): WheelController | null {
     const { index, via } = (event as CustomEvent<WheelDetail>).detail;
     const card = activeCard();
     setActiveCover(card?.querySelector<HTMLElement>('[data-motion-cover]') ?? null);
-    // Announce changes the user made, not the initial placement.
-    if (status && card && via !== 'init') status.textContent = card.getAttribute('aria-label') ?? '';
+    // Announce changes the user made, not the initial placement or the intro landing.
+    if (status && card && via !== 'init' && via !== 'intro') status.textContent = card.getAttribute('aria-label') ?? '';
     stage.dataset.index = String(index);
   });
 
@@ -59,6 +59,11 @@ export function initHome(): WheelController | null {
   // Restore from the hash (or start at the first project) without animation.
   wheel.jumpTo(indexFromHash(wheel) ?? 0, 'init');
   document.documentElement.dataset.wheelReady = '';
+
+  // The head script in index.astro decided whether the intro runs; load it only then.
+  if (document.documentElement.dataset.intro === 'pending') {
+    void import('./intro/intro').then(({ runIntro }) => runIntro(wheel));
+  }
 
   return wheel;
 }

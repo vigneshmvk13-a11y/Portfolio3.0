@@ -26,11 +26,13 @@ const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 let failures = 0;
 const check = (name, cond, extra = '') => { console.log(`${cond ? 'PASS' : 'FAIL'}  ${name}${extra ? '  ' + extra : ''}`); if (!cond) failures++; };
 
-async function page(width, height, { reduced = false, mobile = width < 768 } = {}) {
+async function page(width, height, { reduced = false, mobile = width < 768, intro = false } = {}) {
   const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
   await send('Page.enable', {}, sessionId);
   await send('Runtime.enable', {}, sessionId);
+  // The intro runs once per session; most tests start from the resting state.
+  if (!intro) await send('Page.addScriptToEvaluateOnNewDocument', { source: "sessionStorage.setItem('intro-seen', '1')" }, sessionId);
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile }, sessionId);
   if (mobile) await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }, sessionId);
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: reduced ? 'reduce' : 'no-preference' }] }, sessionId);
@@ -167,9 +169,61 @@ try {
   check('no JS errors (mobile)', m.errors.length === 0, m.errors.join(' | '));
   await m.close();
 
+  // ---------- Intro ----------
+  const chrome = `(() => { const v = (sel) => { const el = document.querySelector(sel); const cs = getComputedStyle(el); return cs.visibility === 'visible' ? Number(cs.opacity) : 0; }; return { intro: document.documentElement.dataset.intro, sheet: v('[data-bottom-sheet]'), toc: v('[data-intro-reveal="rise"]'), footer: v('[data-intro-reveal="fade"]') }; })()`;
+  const i1 = await page(1440, 1024, { intro: true });
+  await i1.goto('/', 300);
+  let c = await i1.eval(chrome);
+  s = await i1.state();
+  check('intro: only the wheel at first, spinning', c.intro === 'pending' && c.sheet === 0 && c.toc === 0 && c.footer === 0 && s.moving, `${JSON.stringify(c)} ${JSON.stringify(s)}`);
+  await i1.shot('intro-spin-1440.png');
+  await sleep(1300);
+  c = await i1.eval(chrome);
+  s = await i1.state();
+  check('intro: lands on the first project, then reveals', c.intro === 'done' && s.index === '0' && !s.moving && s.hash === '' && s.status === '', `${JSON.stringify(c)} ${JSON.stringify(s)}`);
+  await sleep(900);
+  c = await i1.eval(chrome);
+  check('intro: hero text, TOC and footer fully shown', c.sheet === 1 && c.toc === 1 && c.footer === 1, JSON.stringify(c));
+  await i1.goto('/', 300);
+  c = await i1.eval(chrome);
+  check('intro: not again in the same session', c.intro === undefined && c.sheet === 1, JSON.stringify(c));
+  check('no JS errors (intro)', i1.errors.length === 0, i1.errors.join(' | '));
+  await i1.close();
+
+  const i2 = await page(1440, 1024, { intro: true });
+  await i2.goto('/', 400);
+  await i2.key('ArrowDown', 'ArrowDown', 40);
+  await sleep(60);
+  c = await i2.eval(chrome);
+  check('intro: any input skips to the final state', c.intro === 'done' && c.sheet === 1 && c.toc === 1, JSON.stringify(c));
+  await sleep(900);
+  s = await i2.state();
+  check('intro: the skipping key still steps the wheel', s.index === '1', JSON.stringify(s));
+  await i2.close();
+
+  const i3 = await page(393, 852, { intro: true });
+  await i3.goto('/', 300);
+  c = await i3.eval(chrome);
+  check('intro (mobile): sheet hidden while spinning', c.intro === 'pending' && c.sheet === 0, JSON.stringify(c));
+  await i3.shot('intro-spin-393.png');
+  await sleep(2300);
+  c = await i3.eval(chrome);
+  s = await i3.state();
+  check('intro (mobile): lands on first, sheet shown and expanded', c.intro === 'done' && c.sheet === 1 && s.index === '0' && s.sheet === false, `${JSON.stringify(c)} ${JSON.stringify(s)}`);
+  await i3.shot('intro-done-393.png');
+  await i3.close();
+
+  const i4 = await page(1440, 1024, { intro: true });
+  await i4.goto('/#nova', 300);
+  c = await i4.eval(chrome);
+  check('intro: skipped for a deep link', c.intro === undefined, JSON.stringify(c));
+  await i4.close();
+
   // ---------- Reduced motion ----------
-  const r = await page(1440, 1024, { reduced: true });
+  const r = await page(1440, 1024, { reduced: true, intro: true });
   await r.goto('/');
+  c = await r.eval(chrome);
+  check('reduced motion: no intro', c.intro === undefined && c.sheet === 1, JSON.stringify(c));
   await r.wheel(100); await sleep(60);
   s = await r.state();
   check('reduced motion: step is instant', s.index === '1' && !s.moving, JSON.stringify(s));

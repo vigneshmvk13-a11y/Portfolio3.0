@@ -151,20 +151,23 @@ Motion's `visualDuration` + `bounce` form, so the values read like durations. Sp
 
 | `motion.ts` | Value | Use |
 |---|---|---|
-| `spring.wheel` | `{ visualDuration: 0.5, bounce: 0.12 }` | Wheel snap after a step, drag release or TOC jump |
-| `spring.emerge` | `{ visualDuration: 0.6, bounce: 0.35 }` | Intro: cards settling into their slots |
-| `spring.squash` | `{ visualDuration: 0.35, bounce: 0.5 }` | Intro: stretch/squash on landing |
-| `spring.spinLand` | `{ visualDuration: 0.4, bounce: 0.25 }` | Intro: overshoot at the end of the spin |
+| `spring.wheel` | `{ visualDuration: 0.5, bounce: 0.12 }` | Wheel snap after a scroll gesture, step, drag release or TOC jump |
 
-### Intro timing (proposed; tuned in `/_lab/intro`)
+### Intro timing (built; tune by eye)
+
+The spin is keyframed rather than sprung, so its length is fixed: `[0 → turns·N + overshoot → turns·N]`. Motion's `animateValue` takes **ms** for `duration` (`animate()` takes seconds), so the intro multiplies by 1000.
 
 | `motion.ts` | Value | Use |
 |---|---|---|
-| `intro.total` | `2.0` s (ceiling) | Whole sequence |
-| `intro.emerge` | `0` → `0.7` s | Cards grow out of the first card |
-| `intro.emergeStagger` | `0.06` s | Between emerging cards |
-| `intro.spin` | `0.7` → `1.6` s | One revolution, ease `[0.12, 0.8, 0.2, 1]` (`intro.spinEase`), then `spring.spinLand` |
-| `intro.settle` | `1.5` → `1.9` s | TOC, left column, "Scroll" hint fade in (`--duration-base`) |
+| `intro.total` | `2.0` s (ceiling) | Whole sequence (spin 1.2 + last reveal ends ~0.66 later) |
+| `intro.spinTurns` | `1` | Whole revolutions, so it lands on the first project |
+| `intro.spinDuration` | `1.2` s | Spin, overshoot and settle back |
+| `intro.spinEase` | `[0.3, 0.1, 0.15, 1]` | Fast spin, hard deceleration into the landing |
+| `intro.spinOvershoot` | `0.12` positions | How far past the landing card the reel runs before settling ("clunk") |
+| `intro.spinOvershootAt` | `0.82` | Fraction of the spin spent reaching the overshoot; the rest settles back on `ease.inOut` |
+| `intro.revealDuration` | `0.5` s | Hero text, TOC, footer appear (`ease.out`) |
+| `intro.revealStagger` | `0.08` s | Between revealed elements, in DOM order |
+| `intro.revealRise` | `12` px | Desktop columns rise while fading in (mobile sheet slides up 100%, TOC handle in from the edge) |
 | `intro.failsafe` | `3` s | CSS reveal if the script never runs (`--intro-failsafe: 3s`) |
 
 ## Wheel

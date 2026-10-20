@@ -106,9 +106,11 @@ The resting layout stays (a still image, not motion). Steps are instant: no spri
 
 ### Verified (Phase 4)
 
-An automated CDP test drives trusted input in Chrome against dev and the production build and checks:
-- mouse-wheel step;
-- one step per trackpad flick with an inertia tail;
+An automated CDP test (`scripts/test-wheel.mjs`) drives trusted input in Chrome against dev and the production build and checks:
+- the wheel follows a slow trackpad scroll mid-gesture, then commits; a 30px nudge springs back;
+- a mouse notch glides (no jump) and steps once; a second notch during the snap continues forward;
+- a 765px trackpad flick with inertia travels two cards;
+- intro: only the wheel while spinning, lands on project 1 unannounced, then reveals; not repeated in the session; skipped by input (and the input still acts), by a deep link and under reduced motion;
 - ↑/↓, PageUp/PageDown, Home/End and wrap-around;
 - TOC shortest path (0 → 3 passes through 4);
 - neighbour click and focus hand-off;
@@ -124,19 +126,21 @@ An automated CDP test drives trusted input in Chrome against dev and the product
 
 ## Intro choreography
 
-**Proposed values; tuned in the `/_lab/intro` page (Phase 5).** Runs on the first homepage visit per session only.
+**Built** (`src/scripts/intro/intro.ts`, values in `tokens.md → Intro timing`). Runs on the first homepage visit per session only. Vignesh's brief (2026-10-21): only the wheel appears first, spins like a slot machine and lands on the first project, then the hero text and TOC appear.
 
-1. **Start:** only the first project's card, flat, centred, poster showing. It is server-rendered and is the LCP element; it is never hidden or delayed.
-2. **Grow out** (~0–700ms): the other cards emerge from it and travel to their wheel slots with a gooey, liquid feel. Blobs stretch, stay joined by a membrane for a moment, pinch off, then settle with a soft spring overshoot. The technique comes from the lab (A goo-filter membrane, B morphing blob clip, C springs only). Filters can't sit on the 3D cards themselves (they flatten 3D and blur media).
-3. **Slot-machine spin** (~700–1600ms): about one revolution (`position += N`): fast start, strong deceleration, small overshoot, landing back on project 1.
-4. **Settle** (~1500–1900ms): the TOC and left column fade in; the "Scroll" hint appears (desktop only; mobile has no hint, the spin does that job).
+1. **Start:** only the wheel: the first project's card in front (server-rendered, the LCP element, never hidden or delayed) and its tilted neighbours. The left column / bottom sheet, the TOC (side list and mobile handle) and the footer are hidden.
+2. **Slot-machine spin** (0–1.2s): one full revolution (`position += N`), so every project flips past once. Fast spin, hard deceleration, runs 0.12 of a card past project 1, then settles back like a reel clunking into place.
+3. **Reveal** (from the landing, ~0.66s): hero text, TOC and footer fade in, staggered 80ms in DOM order. Desktop columns rise 12px. The mobile bottom sheet slides up from the bottom edge and the TOC handle slides in from the right edge.
+
+The earlier proposal's "grow out" phase (gooey cards emerging from the first one) is **dropped**. The brief starts from the whole wheel, and the goo technique would have needed a lab and a filter layer the 3D cards can't carry.
 
 **Mechanics:**
-- An inline `<head>` script (before first paint) decides whether the intro will run. It runs when there's no `sessionStorage` flag, no reduced-motion preference and no hash. If so, the script sets `html[data-intro="pending"]`, and CSS then hides everything except the first card.
-- A pure-CSS failsafe reveals everything after 3s, so a failed script can never leave the page blank.
-- The intro module is **lazy-loaded** only when it will run.
-- Any wheel, keydown, pointerdown or touchstart skips straight to the final state.
-- Reduced motion: no intro; the resting state renders directly. Repeat visits in the session also go straight to rest.
+- An inline `<head>` script in `index.astro` (before first paint) decides whether the intro runs: no `sessionStorage` flag (`intro-seen`, set at that moment), no reduced-motion preference, no deep link (`/#slug`, `/?about`). If so, it sets `html[data-intro="pending"]`, and CSS hides every `[data-intro-reveal]` element (`opacity: 0; visibility: hidden`, so it's also unfocusable and unclickable).
+- A pure-CSS failsafe reveals everything after `--intro-failsafe` (3s), so a failed script can never leave the page without its chrome.
+- The intro module is **lazy-loaded** (0.7 kB gzipped) only when it will run. The spin uses the wheel controller's `animatePosition` (keyframes through Motion's `animateValue`); the reveal uses the native Web Animations API, so it adds no library code.
+- Wheel input is disabled while it runs. Any wheel, keydown, pointerdown or touchstart (capture phase) skips straight to the final state, and the same input is then handled normally (a scroll moves the wheel, ↓ steps).
+- The landing isn't announced in the live region and doesn't set a hash.
+- Reduced motion: no intro; the resting state renders directly. Repeat visits in the session also go straight to rest. `scripts/screenshot.mjs` skips it unless `INTRO=1`; `test-wheel.mjs` skips it except in the intro tests.
 
 ## About drawer
 
