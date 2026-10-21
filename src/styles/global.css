@@ -50,7 +50,7 @@
  * The TOC handle (TocHandle.astro) anchors to --wheel-centre-y too.
  */
 :root {
-  --sheet-h: 297px;
+  --sheet-h: 299px;
   /* Figma's sheet text column (233:4587); side padding flexes 24–40px around it. */
   --sheet-content-w: 313px;
   --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
@@ -164,7 +164,6 @@
 /* ---------- Semantic colour (references primitives) ---------- */
 @theme inline {
   --color-surface-page: var(--gray-50);
-  --color-surface-page-mobile: var(--gray-white);
   --color-surface-raised: var(--gray-white);
   --color-surface-selected: var(--gray-100);
   --color-surface-hover: var(--gray-100);
@@ -190,17 +189,11 @@
   html {
     font-family: var(--font-sans);
     color: var(--color-fg-secondary);
-    background-color: var(--color-surface-page-mobile);
+    background-color: var(--color-surface-page);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     -webkit-text-size-adjust: 100%;
-  }
-
-  @media (min-width: 75rem) {
-    html {
-      background-color: var(--color-surface-page);
-    }
   }
 
   /* One focus treatment everywhere (rules.md → Accessibility). */

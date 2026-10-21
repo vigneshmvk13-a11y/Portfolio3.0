@@ -80,8 +80,11 @@ const resumeTodo = resume ? undefined : 'todo-content';
       opacity var(--duration-fast) var(--ease-out);
   }
   .bottom-sheet {
-    transition: row-gap var(--duration-base) var(--ease-in-out);
+    transition:
+      row-gap var(--duration-base) var(--ease-in-out),
+      padding-top var(--duration-base) var(--ease-in-out);
   }
+  /* Collapsed (Figma 246:2333): the buttons sit 32px from the top edge, as from the bottom. */
   @media (width < 75rem) {
     .bottom-sheet[data-collapsed] .bottom-sheet__intro {
       grid-template-rows: 0fr;
@@ -89,6 +92,7 @@ const resumeTodo = resume ? undefined : 'todo-content';
     }
     .bottom-sheet[data-collapsed] {
       row-gap: 0;
+      padding-top: calc(var(--spacing) * 8);
     }
   }
 

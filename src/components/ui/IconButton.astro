@@ -22,7 +22,7 @@ const { icon: Icon, label, variant = 'sm', href, external = false, class: classN
 
 const variants: Record<Variant, { box: string; icon: string }> = {
   sm: { box: 'p-4 rounded-button-sm border border-line-subtle hover:border-line-strong', icon: 'size-icon-sm' },
-  lg: { box: 'p-5 rounded-button-lg', icon: 'size-icon-md' },
+  lg: { box: 'p-5 rounded-button-lg border border-line-default hover:border-line-strong', icon: 'size-icon-md' },
   'lg-outlined': { box: 'p-5 rounded-button-lg border border-line-default hover:border-line-strong', icon: 'size-icon-sm' },
   close: { box: 'p-4 rounded-media-sm border border-line-default hover:border-line-strong', icon: 'size-icon-sm' },
 };

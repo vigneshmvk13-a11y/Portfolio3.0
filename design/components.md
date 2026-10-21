@@ -18,7 +18,7 @@ Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`Cha
 | Variant | Box | Padding | Radius | Icon | Border | Where |
 |---|---|---|---|---|---|---|
 | `sm` | 52 | `p-4` | `rounded-button-sm` | `icon-sm` | `border-line-subtle` | Desktop intro |
-| `lg` | 60 | `p-5` | `rounded-button-lg` | `icon-md` | none | Mobile sheet |
+| `lg` | 62 | `p-5` | `rounded-button-lg` | `icon-md` | `border-line-default` (hover `line-strong`) | Mobile sheet (border added in Figma 246:2317, 2026-10-21) |
 | `lg-outlined` | 60 | `p-5` | `rounded-button-lg` | `icon-sm` | `border-line-default` | About drawer |
 | `close` | 52 | `p-4` | `rounded-media-sm` | `icon-sm` | `border-line-default` | Drawer close |
 
@@ -119,7 +119,7 @@ Behaviour (press, scrub, release, tap, keyboard) and the morph spec: `layout-and
 ### BottomSheet (mobile) / left column (desktop)
 **Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built
 
-One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Collapsed (`data-collapsed`): the intro row animates `grid-template-rows 1fr → 0fr`. It collapses whenever the wheel starts moving and expands 0.25s after it settles (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
+One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Affiliations: "@ DNEG" 4px apart, "& Kotak" 8px on mobile (Figma 246:2310), 4px on desktop. Collapsed (`data-collapsed`, Figma 246:2333): the intro row animates `grid-template-rows 1fr → 0fr` and the top padding `pt-12 → pt-8`, so the buttons sit 32px from both edges (127px tall). It collapses whenever the wheel starts moving and expands 0.25s after it settles (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
 
 ### FooterBar (desktop)
 **Figma:** `233:4558` · **Status:** built

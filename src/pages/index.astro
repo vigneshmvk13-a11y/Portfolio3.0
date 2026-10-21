@@ -17,7 +17,7 @@ const entries = await getPublishedCaseStudies();
 const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
 ---
 
-<Base class="home h-dvh overflow-hidden bg-surface-page-mobile desktop:bg-surface-page">
+<Base class="home h-dvh overflow-hidden bg-surface-page">
   <script is:inline slot="head" define:vars={{ deepLinkSlugs }}>
     const root = document.documentElement;
     const deepLink = deepLinkSlugs.includes(decodeURIComponent(location.hash.slice(1)));

@@ -20,7 +20,7 @@ const { name, role, currently, affiliations } = await getAbout();
     affiliations.length > 0 && (
       <ul class="flex items-center gap-2" aria-label="Works with">
         {affiliations.map((affiliation, i) => (
-          <li class="flex items-center gap-1">
+          <li class:list={['flex items-center', i === 0 ? 'gap-1' : 'gap-2 desktop:gap-1']}>
             <span class="text-label-1" aria-hidden="true">
               {i === 0 ? '@' : '&'}
             </span>

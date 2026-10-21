@@ -36,8 +36,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 
 | Utility stem | → | Use |
 |---|---|---|
-| `surface-page` | `--gray-50` | Desktop page |
-| `surface-page-mobile` | `--gray-white` | Mobile page |
+| `surface-page` | `--gray-50` | Page background, all breakpoints (mobile moved from white to gray/50 in Figma 246:2300, 2026-10-21) |
 | `surface-raised` | `--gray-white` | Buttons, drawer, sheet |
 | `surface-selected` | `--gray-100` | Active TOC item |
 | `surface-hover` | `--gray-100` **(proposed)** | Hover on TOC items and text buttons |
@@ -108,7 +107,7 @@ Named spacing:
 | `--spacing-banner` | 200px | About banner height |
 | `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
 | `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
-| `--sheet-h` | 297px | Expanded bottom sheet height (Figma 233:4586); reserves room under the wheel |
+| `--sheet-h` | 299px | Expanded bottom sheet height (Figma 246:2305; 297 before the buttons gained borders); reserves room under the wheel |
 | `--sheet-content-w` | 313px | Sheet text column; side padding flexes 24–40px around it |
 | `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 

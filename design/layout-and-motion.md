@@ -4,7 +4,7 @@ Written mobile-first, matching how the CSS is authored. All durations, easings, 
 
 ## Mobile home (base, designed at 393×852; check 360 and 412 too)
 
-- `bg-surface-page-mobile`. One viewport-height composition (`h-dvh`). The document doesn't scroll; vertical swipes step the project wheel.
+- `bg-surface-page` (gray/50, as on desktop). One viewport-height composition (`h-dvh`). The document doesn't scroll; vertical swipes step the project wheel.
 - Wheel stage: full width. The card is **always full width**, as in Figma: viewport − 2 × `gutter-mobile`, height from `aspect-card` (553:400).
 - Its centre (`--wheel-centre-y`, global.css) is Figma's placement, `pt-10 + (spread + reach) × h + gap`: the top neighbour's far edge at 40px and the card at y = 227, at 393×852.
 - On shorter screens the centre **rises** so the card clears the expanded sheet by `--wheel-gap`: `min(figma, 100dvh − --sheet-h − safe-area − gap − h/2)`. The top neighbour then shows as a slice.

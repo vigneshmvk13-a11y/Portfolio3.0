@@ -64,6 +64,13 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-21 · tokens/components · Mobile design update (Figma section 246:2364):
+  - Page background → `gray/50` (`surface-page`, the same as desktop); `surface-page-mobile` removed.
+  - Sheet buttons (`IconButton lg`) gain a 1px `line-default` border (62px), so `--sheet-h` 297 → 299.
+  - Collapsed sheet top padding 48 → 32.
+  - "& Kotak" gap 4 → 8 on mobile.
+  - Why: Vignesh's revised mobile frames.
+
 - 2026-10-21 · layout-and-motion · Mobile fixes from Vignesh's phone review:
   - **Card size:** always full width as in Figma. On short screens (real browsers leave ~660–790px, not 852) the wheel rises so the card clears the expanded sheet, and the top neighbour shows as a slice. It used to shrink the card to about ⅔.
   - **Bottom sheet:** collapses whenever the wheel starts moving (either direction, any project) and expands 0.25s after it settles. It used to follow direction and project 1.
