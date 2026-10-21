@@ -181,12 +181,15 @@ try {
   // ---------- Intro ----------
   const chrome = `(() => { const v = (sel) => { const el = document.querySelector(sel); const cs = getComputedStyle(el); return cs.visibility === 'visible' ? Number(cs.opacity) : 0; }; return { intro: document.documentElement.dataset.intro, sheet: v('[data-bottom-sheet]'), toc: v('[data-intro-reveal="rise"]'), footer: v('[data-intro-reveal="fade"]') }; })()`;
   const i1 = await page(1440, 1024, { intro: true });
-  await i1.goto('/', 300);
+  await i1.goto('/', 0);
+  // The spin starts once the intro chunk has loaded and the covers are decoded (slower over a network).
+  for (let t = 0; t < 1500 && !(await i1.state()).moving; t += 50) await sleep(50);
+  await sleep(150);
   let c = await i1.eval(chrome);
   s = await i1.state();
   check('intro: only the wheel at first, spinning', c.intro === 'pending' && c.sheet === 0 && c.toc === 0 && c.footer === 0 && s.moving, `${JSON.stringify(c)} ${JSON.stringify(s)}`);
   await i1.shot('intro-spin-1440.png');
-  await sleep(1300);
+  await sleep(1150);
   c = await i1.eval(chrome);
   s = await i1.state();
   check('intro: lands on the first project, then reveals', c.intro === 'done' && s.index === '0' && !s.moving && s.hash === '' && s.status === '', `${JSON.stringify(c)} ${JSON.stringify(s)}`);
