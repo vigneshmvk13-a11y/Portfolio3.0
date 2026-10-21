@@ -1,6 +1,7 @@
 /**
- * Keeps both TOCs (desktop side list, mobile popover) and the mobile handle in sync with the wheel,
- * and turns a plain click on an item into a rotation. Modifier-clicks still open the case study.
+ * Keeps both TOCs (desktop side list, mobile morphing panel) and the mobile handle's ticks and label in
+ * sync with the wheel, and turns a plain click on an item into a rotation. Modifier-clicks still open
+ * the case study. The mobile panel's open/close and scrubbing live in toc-morph.ts.
  */
 import type { WheelController, WheelDetail } from './wheel/controller';
 
@@ -11,7 +12,6 @@ export function bindToc(controller: WheelController): void {
   const items = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-item]')];
   const ticks = [...document.querySelectorAll<SVGRectElement>('[data-toc-tick]')];
   const handle = document.querySelector<HTMLButtonElement>('[data-toc-handle]');
-  const popover = document.getElementById('toc-popover');
 
   const sync = (index: number) => {
     for (const item of items) {
@@ -37,12 +37,7 @@ export function bindToc(controller: WheelController): void {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       if (!controller.enabled) return;
       event.preventDefault();
-      const index = Number(item.dataset.index);
-      if (popover?.matches(':popover-open')) {
-        popover.hidePopover();
-        handle?.focus();
-      }
-      controller.goTo(index, 'toc');
+      controller.goTo(Number(item.dataset.index), 'toc');
     });
   }
 }

@@ -42,7 +42,7 @@ Agents: add to this list; don't resolve on your own.
 12. **OG images:** design them in Figma and export per case study (no dependency), or approve an OG generator (e.g. `astro-og-canvas` / `satori`) for automatic ones?
 13. **Journey, last row:** desktop Figma says "Bizzon info solutions/ Edure, India", mobile says "…/ Edure learning". Using the desktop text.
 14. **Bio emphasis differs by breakpoint in Figma:** desktop bolds "I'm Vignesh" and the whole "@DNEG for Kotak Mahindra's corporate banking app, Fyn"; mobile bolds only "Vignesh", "@DNEG", "Kotak mahindra", "Fyn". One CMS field can hold one version; using desktop.
-15. **Mobile TOC labels:** Figma's mobile popover uses a shorter "Fyn- Wholesale Banking". There's one `tocLabel`, so the popover widens to fit "Fyn- Wholesale Banking app". Shorten the label everywhere, or keep it?
+15. **Mobile TOC labels:** Figma's mobile TOC panel uses a shorter "Fyn- Wholesale Banking". There's one `tocLabel`, so the panel widens to fit "Fyn- Wholesale Banking app". Shorten the label everywhere, or keep it?
 
 ### Resolved (2026-10-21)
 
@@ -63,6 +63,13 @@ Agents: add to this list; don't resolve on your own.
 ## Changelog
 
 Newest first. Date · branch · change · why.
+
+- 2026-10-21 · layout-and-motion · Mobile fixes from Vignesh's phone review:
+  - **Card size:** always full width as in Figma. On short screens (real browsers leave ~660–790px, not 852) the wheel rises so the card clears the expanded sheet, and the top neighbour shows as a slice. It used to shrink the card to about ⅔.
+  - **Bottom sheet:** collapses whenever the wheel starts moving (either direction, any project) and expands 0.25s after it settles. It used to follow direction and project 1.
+  - **TOC:** the popover is replaced by a **morph**. The tab grows into the panel and each tick stretches into its row, with the labels riding their bars. Press-and-drag scrubs (the wheel spins to the row under the finger), release collapses, a tap keeps it open, and an outside tap only dismisses.
+  - Tokens: `spring.toc`, `toc.*`, `sheet.expandDelay`.
+  - Why: Vignesh's brief; the choices (crop the top neighbour, tap stays open, ticks grow into rows, release keeps the last row) were confirmed with him.
 
 - 2026-10-21 · rules · **Reduced motion keeps a short wheel turn** (0.2s `ease.out`, one project per gesture, no overshoot, momentum, scroll-linking or intro); it used to be instant. Why: Windows performance mode reports reduced motion, so Vignesh never saw the wheel move; the turn is the site's identity. The crossfade alternative was recommended and declined. Resolves open question 16.
 - 2026-10-21 · layout-and-motion · **Adaptive quality:**

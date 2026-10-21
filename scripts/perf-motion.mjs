@@ -56,6 +56,7 @@ async function page(width, height, { intro = false, reduced = false } = {}) {
     /** Run `act`, then record frames for `ms`. */
     async measure(act, ms) { await evaluate('window.__perf.start()'); await act(); await sleep(ms); return evaluate('window.__perf.stop()'); },
     wheel: (deltaY) => send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: width / 2, y: height / 2, deltaX: 0, deltaY }, sessionId),
+    touch: (type, x, y) => send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y }] }, sessionId),
     async drag(x, y0, y1, ms = 200, steps = 12) {
       await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] }, sessionId);
       for (let i = 1; i <= steps; i++) { await sleep(ms / steps); await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 + ((y1 - y0) * i) / steps }] }, sessionId); }
@@ -108,7 +109,12 @@ try {
   await m.goto('/');
   await sleep(800);
   report('mobile: swipe + sheet collapse', await m.measure(() => m.drag(196, 450, 250), 900));
-  report('mobile: swipe back + sheet expand', await m.measure(() => m.drag(196, 250, 450), 900));
+  report('mobile: swipe back + sheet expand', await m.measure(() => m.drag(196, 250, 450), 1300));
+  // TOC: press the tab (morph open), scrub down through every row (wheel spins), release (morph closed).
+  const tab = await m.eval(`(() => { const r = document.querySelector('[data-toc-morph]').getBoundingClientRect(); return { x: r.right - 13, y: r.top + r.height / 2 }; })()`);
+  report('mobile: TOC press → open', await m.measure(() => m.touch('touchStart', tab.x, tab.y), 500));
+  report('mobile: TOC scrub (wheel spins)', await m.measure(async () => { for (let dy = 0; dy <= 80; dy += 4) { await m.touch('touchMove', tab.x, tab.y + dy); await sleep(16); } }, 700));
+  report('mobile: TOC release → close', await m.measure(() => m.touch('touchEnd'), 600));
   await m.close();
 
   const mi = await page(393, 852, { intro: true });

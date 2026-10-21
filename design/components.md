@@ -105,12 +105,21 @@ Emits `wheel:start {index, slug, via}` (motion began; covers pause), `wheel:chan
 ### TocHandle (mobile)
 **Figma:** `233:4609` (27×80), `233:4714` (193×223) · **Status:** built
 
-Right-edge tab, centre 74px above the viewport centre, one tick per project (active `fill-indicator`, others `fill-fg-secondary`). The Figma shape fits five ticks; more projects need a taller shape. A `<button popovertarget>` opens a native `popover` with the TOC (`variant="popover"`: `gap-0.5`, no dash). The Popover API gives Esc, outside tap and `aria-expanded`; a small script moves focus to the active item. The popover shape is the Figma SVG stretched horizontally (`preserveAspectRatio="none"`, non-scaling 1px stroke), because "Fyn- Wholesale Banking app" doesn't fit the drawn 193px. The 27px tab gets a 44px hit area via `::before`. Closing on selection comes with the wheel (Phase 4).
+One shape that **morphs** from the right-edge tab into the TOC panel and back (no popover).
+
+Anatomy, inside `[data-toc-morph]`, which is fixed right and centred on `--wheel-centre-y`:
+1. A clip element (`bg-surface-raised`, `clip-path` = the outline path). It holds the bars SVG (five ticks plus the `surface-selected` highlight) and the `<nav>` with `ProjectToc variant="panel"` (`gap-0.5`, no dash; the row background is off, and text colour follows `data-hl`).
+2. The outline SVG (1px `stroke-line-strong`).
+3. A transparent `<button>` over the tab: `aria-expanded`, `aria-controls`, and a 44px hit area via `::before`.
+
+The tab is server-rendered from Figma's path, so it matches with no JS. Ticks: active `fill-indicator`, others `fill-fg-secondary`. The tab fits five ticks; more projects need a taller tab.
+
+Behaviour (press, scrub, release, tap, keyboard) and the morph spec: `layout-and-motion.md → TOC handle`. Scripts: `toc-morph.ts`, `toc-shape.ts`; `toc.ts` keeps ticks, labels and `aria-current` in sync.
 
 ### BottomSheet (mobile) / left column (desktop)
 **Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built
 
-One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Collapsed (`data-collapsed`): the intro row animates `grid-template-rows 1fr → 0fr`. Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
+One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Collapsed (`data-collapsed`): the intro row animates `grid-template-rows 1fr → 0fr`. It collapses whenever the wheel starts moving and expands 0.25s after it settles (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
 
 ### FooterBar (desktop)
 **Figma:** `233:4558` · **Status:** built

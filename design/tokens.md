@@ -152,6 +152,18 @@ Motion's `visualDuration` + `bounce` form, so the values read like durations. Sp
 | `motion.ts` | Value | Use |
 |---|---|---|
 | `spring.wheel` | `{ visualDuration: 0.4, bounce: 0.12 }` | Wheel step (mouse notch, key, TOC), trackpad snap, drag release. Starts at the wheel's current speed when retargeted |
+| `spring.toc` | `{ visualDuration: 0.35, bounce: 0.15 }` | Mobile TOC: tab ⇄ panel morph, and the row highlight following the finger |
+
+### Mobile TOC and sheet
+
+JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Bottom sheet`. Shape geometry (tab 27×80, panel 193×223, rows 36 on a 38 pitch) is Figma's, kept in `src/scripts/toc-shape.ts`.
+
+| `motion.ts` | Value | Meaning |
+|---|---|---|
+| `toc.tapMax` | `0.3` s | A press released within this, without dragging, is a tap (the panel stays open) |
+| `toc.scrubSlop` | `6` px | Travel before a press scrubs |
+| `toc.labelFadeFrom` | `0.4` | Morph progress where labels start fading in |
+| `sheet.expandDelay` | `0.25` s | After the wheel settles, before the sheet expands again |
 
 ### Intro timing (built; tune by eye)
 

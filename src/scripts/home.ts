@@ -5,6 +5,7 @@
 import { WheelController, type WheelDetail } from './wheel/controller';
 import { bindWheelInput } from './wheel/input';
 import { bindToc } from './toc';
+import { bindTocMorph } from './toc-morph';
 import { bindHash, indexFromHash } from './hash';
 import { bindSheet } from './sheet';
 import { initMotionCovers, setActiveCover } from './media';
@@ -29,6 +30,7 @@ export function initHome(): WheelController | null {
   watchQuality(stage);
   bindWheelInput(wheel);
   bindToc(wheel);
+  bindTocMorph(wheel);
   bindHash(wheel);
   bindSheet(wheel);
 

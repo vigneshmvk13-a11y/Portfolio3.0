@@ -94,7 +94,7 @@ The resting state (active, previous, next, rest hidden) is rendered as static CS
   - Reduced motion: no scroll-linked movement. Accumulate past 80px, step once (a short turn), lock until quiet.
 - **Touch / pen drag** on the stage (pointer events; mouse uses the wheel, keys and clicks, so dragging never fights link clicks): past a 6px slop, `position` follows the finger, with one step = `Y(±1)` pixels. On release, velocity from the last ~100ms projects 0.2s ahead; the wheel rounds to the nearest card and springs there (`spring.wheel`), carrying the velocity. A drag suppresses the click on the card under the finger.
 - **Keyboard** (focus on body, stage or TOC): ↑/PageUp = previous, ↓/PageDown = next, Home = first, End = last. Enter on the active card follows its link (it's a real `<a>`); Enter with focus on body opens the active card.
-- **TOC:** a plain click rotates the shortest way, `delta = ((i − cur + N/2) mod N) − N/2`; modifier-clicks open the case study. With 5 projects that's at most 2 steps, so one intermediate card passes. That's intended (it's a wheel). The mobile popover closes on selection and focus returns to the handle.
+- **TOC:** a plain click rotates the shortest way, `delta = ((i − cur + N/2) mod N) − N/2`; modifier-clicks open the case study. With 5 projects that's at most 2 steps, so one intermediate card passes. That's intended (it's a wheel). On mobile, picking a row in the open TOC closes it, and focus returns to the tab when it was picked by keyboard. Scrubbing: see TOC handle below.
 - **Hash:** on settle, `history.replaceState` to `#<slug>`, or no hash for the first project, so `/` stays canonical. On load, a hash selects the start project: an inline head script hides the wheel until it's placed (3s CSS failsafe), and the intro is skipped. `hashchange` rotates too.
 - Clicking a neighbour is handled on the stage and steps toward it.
 - **Focus:** if focus is on the outgoing card when it turns inert, it moves to the incoming card's link. The live region announces "Name, i of N" on settle (not on load).
@@ -138,7 +138,14 @@ An automated CDP test (`scripts/test-wheel.mjs`) drives trusted input in Chrome 
 - deep link `/#nova`;
 - swipe up/down and the sheet collapse/expand;
 - a fast flick carrying momentum (2+ steps);
-- popover pick (closes, ticks and label update);
+- mobile TOC:
+  - press morphs it open;
+  - scrubbing highlights the row under the finger and spins the wheel while the finger is still down;
+  - release collapses it; scrubbing past the ends clamps;
+  - a quick tap keeps it open, a row tap picks and closes, an outside tap only dismisses;
+  - a held-still release closes it;
+- mobile sheet: collapses during any swipe (either direction), expands after settle;
+- short phone (393×660): the card is full size and clear of the sheet;
 - reduced motion: a short turn, no scroll-linked movement (instant before 2026-10-21);
 - adaptive quality (see above);
 - no JS errors.
@@ -176,11 +183,43 @@ The earlier proposal's "grow out" phase (gooey cards emerging from the first one
 
 ## TOC handle (mobile)
 
-Native `popover`, anchored to the right edge at the handle's height. It opens over the wheel and closes on Esc, outside tap or (Phase 4) selection. Focus moves to the active item on open.
+Figma component 2: collapsed tab `233:4609` (27×80, five 19×4 ticks 10px apart), expanded panel `233:4714` (193×223, rows 36px tall and 2px apart, inset 8, `rounded-item`; the active row is `surface-selected`). Brief and choices: Vignesh, 2026-10-21.
+
+**Morph.** One progress number `p` (0 = tab, 1 = panel) springs with `spring.toc` (0.35s, bounce 0.15). It's drawn each frame by `src/scripts/toc-morph.ts`; the geometry lives in `toc-shape.ts`.
+- **Outline:** one path at every `p`.
+  - The right-edge "ears" (13.5×8 → 8.5×8.5) meet the screen edge.
+  - The rounded body (radius 13.5 → 16) grows leftwards and taller, symmetric about the tab's centre.
+  - At rest it draws Figma's exact tab path; mid-morph the corners are circular.
+- **Ticks → rows:** each tick stretches into its own row: inset 4 → 8, 19×4 → (panel − 16)×36, radius 2 → 8, spacing 10 → 38. Grey ticks fade as they grow; the active (dark) tick becomes the `surface-selected` highlight.
+- **Labels ride their bars:** the list follows the bars' left edge, and each row follows its bar's spacing. They fade in over `p` 0.4–1 (`toc.labelFadeFrom`).
+- **One clip:** the fill, bars and labels sit in one element clipped to the outline path (`clip-path: path()`, written each frame), so text never shows outside the rounded shape. When the fill was a separate SVG, it could land a frame behind the clip. The 1px outline stroke is a separate SVG on top.
+- **Width:** the panel widens to its longest label ("Fyn- Wholesale Banking app"; open question 15). Rows keep that width while the frame grows, so text never reflows.
+- **Anchor:** the active card's centre (`--wheel-centre-y`). In Figma the tab sits 3px lower and the open panel ~10px lower; centring keeps the tick under the finger growing into the row under the finger.
+
+**Interaction:**
+- **Press** the tab: it opens. Nothing else changes until the finger moves `toc.scrubSlop` (6px).
+- **Drag (scrub):**
+  - The row under the finger gets the highlight, which slides there (`spring.toc`). Only height counts, and past either end it clamps to the first or last project.
+  - The wheel spins to that row (`goTo`, the shortest way) while the finger is still down.
+  - The bottom sheet stays collapsed (`toc:hold`).
+- **Release after dragging:** it collapses and the wheel stays on the last row. The click under the finger is suppressed.
+- **Quick tap** (under `toc.tapMax` 0.3s, no drag): it opens and stays open.
+  - A row tap picks that project and closes it.
+  - A tab tap closes it.
+  - An outside tap only dismisses: that tap doesn't also step the wheel or open a card.
+- **Held still, then released:** it collapses and nothing else changes.
+- **Keyboard:** Enter/Space on the tab toggles it. Opening moves focus to the active row; Esc closes it and returns focus; focus leaving the panel closes it. The tab carries `aria-expanded` and `aria-controls`, and the panel is `inert` while closed.
+- **Drawer open:** it closes; input is ignored while the wheel is disabled.
+- **Reduced motion:** the morph and the highlight are instant; the wheel still turns (its own rule).
 
 ## Bottom sheet (mobile)
 
-Driven by wheel direction, mirroring the old scroll rule: a **forward** step (next project) collapses it, a **backward** step or returning to project 1 expands it. Intro fades (`--duration-fast`), then rows animate `grid-template-rows: 1fr → 0fr` (`--duration-base`, `--ease-in-out`). Under reduced motion it still collapses, instantly.
+**Collapses as soon as the wheel starts moving, in either direction and on any project** (a swipe, scroll, key, TOC pick or scrub). **Expands again `sheet.expandDelay` (0.25s) after the wheel settles.** (Vignesh, 2026-10-21. It used to follow direction: forward collapsed; backward or project 1 expanded.)
+- The delay stops quick consecutive swipes from pumping it open and shut.
+- It stays collapsed while a finger scrubs the TOC (`toc:hold` / `toc:release`).
+- The intro and the initial placement don't count as scrolling.
+- Animation: the intro fades (`--duration-fast`), then its row animates `grid-template-rows: 1fr → 0fr` (`--duration-base`, `--ease-in-out`). That's a layout animation, measured at 60fps (0 missed frames at 4× CPU).
+- Reduced motion: it still collapses and expands, instantly.
 
 ## Page load
 

@@ -162,19 +162,84 @@ try {
   // ---------- Mobile touch ----------
   const m = await page(393, 852);
   await m.goto('/');
+  // Sheet: collapses while any swipe moves the wheel (either direction, any project), expands once settled.
   await m.drag(196, 420, 220);
-  await sleep(1000);
+  await sleep(60);
   s = await m.state();
-  check('swipe up moves to next and collapses the sheet', s.index === '1' && s.sheet === true, JSON.stringify(s));
+  check('swipe up: sheet collapses while the wheel moves', s.sheet === true, JSON.stringify(s));
+  await sleep(1100);
+  s = await m.state();
+  check('swipe up: lands on the next project, sheet expands again', s.index === '1' && s.sheet === false, JSON.stringify(s));
   await m.shot('after-swipe-393.png');
   await m.drag(196, 220, 420);
-  await sleep(1000);
+  await sleep(60);
   s = await m.state();
-  check('swipe down returns to first and expands the sheet', s.index === '0' && s.sheet === false, JSON.stringify(s));
+  check('swipe down: sheet collapses too (direction does not matter)', s.sheet === true, JSON.stringify(s));
+  await sleep(1100);
+  s = await m.state();
+  check('swipe down: back on the first project, sheet expanded', s.index === '0' && s.sheet === false, JSON.stringify(s));
   await m.drag(196, 400, 100, 90, 6); // fast flick
-  await sleep(1200);
+  await sleep(1400);
   s = await m.state();
   check('fast flick carries momentum (≥ 2 steps)', Number(s.index) >= 2, s.index);
+  await m.key('Home', 'Home', 36); await sleep(1200);
+
+  // TOC morph: press and hold, scrub, release.
+  const tocState = `(() => { const r = document.querySelector('[data-toc-morph]').getBoundingClientRect(); return { w: Math.round(r.width), open: document.querySelector('[data-toc-handle]').getAttribute('aria-expanded'), hl: document.querySelector('[data-toc-panel] [data-hl]')?.dataset.index, labels: Number(getComputedStyle(document.querySelector('[data-toc-panel]')).opacity), x: r.right - 13, cy: r.top + r.height / 2 }; })()`;
+  const touch = (type, x, y) => send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y }] }, m.sessionId);
+  let t = await m.eval(tocState);
+  check('TOC: collapsed tab at rest', t.w === 27 && t.open === 'false', JSON.stringify(t));
+  await touch('touchStart', t.x, t.cy);
+  await sleep(90);
+  let mid = await m.eval(tocState);
+  await m.shot('toc-morph-mid-393.png');
+  await sleep(400);
+  let full = await m.eval(tocState);
+  check('TOC: press morphs the tab into the panel', mid.w > 27 && mid.w < full.w && full.open === 'true' && full.labels === 1 && full.hl === '0', `mid=${JSON.stringify(mid)} open=${JSON.stringify(full)}`);
+  await m.shot('toc-open-393.png');
+  // Drag down row by row to Gyst (row 4 is 76px below the centre row).
+  for (let dy = 4; dy <= 80; dy += 4) { await touch('touchMove', t.x, t.cy + dy); await sleep(16); }
+  await sleep(150);
+  t = await m.eval(tocState);
+  s = await m.state();
+  check('TOC: scrubbing highlights the row under the finger, sheet stays collapsed', t.hl === '4' && t.open === 'true' && s.sheet === true, `${JSON.stringify(t)} ${JSON.stringify(s)}`);
+  await sleep(900);
+  s = await m.state();
+  check('TOC: the wheel spins to the finger’s project while still held', s.index === '4' && s.sheet === true, JSON.stringify(s));
+  await touch('touchEnd');
+  await sleep(700);
+  t = await m.eval(tocState);
+  s = await m.state();
+  check('TOC: release collapses it; wheel stays; sheet expands', t.w === 27 && t.open === 'false' && s.index === '4' && s.sheet === false, `${JSON.stringify(t)} ${JSON.stringify(s)}`);
+  // Dragging past the ends clamps to the first project.
+  await touch('touchStart', t.x, t.cy);
+  for (let dy = -4; dy >= -200; dy -= 8) { await touch('touchMove', t.x, t.cy + dy); await sleep(16); }
+  await touch('touchEnd');
+  await sleep(1400);
+  s = await m.state();
+  check('TOC: scrubbing past the top clamps to the first project', s.index === '0', JSON.stringify(s));
+  // Quick tap: opens and stays open; tapping a row picks it and closes.
+  t = await m.eval(tocState);
+  await touch('touchStart', t.x, t.cy); await sleep(40); await touch('touchEnd');
+  await sleep(700);
+  t = await m.eval(tocState);
+  check('TOC: a quick tap opens it and it stays open', t.open === 'true' && t.labels === 1, JSON.stringify(t));
+  const nova = await m.eval(`(() => { const r = document.querySelectorAll('[data-toc-panel] [data-toc-item]')[2].getBoundingClientRect(); return { x: r.x + 40, y: r.y + r.height / 2 }; })()`);
+  await touch('touchStart', nova.x, nova.y); await sleep(40); await touch('touchEnd');
+  await sleep(1200);
+  t = await m.eval(tocState);
+  s = await m.state();
+  check('TOC: tapping a row rotates to it and closes', s.index === '2' && t.open === 'false', `${JSON.stringify(t)} ${JSON.stringify(s)}`);
+  // Tap outside closes; held still then released closes without moving the wheel.
+  await touch('touchStart', t.x, t.cy); await sleep(40); await touch('touchEnd'); await sleep(500);
+  await touch('touchStart', 60, 120); await sleep(40); await touch('touchEnd'); await sleep(600);
+  t = await m.eval(tocState);
+  s = await m.state();
+  check('TOC: tapping outside only closes it (the tap does not step the wheel)', t.open === 'false' && t.w === 27 && s.index === '2', `${JSON.stringify(t)} ${JSON.stringify(s)}`);
+  await touch('touchStart', t.x, t.cy); await sleep(600); await touch('touchEnd'); await sleep(700);
+  t = await m.eval(tocState);
+  s = await m.state();
+  check('TOC: held still and released closes it, wheel unchanged', t.open === 'false' && s.index === '2', `${JSON.stringify(t)} ${JSON.stringify(s)}`);
   check('no JS errors (mobile)', m.errors.length === 0, m.errors.join(' | '));
   await m.close();
 

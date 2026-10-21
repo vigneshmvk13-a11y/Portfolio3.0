@@ -1,11 +1,13 @@
 ---
 /**
- * Mobile TOC handle (Figma 233:4609 collapsed, 233:4714 expanded).
- * A button on the right edge with one tick per project (active tick dark), opening a native
- * popover with the project list. Shapes are the Figma SVGs, recoloured with tokens.
- * Esc, outside tap and aria-expanded come from the Popover API; the script moves focus in.
+ * Mobile TOC (Figma component 2: collapsed 233:4609, expanded 233:4714). One shape that morphs:
+ * the right-edge tab grows into the panel and each tick stretches into its project's row while the
+ * labels fade in. Press and drag to scrub (the wheel spins to the row under the finger), release to
+ * collapse; a tap opens it until a project or the outside is tapped. Server-rendered as the tab, so
+ * it matches Figma before any JS. Behaviour: src/scripts/toc-morph.ts; geometry: src/scripts/toc-shape.ts.
  */
 import ProjectToc from './ProjectToc.astro';
+import { TAB, TAB_PATH, barAt } from '../../scripts/toc-shape';
 import type { CaseStudy } from '../../lib/content';
 
 interface Props {
@@ -14,99 +16,135 @@ interface Props {
 }
 
 const { entries, activeIndex = 0 } = Astro.props;
-// The Figma shape fits five ticks (10px apart from y=18); more projects need a taller shape.
-const ticks = entries.slice(0, 5);
+// The Figma tab fits five ticks (10px apart); more projects need a taller tab.
+const ticks = entries.slice(0, 5).map((_, i, all) => barAt(i, all.length, 0, 0, TAB.w, TAB.h));
 ---
 
-<button
-  type="button"
-  class="toc-handle fixed right-0 z-30 desktop:hidden"
-  popovertarget="toc-popover"
-  aria-label={`Projects, ${activeIndex + 1} of ${entries.length}`}
-  data-toc-handle
-  data-intro-reveal="edge"
->
-  <svg width="27" height="80" viewBox="0 0 27 80" aria-hidden="true" focusable="false" class="block">
-    <path
-      class="fill-surface-raised stroke-line-strong"
-      stroke-width="1"
-      d="M13.5 8C20.9553 8 27 4.41821 27 0V8V72V80C27 75.5818 20.9553 72 13.5 72C8.3574 72 5.7861 72 3.88718 70.8618C2.75874 70.1855 1.81453 69.2413 1.13817 68.1128C0 66.2139 0 63.6426 0 58.5V21.5C0 16.3574 0 13.7861 1.13817 11.8872C1.81453 10.7587 2.75874 9.81453 3.88718 9.13817C5.7861 8 8.3574 8 13.5 8Z"
-    ></path>
-    {
-      ticks.map((_, i) => (
-        <rect
-          x="4"
-          y={18 + i * 10}
-          width="19"
-          height="4"
-          rx="2"
-          class={i === activeIndex ? 'fill-indicator' : 'fill-fg-secondary'}
-          data-toc-tick={i}
-        />
-      ))
-    }
-  </svg>
-</button>
-
-<div id="toc-popover" popover class="toc-popover" aria-label="Projects" role="dialog">
-  <!-- Figma shape, stretched horizontally to fit the longest label (stroke stays 1px). -->
+<div class="toc-morph fixed right-0 z-30 desktop:hidden" data-toc-morph data-intro-reveal="edge">
+  <!-- Fill, bars and labels share one clip (the outline path), so they can't drift apart mid-morph. -->
+  <div class="toc-morph__clip bg-surface-raised" data-toc-clip>
+    <svg
+      class="toc-morph__svg absolute top-0 right-0"
+      width={TAB.w}
+      height={TAB.h}
+      viewBox={`0 0 ${TAB.w} ${TAB.h}`}
+      aria-hidden="true"
+      focusable="false"
+      data-toc-bars
+    >
+      <rect class="fill-surface-selected" opacity="0" data-toc-highlight></rect>
+      {
+        ticks.map((bar, i) => (
+          <rect
+            x={bar.x}
+            y={bar.y}
+            width={bar.w}
+            height={bar.h}
+            rx={bar.rx}
+            class={i === activeIndex ? 'fill-indicator' : 'fill-fg-secondary'}
+            data-toc-tick={i}
+          />
+        ))
+      }
+    </svg>
+    <nav id="toc-panel" aria-label="Projects" class="toc-morph__panel" data-toc-panel inert>
+      <ProjectToc entries={entries} variant="panel" activeIndex={activeIndex} />
+    </nav>
+  </div>
+  <!-- The 1px outline on top (outside the clip, so the stroke isn't cut in half). -->
   <svg
-    class="absolute inset-0 size-full"
-    viewBox="0 0 193 223"
-    preserveAspectRatio="none"
+    class="toc-morph__svg pointer-events-none absolute top-0 right-0"
+    width={TAB.w}
+    height={TAB.h}
+    viewBox={`0 0 ${TAB.w} ${TAB.h}`}
     aria-hidden="true"
     focusable="false"
+    data-toc-svg
   >
-    <path
-      class="fill-surface-raised stroke-line-strong"
-      stroke-width="1"
-      vector-effect="non-scaling-stroke"
-      d="M193 8.5V0C193 4.69434 189.194 8.5 184.5 8.5H176H16C7.16344 8.5 0 15.6634 0 24.5L0 198.5C0 207.337 7.16344 214.5 16 214.5H176H184.5C189.194 214.5 193 218.306 193 223V214.5V8.5Z"
-    ></path>
+    <path class="stroke-line-strong" fill="none" stroke-width="1" d={TAB_PATH} data-toc-outline></path>
   </svg>
-  <nav aria-label="Projects" class="relative w-full">
-    <ProjectToc entries={entries} variant="popover" activeIndex={activeIndex} />
-  </nav>
+  <button
+    type="button"
+    class="toc-morph__handle"
+    aria-expanded="false"
+    aria-controls="toc-panel"
+    aria-label={`Projects, ${activeIndex + 1} of ${entries.length}`}
+    data-toc-handle
+  ></button>
 </div>
 
-<style>
-  /* Centre of the handle sits 74px above the viewport centre (Figma 233:4608). */
-  .toc-handle {
-    top: calc(50% - var(--spacing) * 18.5);
+<style define:vars={{ tabClip: `path('${TAB_PATH}')` }}>
+  /*
+   * Anchored to the active card's centre (global.css --wheel-centre-y; Figma: tab centre 352, card 355).
+   * Width and height are written by toc-morph.ts while it morphs; these are the tab's (TAB in toc-shape.ts).
+   */
+  .toc-morph {
+    top: var(--wheel-centre-y);
     translate: 0 -50%;
+    width: 27px;
+    height: 80px;
+  }
+
+  /*
+   * The shape's fill, clipped to the outline path (toc-morph.ts writes it each frame; at rest it's the
+   * tab). The bars and labels inside it are clipped by the same element, so nothing shows outside the
+   * rounded corners mid-morph. The outline stroke and the handle's hit area sit outside it.
+   */
+  .toc-morph__clip {
+    position: absolute;
+    inset: 0;
+    contain: layout paint;
+    clip-path: var(--tabClip);
+  }
+
+  /* Rows keep their open width while the frame grows, so text never reflows mid-morph. */
+  .toc-morph__panel {
+    position: absolute;
+    top: 50%;
+    right: calc(var(--spacing) * 2);
+    translate: 0 -50%;
+    opacity: 0;
+  }
+  .toc-morph__panel[inert] {
+    pointer-events: none;
+  }
+
+  /*
+   * The row highlight is the SVG rect (it grows out of the active tick and follows the finger), so the
+   * list's own active background is off here; text colour follows the highlight (data-hl).
+   */
+  .toc-morph :global([data-toc-item]) {
+    background-color: transparent;
+    color: var(--color-fg-secondary);
+  }
+  .toc-morph :global([data-toc-item][data-hl]) {
+    color: var(--color-fg-primary);
+  }
+
+  .toc-morph__handle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    translate: 0 -50%;
+    width: 27px;
+    height: 80px;
+    border: 0;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
   }
   /* Extend the 27px-wide tab to a 44px hit area (rules.md → touch targets). */
-  .toc-handle::before {
+  .toc-morph__handle::before {
     content: '';
     position: absolute;
     inset: 0 0 0 calc(var(--spacing) * -4.25);
   }
 
-  .toc-popover {
-    position: fixed;
-    inset: auto 0 auto auto;
-    top: calc(50% - var(--spacing) * 18.5);
-    translate: 0 -50%;
-    /* Figma shape is 193×223; it widens to the longest label. Right padding clears the edge tabs. */
-    min-width: 193px;
-    width: max-content;
-    height: 223px;
-    margin: 0;
-    padding: 0 calc(var(--spacing) * 4) 0 calc(var(--spacing) * 2);
-    border: 0;
-    background: transparent;
-    overflow: visible;
-  }
-  .toc-popover:popover-open {
-    display: flex;
-    align-items: center;
+  /* Pressing and dragging scrubs the list: no page panning, text selection or callout menu. */
+  .toc-morph,
+  .toc-morph * {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 </style>
-
-<script>
-  const popover = document.getElementById('toc-popover');
-  popover?.addEventListener('toggle', (event) => {
-    if ((event as ToggleEvent).newState !== 'open') return;
-    popover.querySelector<HTMLElement>('[aria-current="true"]')?.focus();
-  });
-</script>

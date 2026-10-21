@@ -1,14 +1,14 @@
 ---
 /**
- * Project table of contents (Figma 233:4545 desktop; inside the TocHandle popover on mobile, 233:4714).
+ * Project table of contents (Figma 233:4545 desktop; inside the mobile TOC panel, 233:4714).
  * Items are real links to the case studies; the wheel controller (Phase 4) turns a plain click into a rotation.
  */
 import type { CaseStudy } from '../../lib/content';
 
 interface Props {
   entries: CaseStudy[];
-  /** `side`: desktop right column (dash on active). `popover`: mobile list (no dash, tighter gap). */
-  variant?: 'side' | 'popover';
+  /** `side`: desktop right column (dash on active). `panel`: mobile morphing TOC (no dash, tighter gap). */
+  variant?: 'side' | 'panel';
   activeIndex?: number;
   class?: string;
 }

@@ -18,6 +18,24 @@ export const ease = {
 /** Motion springs in `visualDuration` (s) + `bounce` form. */
 export const spring = {
   wheel: { type: 'spring', visualDuration: 0.4, bounce: 0.12 },
+  /** Mobile TOC: tab ⇄ panel morph and the row highlight following the finger. */
+  toc: { type: 'spring', visualDuration: 0.35, bounce: 0.15 },
+} as const;
+
+/** Mobile bottom sheet (design/layout-and-motion.md → Bottom sheet). */
+export const sheet = {
+  /** s after the wheel settles (and no finger is on the TOC) before the sheet expands again. */
+  expandDelay: 0.25,
+} as const;
+
+/** Mobile TOC (design/layout-and-motion.md → TOC handle). */
+export const toc = {
+  /** A press released within this many seconds without dragging is a tap: the panel stays open. */
+  tapMax: 0.3,
+  /** px a press must travel before it scrubs (and before the row under the finger takes over). */
+  scrubSlop: 6,
+  /** Labels fade in over the morph from this progress on, once the shape has grown under them. */
+  labelFadeFrom: 0.4,
 } as const;
 
 /**
