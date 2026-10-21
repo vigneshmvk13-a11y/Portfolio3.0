@@ -3,11 +3,26 @@
  * five ticks) and expanded 233:4714 (193×223 panel with 36px rows, 2px apart, inset 8px).
  * The outline is one path at every progress p (0 = tab, 1 = panel): concave "ears" meet the screen
  * edge top and bottom right, a rounded body extends left. At rest the paths match Figma's own.
+ *
+ * Corners: the tab's are Figma's smoothed ("squircle") corners, the panel's are circular. Both are
+ * written as the same three cubics, so the corner blends from one to the other with p. A path that
+ * switched corner shapes at rest made the corners jump at the end of a collapse.
  */
 
-/** Figma's tab outline (233:4609), smooth corners. Drawn exactly at p = 0. */
-export const TAB_PATH =
-  'M13.5 8C20.9553 8 27 4.41821 27 0V8V72V80C27 75.5818 20.9553 72 13.5 72C8.3574 72 5.7861 72 3.88718 70.8618C2.75874 70.1855 1.81453 69.2413 1.13817 68.1128C0 66.2139 0 63.6426 0 58.5V21.5C0 16.3574 0 13.7861 1.13817 11.8872C1.81453 10.7587 2.75874 9.81453 3.88718 9.13817C5.7861 8 8.3574 8 13.5 8Z';
+/** Figma's tab corner (233:4609), as three cubics from (1, 0) to (0, 1), in units of the radius. */
+const SMOOTH_CORNER: readonly [number, number][] = [
+  [1, 0],
+  [0.619067, 0], [0.4286, 0], [0.287939, 0.084309],
+  [0.204351, 0.13441], [0.13441, 0.204351], [0.084309, 0.287939],
+  [0, 0.4286], [0, 0.619067], [0, 1],
+];
+/** A circular quarter as three 30° cubics, in the same layout (the panel's corner, 233:4714). */
+const ROUND_CORNER: readonly [number, number][] = [
+  [1, 0],
+  [0.824468, 0], [0.652024, 0.046199], [0.5, 0.133975],
+  [0.347976, 0.221751], [0.221751, 0.347976], [0.133975, 0.5],
+  [0.046199, 0.652024], [0, 0.824468], [0, 1],
+];
 
 export const TAB = { w: 27, h: 80, earW: 13.5, earH: 8, radius: 13.5, tick: { inset: 4, w: 19, h: 4, rx: 2, pitch: 10 } };
 export const PANEL = { minW: 193, h: 223, earW: 8.5, earH: 8.5, radius: 16, row: { inset: 8, h: 36, rx: 8, pitch: 38 } };
@@ -23,22 +38,31 @@ export interface Frame {
   path: string;
 }
 
-/** Outline at progress p for a panel `panelW` wide (it widens to fit the longest label). */
+/**
+ * Outline at progress p for a panel `panelW` wide (it widens to fit the longest label). The spring may
+ * undershoot below 0 on close; the outline holds at the tab then (no flicker).
+ */
 export function shapeAt(p: number, panelW: number): Frame {
-  if (p <= 0) return { w: TAB.w, h: TAB.h, path: TAB_PATH };
-  const w = lerp(TAB.w, panelW, p);
-  const h = lerp(TAB.h, PANEL.h, p);
-  const ew = lerp(TAB.earW, PANEL.earW, p);
-  const eh = lerp(TAB.earH, PANEL.earH, p);
-  const r = lerp(TAB.radius, PANEL.radius, p);
+  const t = Math.max(0, p);
+  const w = lerp(TAB.w, panelW, t);
+  const h = lerp(TAB.h, PANEL.h, t);
+  const ew = lerp(TAB.earW, PANEL.earW, t);
+  const eh = lerp(TAB.earH, PANEL.earH, t);
+  const r = lerp(TAB.radius, PANEL.radius, t);
+  const blend = Math.min(1, t);
+  const corner = SMOOTH_CORNER.map(([x, y], i) => [lerp(x, ROUND_CORNER[i][0], blend), lerp(y, ROUND_CORNER[i][1], blend)]);
   const c = (n: number) => n.toFixed(2);
+  const pt = ([x, y]: number[], flip: boolean) => `${c(x * r)} ${c(flip ? h - eh - y * r : eh + y * r)}`;
+  // Top-left runs (r, eh) → (0, eh + r); bottom-left mirrors it, run backwards, (0, h − eh − r) → (r, h − eh).
+  const topLeft = [1, 4, 7].map((i) => `C${pt(corner[i], false)} ${pt(corner[i + 1], false)} ${pt(corner[i + 2], false)}`);
+  const bottomLeft = [8, 5, 2].map((i) => `C${pt(corner[i], true)} ${pt(corner[i - 1], true)} ${pt(corner[i - 2], true)}`);
   const path = [
     `M${c(w)} ${c(eh)}V0`,
     `C${c(w)} ${c(K * eh)} ${c(w - ew * (1 - K))} ${c(eh)} ${c(w - ew)} ${c(eh)}`,
     `H${c(r)}`,
-    `C${c(r * (1 - K))} ${c(eh)} 0 ${c(eh + r * (1 - K))} 0 ${c(eh + r)}`,
+    ...topLeft,
     `V${c(h - eh - r)}`,
-    `C0 ${c(h - eh - r * (1 - K))} ${c(r * (1 - K))} ${c(h - eh)} ${c(r)} ${c(h - eh)}`,
+    ...bottomLeft,
     `H${c(w - ew)}`,
     `C${c(w - ew * (1 - K))} ${c(h - eh)} ${c(w)} ${c(h - eh * K)} ${c(w)} ${c(h)}`,
     `V${c(h - eh)}V${c(eh)}Z`,

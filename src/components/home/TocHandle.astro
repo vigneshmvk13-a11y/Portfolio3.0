@@ -7,7 +7,7 @@
  * it matches Figma before any JS. Behaviour: src/scripts/toc-morph.ts; geometry: src/scripts/toc-shape.ts.
  */
 import ProjectToc from './ProjectToc.astro';
-import { TAB, TAB_PATH, barAt } from '../../scripts/toc-shape';
+import { TAB, barAt, shapeAt } from '../../scripts/toc-shape';
 import type { CaseStudy } from '../../lib/content';
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
 
 const { entries, activeIndex = 0 } = Astro.props;
 // The Figma tab fits five ticks (10px apart); more projects need a taller tab.
+const tabPath = shapeAt(0, 0).path;
 const ticks = entries.slice(0, 5).map((_, i, all) => barAt(i, all.length, 0, 0, TAB.w, TAB.h));
 ---
 
@@ -61,7 +62,7 @@ const ticks = entries.slice(0, 5).map((_, i, all) => barAt(i, all.length, 0, 0, 
     focusable="false"
     data-toc-svg
   >
-    <path class="stroke-line-strong" fill="none" stroke-width="1" d={TAB_PATH} data-toc-outline></path>
+    <path class="stroke-line-strong" fill="none" stroke-width="1" d={tabPath} data-toc-outline></path>
   </svg>
   <button
     type="button"
@@ -73,7 +74,7 @@ const ticks = entries.slice(0, 5).map((_, i, all) => barAt(i, all.length, 0, 0, 
   ></button>
 </div>
 
-<style define:vars={{ tabClip: `path('${TAB_PATH}')` }}>
+<style define:vars={{ tabClip: `path('${tabPath}')` }}>
   /*
    * Anchored to the active card's centre (global.css --wheel-centre-y; Figma: tab centre 352, card 355).
    * Width and height are written by toc-morph.ts while it morphs; these are the tab's (TAB in toc-shape.ts).

@@ -64,6 +64,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · layout-and-motion · Fix: the TOC's corners jumped at the end of a collapse. The morph drew circular corners and swapped to Figma's smoothed tab corners only at rest, and the spring's undershoot could flip it twice. The corners now blend continuously from the tab's smoothed shape to the panel's circular one (same three cubics), and the outline holds at the tab during undershoot. Why: Vignesh spotted the jerk on his phone.
+
 - 2026-10-22 · tokens/components · Footer update (Figma 246:2305 open, 251:6688 collapsed) plus desktop tags (233:4527):
   - The handle is now in Figma: 40×6 `gray/300`, 16px below the top border open and 12px collapsed. Bar → intro 32px; collapsed bar → buttons 32px (`--sheet-handle-gap`, superseding the 24px dial).
   - Name → subline 8px; text → tags 16px.

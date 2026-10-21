@@ -189,7 +189,7 @@ Figma component 2: collapsed tab `233:4609` (27×80, five 19×4 ticks 10px apart
 - **Outline:** one path at every `p`.
   - The right-edge "ears" (13.5×8 → 8.5×8.5) meet the screen edge.
   - The rounded body (radius 13.5 → 16) grows leftwards and taller, symmetric about the tab's centre.
-  - At rest it draws Figma's exact tab path; mid-morph the corners are circular.
+  - Corners blend continuously from Figma's smoothed tab corner (p = 0, within 0.005px of 233:4609) to the panel's circular 16px corner (p = 1), both written as the same three cubics. The first build swapped corner shapes only at rest, so the corners jumped at the end of a collapse; the spring's undershoot past 0 could flip it more than once. Below 0 the outline now holds at the tab.
 - **Ticks → rows:** each tick stretches into its own row: inset 4 → 8, 19×4 → (panel − 16)×36, radius 2 → 8, spacing 10 → 38. Grey ticks fade as they grow; the active (dark) tick becomes the `surface-selected` highlight.
 - **Labels ride their bars:** the list follows the bars' left edge, and each row follows its bar's spacing. They fade in over `p` 0.4–1 (`toc.labelFadeFrom`).
 - **One clip:** the fill, bars and labels sit in one element clipped to the outline path (`clip-path: path()`, written each frame), so text never shows outside the rounded shape. When the fill was a separate SVG, it could land a frame behind the clip. The 1px outline stroke is a separate SVG on top.
