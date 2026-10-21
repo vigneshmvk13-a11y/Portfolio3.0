@@ -242,33 +242,52 @@ try {
   check('TOC: held still and released closes it, wheel unchanged', t.open === 'false' && s.index === '2', `${JSON.stringify(t)} ${JSON.stringify(s)}`);
 
   // Sheet: only the user reopens it (tap the surface, drag up, or the handle); drag down closes it.
-  const sheetState = `(() => { const sh = document.querySelector('[data-bottom-sheet]'); const bg = sh.querySelector('[data-sheet-bg]').getBoundingClientRect(); const g = sh.querySelector('[data-sheet-grabber]'); const intro = getComputedStyle(sh.querySelector('[data-sheet-intro]')); return { collapsed: sh.hasAttribute('data-collapsed'), bgTop: Math.round(bg.top), expanded: g.getAttribute('aria-expanded'), label: g.getAttribute('aria-label'), introOpacity: Number(intro.opacity) }; })()`;
+  const sheetState = `(() => { const sh = document.querySelector('[data-bottom-sheet]'); const bg = sh.querySelector('[data-sheet-bg]').getBoundingClientRect(); const g = sh.querySelector('[data-sheet-grabber]'); const intro = getComputedStyle(sh.querySelector('[data-sheet-intro]')); const bar = sh.querySelector('.bottom-sheet__bar').getBoundingClientRect(); const act = sh.querySelector('[data-sheet-actions]').getBoundingClientRect(); return { handleGap: Math.round(act.top - bar.bottom), blur: intro.filter, collapsed: sh.hasAttribute('data-collapsed'), bgTop: Math.round(bg.top), expanded: g.getAttribute('aria-expanded'), label: g.getAttribute('aria-label'), introOpacity: Number(intro.opacity) }; })()`;
   let sh = await m.eval(sheetState);
   check('sheet: collapsed after scrolling, handle says "Show introduction"', sh.collapsed && sh.expanded === 'false' && sh.label === 'Show introduction' && sh.introOpacity === 0, JSON.stringify(sh));
-  await touch('touchStart', 60, sh.bgTop + 8); await sleep(40); await touch('touchEnd'); await sleep(500);
+  await touch('touchStart', 60, sh.bgTop + 8); await sleep(40); await touch('touchEnd'); await sleep(900);
   const open = await m.eval(sheetState);
   check('sheet: a tap on the collapsed surface opens it', !open.collapsed && open.expanded === 'true' && open.introOpacity === 1 && open.bgTop < sh.bgTop - 100, `${JSON.stringify(sh)} → ${JSON.stringify(open)}`);
   await m.shot('sheet-open-393.png');
+  // Drag down slowly: the intro blurs as it fades, and is gone by halfway.
+  {
+    const travel = open.bgTop < sh.bgTop ? sh.bgTop - open.bgTop : 0;
+    await touch('touchStart', 60, open.bgTop + 60);
+    for (let dy = 8; dy <= Math.round(travel * 0.25) + 6; dy += 4) { await touch('touchMove', 60, open.bgTop + 60 + dy); await sleep(16); }
+    await sleep(60);
+    const quarter = await m.eval(sheetState);
+    for (let dy = Math.round(travel * 0.25) + 6; dy <= Math.round(travel * 0.5) + 24; dy += 4) { await touch('touchMove', 60, open.bgTop + 60 + dy); await sleep(16); }
+    await sleep(60);
+    const half = await m.eval(sheetState);
+    await m.shot('sheet-drag-quarter-393.png');
+    check('sheet: a quarter of the way down the intro is half faded and blurred', quarter.introOpacity > 0.3 && quarter.introOpacity < 0.7 && quarter.blur.startsWith("blur"), JSON.stringify(quarter));
+    check('sheet: by halfway the intro is gone', half.introOpacity === 0, JSON.stringify(half));
+    for (let dy = Math.round(travel * 0.5) + 24; dy >= 0; dy -= 8) { await touch('touchMove', 60, open.bgTop + 60 + dy); await sleep(16); }
+    await sleep(60);
+    const back = await m.eval(sheetState);
+    await touch('touchEnd'); await sleep(900);
+    check('sheet: dragging back up brings it back (sharp, no blur) and it stays open', back.introOpacity === 1 && (await m.eval(sheetState)).collapsed === false, JSON.stringify(back));
+  }
   // Drag down from the middle of the open sheet: it follows the finger, then settles closed.
   await touch('touchStart', 60, open.bgTop + 60);
   for (let dy = 8; dy <= 80; dy += 8) { await touch('touchMove', 60, open.bgTop + 60 + dy); await sleep(16); }
   const dragged = await m.eval(sheetState);
-  await touch('touchEnd'); await sleep(500);
+  await touch('touchEnd'); await sleep(900);
   sh = await m.eval(sheetState);
-  check('sheet: dragging down follows the finger, then collapses', dragged.bgTop > open.bgTop + 50 && dragged.bgTop < sh.bgTop && sh.collapsed, `open=${open.bgTop} mid=${dragged.bgTop} end=${JSON.stringify(sh)}`);
+  check('sheet: dragging down follows the finger, then collapses; handle gap is --sheet-handle-gap (19px)', dragged.bgTop > open.bgTop + 50 && dragged.bgTop < sh.bgTop && sh.collapsed && sh.handleGap === 19, `open=${open.bgTop} mid=${dragged.bgTop} end=${JSON.stringify(sh)}`);
   // Fling up from the collapsed surface: opens.
   await touch('touchStart', 60, sh.bgTop + 8);
   for (let dy = 10; dy <= 60; dy += 10) { await touch('touchMove', 60, sh.bgTop + 8 - dy); await sleep(12); }
-  await touch('touchEnd'); await sleep(500);
+  await touch('touchEnd'); await sleep(900);
   sh = await m.eval(sheetState);
   s = await m.state();
   check('sheet: a swipe up opens it, and does not move the wheel', !sh.collapsed && s.index === '2', `${JSON.stringify(sh)} ${JSON.stringify(s)}`);
   // The handle is a button: keyboard toggles it (the non-drag alternative).
   await m.eval(`document.querySelector('[data-sheet-grabber]').focus()`);
-  await m.key('Enter', 'Enter', 13); await sleep(450);
+  await m.key('Enter', 'Enter', 13); await sleep(900);
   sh = await m.eval(sheetState);
   check('sheet: the handle toggles it by keyboard', sh.collapsed && sh.expanded === 'false', JSON.stringify(sh));
-  await m.key('Enter', 'Enter', 13); await sleep(450);
+  await m.key('Enter', 'Enter', 13); await sleep(900);
   sh = await m.eval(sheetState);
   check('sheet: …and back open', !sh.collapsed && sh.expanded === 'true', JSON.stringify(sh));
   check('no JS errors (mobile)', m.errors.length === 0, m.errors.join(' | '));

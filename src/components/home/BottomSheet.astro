@@ -79,12 +79,11 @@ const resumeTodo = resume ? undefined : 'todo-content';
   }
 
   /*
-   * Mobile and tablet. The sheet keeps its expanded layout; collapsing is compositor-only so a drag
-   * follows the finger at 60fps:
-   *   --shift  how far the surface has slid down (0 = expanded; --sheet-collapse, measured by
-   *            sheet.ts, = collapsed: the buttons then sit --sheet-pb from the top edge, Figma 246:2333);
-   *   the surface and the handle translate by --shift; the intro is masked by the surface's top edge
-   *   (clip-path), so it disappears under it; the buttons never move.
+   * Mobile and tablet. The sheet keeps its expanded layout; sheet.ts springs one openness value and
+   * writes, each frame: --shift (how far the surface has slid down; collapsed = the buttons sit
+   * --sheet-handle-gap below the handle's bar) and the intro's opacity and blur. The surface and the
+   * handle translate by --shift; the intro at half that (it sinks into the sheet, fading out by
+   * halfway); the buttons never move. Transforms and opacity only, so a drag tracks the finger at 60fps.
    * Only the surface, handle and buttons take pointer input, so taps above the collapsed surface reach
    * the wheel.
    */
@@ -96,8 +95,10 @@ const resumeTodo = resume ? undefined : 'todo-content';
       /* The surface's 1px top border sits on the absolute background; keep Figma's height (299 at 852). */
       padding-top: calc(var(--sheet-pt) + 1px);
     }
-    .bottom-sheet[data-collapsed] {
-      --shift: var(--sheet-collapse, 0px);
+
+    .bottom-sheet__bg,
+    .bottom-sheet__grabber {
+      transform: translateY(var(--shift));
     }
 
     .bottom-sheet__bg {
@@ -106,8 +107,6 @@ const resumeTodo = resume ? undefined : 'todo-content';
       z-index: -1;
       pointer-events: auto;
       touch-action: none;
-      transform: translateY(var(--shift));
-      transition: transform var(--duration-base) var(--ease-in-out);
     }
 
     /* Handle: a 36×4 bar 10px below the top edge; the hit area is 96px wide and reaches above the edge. */
@@ -118,13 +117,17 @@ const resumeTodo = resume ? undefined : 'todo-content';
       width: calc(var(--spacing) * 24);
       height: calc(var(--spacing) * 6);
       translate: -50% 0;
+      /* Buttons centre their content vertically; a top-aligned flex column puts the bar at its margin. */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
       border: 0;
       background: transparent;
       pointer-events: auto;
       touch-action: none;
       -webkit-tap-highlight-color: transparent;
-      transform: translateY(var(--shift));
-      transition: transform var(--duration-base) var(--ease-in-out);
     }
     .bottom-sheet__grabber::before {
       content: '';
@@ -134,30 +137,18 @@ const resumeTodo = resume ? undefined : 'todo-content';
     .bottom-sheet__bar {
       width: calc(var(--spacing) * 9);
       height: var(--spacing);
-      margin: calc(var(--spacing) * 2.5) auto 0;
+      margin-top: calc(var(--spacing) * 2.5);
     }
 
+    /* Its own layer: its position, opacity and blur change every frame while the sheet moves. */
     .bottom-sheet__intro {
-      clip-path: inset(max(0px, var(--shift) - var(--sheet-pt) - 1px) 0 0 0);
-      transition:
-        clip-path var(--duration-base) var(--ease-in-out),
-        opacity var(--duration-fast) var(--ease-out);
-    }
-    .bottom-sheet[data-collapsed]:not([data-dragging]) .bottom-sheet__intro {
-      opacity: 0;
+      will-change: transform, opacity, filter;
     }
 
     .bottom-sheet__actions {
       position: relative;
       z-index: 1;
       pointer-events: auto;
-    }
-
-    /* While a finger drags the sheet, everything follows it directly. */
-    .bottom-sheet[data-dragging] .bottom-sheet__bg,
-    .bottom-sheet[data-dragging] .bottom-sheet__grabber,
-    .bottom-sheet[data-dragging] .bottom-sheet__intro {
-      transition: none;
     }
   }
 

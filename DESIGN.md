@@ -64,6 +64,13 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · layout-and-motion · Sheet motion and handle spacing:
+  - The intro now **blurs and fades with the sheet's position**: gone by halfway, sharpening back in only past halfway, sinking at half the sheet's speed.
+  - Taps, the handle and scroll use a 0.5s ease-in-out (slow fade); drag release uses a spring.
+  - The clip-path mask is dropped; it could lag a frame on iOS and show part of the name above the edge.
+  - New dial `--sheet-handle-gap` (19px, the same at every height; it was 15–19px derived from padding). The handle bar now really sits 10px from the edge (a button had been centring it at 15).
+  - Why: Vignesh's review on his phone.
+
 - 2026-10-22 · layout-and-motion · **Bottom sheet: compact, user-controlled, draggable.**
   - Spacing scales with viewport height: exactly Figma at 852px, ~241px at iPhone Safari's 660 (it was a fixed 299px, 45% of the screen).
   - It collapses on scroll and opens only by a tap, the new handle, or a drag up; drag down or the handle closes it. No auto-reopen.

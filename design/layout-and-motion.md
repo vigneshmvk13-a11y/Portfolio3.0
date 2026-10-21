@@ -232,16 +232,17 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 - 783px (Nothing Phone 1 Chrome): ~282px.
 - 660px (iPhone Safari): ~241px. The wheel gains ~60px, and the card above shows 123px instead of 65.
 
-**Collapsed** (Figma 246:2333): the buttons sit `--sheet-pb` below the top edge, but never closer to the handle bar than the bar is to the edge.
+**Collapsed** (Figma 246:2333): the buttons sit `--sheet-handle-gap` (19px, Vignesh's dial) below the bottom of the handle bar, at every screen height. At 852px that's exactly Figma: 127px tall, buttons 32px from both edges.
 
-**Mechanics** (compositor-only, so a drag tracks the finger at 60fps):
-- The sheet keeps its expanded layout.
-- The surface (`[data-sheet-bg]`) and the handle translate by `--shift`.
-- The intro is masked by the surface's top edge (`clip-path`) and fades when collapsed.
-- The buttons never move. Only the surface, handle and buttons take pointer input, so taps above the collapsed surface reach the wheel.
-- Script: `src/scripts/sheet.ts`. It replaced the earlier `grid-template-rows` collapse, which was a layout animation.
+**Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
+- One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed.
+- The surface (`[data-sheet-bg]`) and the handle slide by `--shift`. The buttons never move.
+- The **intro blurs and fades with the sheet's position**. It's fully visible when open and gone by halfway (`sheet.introGoneAt`), blurring up to 10px as it fades. When opening it comes back only past halfway, sharpening as it arrives.
+- The intro slides at half the sheet's speed (`sheet.introFollow`), so it sinks into the sheet. It's gone before the surface's top edge or the buttons could reach it, so it needs no clip.
+- The earlier `clip-path` mask could fall a frame behind the surface on iOS (part of the name showing above the edge), so it was dropped.
+- Transforms, opacity and a small blur only. Measured at 60fps at 4× CPU. Only the surface, handle and buttons take pointer input, so taps above the collapsed surface reach the wheel.
 
-**Reduced motion:** collapsing and expanding are instant. A drag still follows the finger (direct manipulation).
+**Reduced motion:** collapsing and expanding are instant, with no blur in between. A drag still follows the finger (direct manipulation), with the fade.
 
 History: it used to follow direction (2026-10-20), then re-expand 0.25s after every settle (2026-10-21). That re-expansion covered the next card exactly when the user paused to look, so it was dropped.
 

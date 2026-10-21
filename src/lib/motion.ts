@@ -20,6 +20,21 @@ export const spring = {
   wheel: { type: 'spring', visualDuration: 0.4, bounce: 0.12 },
   /** Mobile TOC: tab ⇄ panel morph and the row highlight following the finger. */
   toc: { type: 'spring', visualDuration: 0.35, bounce: 0.15 },
+  /** Mobile bottom sheet settling after a drag (carries the release speed). Taps use duration.slow + ease.inOut. */
+  sheet: { type: 'spring', visualDuration: 0.5, bounce: 0 },
+} as const;
+
+/** Mobile bottom sheet (design/layout-and-motion.md → Bottom sheet). */
+export const sheet = {
+  /**
+   * The intro blurs and fades with the sheet's position: fully visible when open, fully gone by the
+   * halfway point (and back in only past halfway when opening). Blur at halfway, px.
+   */
+  introBlur: 10,
+  /** Sheet openness (1 = open, 0 = collapsed) below which the intro is gone. */
+  introGoneAt: 0.5,
+  /** The intro rides at this fraction of the sheet's slide, so it sinks into the sheet as it fades. */
+  introFollow: 0.5,
 } as const;
 
 /** Mobile TOC (design/layout-and-motion.md → TOC handle). */

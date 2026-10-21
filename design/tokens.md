@@ -151,6 +151,7 @@ Motion's `visualDuration` + `bounce` form, so the values read like durations. Sp
 | `motion.ts` | Value | Use |
 |---|---|---|
 | `spring.wheel` | `{ visualDuration: 0.4, bounce: 0.12 }` | Wheel step (mouse notch, key, TOC), trackpad snap, drag release. Starts at the wheel's current speed when retargeted |
+| `spring.sheet` | `{ visualDuration: 0.5, bounce: 0 }` | Mobile sheet settling after a drag (carries the release speed). Taps, the handle and scroll use `duration.slow` + `ease.inOut` so the intro fades slowly |
 | `spring.toc` | `{ visualDuration: 0.35, bounce: 0.15 }` | Mobile TOC: tab ⇄ panel morph, and the row highlight following the finger |
 
 ### Mobile TOC and sheet
@@ -162,6 +163,9 @@ JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Botto
 | `toc.tapMax` | `0.3` s | A press released within this, without dragging, is a tap (the panel stays open) |
 | `toc.scrubSlop` | `6` px | Travel before a press scrubs |
 | `toc.labelFadeFrom` | `0.4` | Morph progress where labels start fading in |
+| `sheet.introGoneAt` | `0.5` | Sheet openness (1 open, 0 collapsed) where the intro is fully faded; it blurs as it fades |
+| `sheet.introBlur` | `10` px | Intro blur at that point |
+| `sheet.introFollow` | `0.5` | The intro slides at half the sheet's speed, sinking into it as it fades |
 
 ### Mobile sheet spacing (CSS, `global.css`)
 
@@ -172,7 +176,8 @@ Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Eac
 | `--sheet-pt` | 32 → 48px | Top padding (expanded) |
 | `--sheet-intro-gap` | 12 → 20px | Name/role block → logos |
 | `--sheet-gap` | 20 → 32px | Intro → buttons |
-| `--sheet-pb` | 20 → 32px | Bottom padding; also the collapsed top padding (at least twice the handle bar's 14px). Registered with `@property` so JS reads it in px |
+| `--sheet-pb` | 20 → 32px | Bottom padding |
+| `--sheet-handle-gap` | 19px (not scaled) | Collapsed: from the bottom of the handle bar to the top of the buttons. **Vignesh's dial.** 19 reproduces Figma 246:2333 at 852 (collapsed sheet 127px tall). Registered with `@property` so JS reads it in px |
 | `--sheet-btn` | 52px below 720px tall, else 62px | Sheet button size (52 = the desktop size) |
 | `--sheet-h` | 241 → 299px | Expanded height, derived from the above (lays out the wheel) |
 

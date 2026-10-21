@@ -61,6 +61,15 @@
   inherits: true;
   initial-value: 32px;
 }
+/*
+ * Collapsed sheet: space between the bottom of the drag handle's bar and the top of the buttons
+ * (Vignesh's dial; 19px reproduces Figma 246:2333's 32px top padding). Same at every screen height.
+ */
+@property --sheet-handle-gap {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 19px;
+}
 :root {
   --sheet-pt: clamp(32px, 32px + 16 * (100dvh - 660px) / 192, 48px);
   --sheet-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
