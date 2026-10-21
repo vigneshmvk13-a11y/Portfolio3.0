@@ -274,7 +274,7 @@ try {
   const dragged = await m.eval(sheetState);
   await touch('touchEnd'); await sleep(900);
   sh = await m.eval(sheetState);
-  check('sheet: dragging down follows the finger, then collapses; handle gap is --sheet-handle-gap (19px)', dragged.bgTop > open.bgTop + 50 && dragged.bgTop < sh.bgTop && sh.collapsed && sh.handleGap === 19, `open=${open.bgTop} mid=${dragged.bgTop} end=${JSON.stringify(sh)}`);
+  check('sheet: dragging down follows the finger, then collapses; handle gap is --sheet-handle-gap (24px)', dragged.bgTop > open.bgTop + 50 && dragged.bgTop < sh.bgTop && sh.collapsed && sh.handleGap === 24, `open=${open.bgTop} mid=${dragged.bgTop} end=${JSON.stringify(sh)}`);
   // Fling up from the collapsed surface: opens.
   await touch('touchStart', 60, sh.bgTop + 8);
   for (let dy = 10; dy <= 60; dy += 10) { await touch('touchMove', 60, sh.bgTop + 8 - dy); await sleep(12); }

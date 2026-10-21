@@ -53,7 +53,7 @@
  * Mobile bottom sheet spacing (Figma 246:2305, designed at 852px tall). Phone browsers leave less
  * (~660px in iPhone Safari), so the spacing scales with the viewport height, linearly from compact at
  * 660px to Figma's at 852px, keeping the sheet near Figma's 35% share so the wheel stays the focus.
- * Buttons step down to the desktop size (52px) below 720px tall. --sheet-h is the expanded height
+ * --sheet-h is the expanded height
  * (intro: 74px text + gap + 30px logos). --sheet-pb is registered so JS can read it in px.
  */
 @property --sheet-pb {
@@ -63,27 +63,23 @@
 }
 /*
  * Collapsed sheet: space between the bottom of the drag handle's bar and the top of the buttons
- * (Vignesh's dial; 19px reproduces Figma 246:2333's 32px top padding). Same at every screen height.
+ * (Vignesh's dial: 24px, 2026-10-22). Same at every screen height.
  */
 @property --sheet-handle-gap {
   syntax: '<length>';
   inherits: true;
-  initial-value: 19px;
+  initial-value: 24px;
 }
 :root {
   --sheet-pt: clamp(32px, 32px + 16 * (100dvh - 660px) / 192, 48px);
   --sheet-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
   --sheet-pb: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
   --sheet-intro-gap: clamp(12px, 12px + 8 * (100dvh - 660px) / 192, 20px);
+  /* Sheet buttons stay Figma's 62×62 (radius 20) at every height; shrinking them changed their look. */
   --sheet-btn: 62px;
   --sheet-h: calc(
     1px + var(--sheet-pt) + 104px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb)
   );
-}
-@media (height < 45rem) {
-  :root {
-    --sheet-btn: 52px;
-  }
 }
 
 :root {
@@ -157,7 +153,7 @@
   --radius-item: 8px;
   --radius-button-sm: 12px;
   --radius-media-sm: 16px;
-  --radius-button-lg: 20px;
+  --radius-button-lg: 16px;
   --radius-card: 24px;
   --radius-panel: 32px;
   --radius-panel-inner: 28px;

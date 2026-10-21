@@ -152,17 +152,6 @@ const resumeTodo = resume ? undefined : 'todo-content';
     }
   }
 
-  /* Short screens: the sheet buttons drop to the desktop size, 52px (--sheet-btn). */
-  @media (width < 75rem) and (height < 45rem) {
-    .bottom-sheet__actions :global(:is(a, button)) {
-      padding: calc(var(--spacing) * 4);
-    }
-    .bottom-sheet__actions :global(svg) {
-      width: var(--spacing-icon-sm);
-      height: var(--spacing-icon-sm);
-    }
-  }
-
   @media (min-width: 75rem) {
     .bottom-sheet {
       padding: 0;

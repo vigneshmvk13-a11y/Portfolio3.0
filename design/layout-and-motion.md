@@ -229,10 +229,10 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 
 **Compact on short screens.** All spacing scales with viewport height (`tokens.md → Mobile sheet spacing`), so the sheet stays near Figma's 35% share:
 - 852px tall: 299px, exactly Figma.
-- 783px (Nothing Phone 1 Chrome): ~282px.
-- 660px (iPhone Safari): ~241px. The wheel gains ~60px, and the card above shows 123px instead of 65.
+- 783px (Nothing Phone 1 Chrome): ~282px. The buttons stay Figma's 62×62 (radius 16px) at every height.
+- 660px (iPhone Safari): ~251px. The wheel gains ~50px, and the card above shows 113px instead of 65.
 
-**Collapsed** (Figma 246:2333): the buttons sit `--sheet-handle-gap` (19px, Vignesh's dial) below the bottom of the handle bar, at every screen height. At 852px that's exactly Figma: 127px tall, buttons 32px from both edges.
+**Collapsed** (Figma 246:2333): the buttons sit `--sheet-handle-gap` (24px, Vignesh's dial) below the bottom of the handle bar, at every screen height (132px tall at 852; Figma's handle-less frame is 127).
 
 **Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
 - One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed.

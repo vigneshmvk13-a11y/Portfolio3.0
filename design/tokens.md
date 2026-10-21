@@ -107,7 +107,7 @@ Named spacing:
 | `--spacing-banner` | 200px | About banner height |
 | `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
 | `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
-| `--sheet-h` | 241–299px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
+| `--sheet-h` | 251–299px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
 | `--sheet-content-w` | 313px | Sheet text column; side padding flexes 24–40px around it |
 | `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 
@@ -118,7 +118,7 @@ Named spacing:
 | `rounded-item` | 8px | TOC items, dash |
 | `rounded-button-sm` | 12px | Desktop icon button |
 | `rounded-media-sm` | 16px | Gallery photos, close button |
-| `rounded-button-lg` | 20px | Mobile/drawer icon buttons |
+| `rounded-button-lg` | 16px | Mobile sheet and drawer icon buttons (Vignesh, 2026-10-22: 16px, plain circular corners; Figma drew 20) |
 | `rounded-card` | 24px | Project card, logo pills |
 | `rounded-panel` | 32px | Drawer, sheet top |
 | `rounded-panel-inner` | 28px | Inside a `p-1` panel (32 − 4): mobile drawer banner |
@@ -177,9 +177,9 @@ Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Eac
 | `--sheet-intro-gap` | 12 → 20px | Name/role block → logos |
 | `--sheet-gap` | 20 → 32px | Intro → buttons |
 | `--sheet-pb` | 20 → 32px | Bottom padding |
-| `--sheet-handle-gap` | 19px (not scaled) | Collapsed: from the bottom of the handle bar to the top of the buttons. **Vignesh's dial.** 19 reproduces Figma 246:2333 at 852 (collapsed sheet 127px tall). Registered with `@property` so JS reads it in px |
-| `--sheet-btn` | 52px below 720px tall, else 62px | Sheet button size (52 = the desktop size) |
-| `--sheet-h` | 241 → 299px | Expanded height, derived from the above (lays out the wheel) |
+| `--sheet-handle-gap` | 24px (not scaled) | Collapsed: from the bottom of the handle bar to the top of the buttons. **Vignesh's dial** (24px, 2026-10-22; collapsed sheet 132px tall at 852). Registered with `@property` so JS reads it in px |
+| `--sheet-btn` | 62px | Sheet button size, Figma's 62×62 at every height (radius `button-lg`, 16px). Shrinking it to 52px on short screens kept the 20px radius and made the buttons look rounder than Figma, so it was dropped |
+| `--sheet-h` | 251 → 299px | Expanded height, derived from the above (lays out the wheel) |
 
 ### Intro timing (built; tune by eye)
 

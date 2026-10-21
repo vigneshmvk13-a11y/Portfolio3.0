@@ -64,6 +64,11 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · tokens · Vignesh's phone review:
+  - `--sheet-handle-gap` 19 → **24px**.
+  - Sheet buttons no longer shrink to 52px on short screens. Keeping the 20px radius on the smaller button made it look rounder than Figma, so they stay 62×62 at every height.
+  - `rounded-button-lg` 20 → **16px** (sheet and drawer icon buttons), plain circular corners. CSS doesn't smooth corners on iOS or anywhere else.
+
 - 2026-10-22 · layout-and-motion · Sheet motion and handle spacing:
   - The intro now **blurs and fades with the sheet's position**: gone by halfway, sharpening back in only past halfway, sinking at half the sheet's speed.
   - Taps, the handle and scroll use a 0.5s ease-in-out (slow fade); drag release uses a spring.
