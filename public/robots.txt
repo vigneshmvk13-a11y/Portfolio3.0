@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://portfolio3-0.pages.dev/sitemap-index.xml
+Sitemap: https://portfolio3-0-z92.pages.dev/sitemap-index.xml

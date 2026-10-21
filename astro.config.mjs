@@ -27,7 +27,7 @@ function devOnly() {
 }
 
 export default defineConfig({
-  site: process.env.SITE_URL ?? 'https://portfolio3-0.pages.dev',
+  site: process.env.SITE_URL ?? 'https://portfolio3-0-z92.pages.dev',
   output: 'static',
   trailingSlash: 'ignore',
   // The floating toolbar covers the bottom of the page, where the footer bar and sheet live.
