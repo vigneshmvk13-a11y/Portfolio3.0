@@ -69,4 +69,6 @@ export const wheel = {
   inputQuiet: 0.15,
   /** Time constant (s) of the wheel chasing scroll input; smooths mouse-wheel notches. */
   follow: 0.07,
+  /** Reduced motion: one short ease-out turn per step (s); no overshoot, momentum or scroll-linking. */
+  reducedTurn: 0.2,
 } as const;

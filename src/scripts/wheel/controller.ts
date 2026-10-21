@@ -12,7 +12,7 @@ import {
   type AnimationPlaybackControlsWithThen as Controls,
   type ValueAnimationOptions,
 } from 'motion';
-import { spring, wheel } from '../../lib/motion';
+import { ease, spring, wheel } from '../../lib/motion';
 import { prefersReducedMotion } from '../../lib/reduced-motion';
 import { activeIndex, shortestDelta } from './geometry';
 import { WheelRenderer } from './render';
@@ -138,16 +138,14 @@ export class WheelController {
   springTo(target: number, via: Via, velocity = this.velocity): void {
     this.stop();
     this.target = target;
-    if (prefersReducedMotion()) {
-      this.set(target, via);
-      this.settle(via);
-      return;
-    }
     this.begin(via);
+    // Reduced motion: a short ease-out turn instead of the spring (no overshoot, no carried momentum).
+    const motion = prefersReducedMotion()
+      ? { duration: wheel.reducedTurn * 1000, ease: ease.out } // animateValue takes ms
+      : { ...spring.wheel, velocity };
     const controls = animateValue<number>({
       keyframes: [this.current, target],
-      ...spring.wheel,
-      velocity,
+      ...motion,
       onUpdate: (value) => this.set(value, via),
     });
     this.track(controls, target, via);

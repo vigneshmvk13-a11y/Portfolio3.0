@@ -2,7 +2,7 @@
  * Wheel inputs. design/layout-and-motion.md → Project wheel → Input.
  * - mouse wheel: each notch springs straight to the next card (rapid notches keep the momentum);
  * - trackpad: the wheel follows the scroll and snaps to a card when it goes quiet
- *   (reduced motion, both: accumulate deltaY, one instant step per threshold, locked until quiet);
+ *   (reduced motion, both: accumulate deltaY, one short turn per gesture, locked until quiet);
  * - touch/pen drag: follow the finger, release with momentum, snap to the nearest card;
  * - keyboard: ↑/↓, PageUp/PageDown, Home/End, Enter opens the active card;
  * - click on a neighbour (they're inert, so the stage gets the click): step towards it.
@@ -22,7 +22,7 @@ export function bindWheelInput(controller: WheelController): void {
 
   // ---------- Wheel / trackpad ----------
   // Full motion: the wheel moves with the scroll (one card per stepPx of deltaY), then snaps when
-  // the gesture goes quiet. Reduced motion: no scroll-linked movement, one instant step per gesture.
+  // the gesture goes quiet. Reduced motion: no scroll-linked movement, one short turn per gesture.
   let accumulated = 0;
   let locked = false;
   let lastWheelAt = 0;

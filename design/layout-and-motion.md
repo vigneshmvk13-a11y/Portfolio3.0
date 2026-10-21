@@ -87,7 +87,7 @@ The resting state (active, previous, next, rest hidden) is rendered as static CS
   - otherwise: move `max(1, round(travelled))` cards in the scroll direction. A long flick can travel several.
   - Scrolling again during a snap starts the new gesture from where the snap is heading, so quick notches add up instead of fighting the spring.
   - Direction: scrolling down moves the focused card up and brings the next one in from below; scrolling up does the reverse.
-  - Reduced motion: no scroll-linked movement. Accumulate past 80px, step once (instantly), lock until quiet.
+  - Reduced motion: no scroll-linked movement. Accumulate past 80px, step once (a short turn), lock until quiet.
 - **Touch / pen drag** on the stage (pointer events; mouse uses the wheel, keys and clicks, so dragging never fights link clicks): past a 6px slop, `position` follows the finger, with one step = `Y(±1)` pixels. On release, velocity from the last ~100ms projects 0.2s ahead; the wheel rounds to the nearest card and springs there (`spring.wheel`), carrying the velocity. A drag suppresses the click on the card under the finger.
 - **Keyboard** (focus on body, stage or TOC): ↑/PageUp = previous, ↓/PageDown = next, Home = first, End = last. Enter on the active card follows its link (it's a real `<a>`); Enter with focus on body opens the active card.
 - **TOC:** a plain click rotates the shortest way, `delta = ((i − cur + N/2) mod N) − N/2`; modifier-clicks open the case study. With 5 projects that's at most 2 steps, so one intermediate card passes. That's intended (it's a wheel). The mobile popover closes on selection and focus returns to the handle.

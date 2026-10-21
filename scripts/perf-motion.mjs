@@ -38,14 +38,14 @@ const RECORDER = `window.__perf = {
 document.addEventListener('wheel:start', () => { window.__perf.motionAt ??= performance.now(); });
 window.__perf.start();`;
 
-async function page(width, height, { intro = false } = {}) {
+async function page(width, height, { intro = false, reduced = false } = {}) {
   const mobile = width < 768;
   const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
   await send('Page.enable', {}, sessionId);
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: mobile ? 3 : 1, mobile }, sessionId);
   if (mobile) await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 }, sessionId);
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] }, sessionId);
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: reduced ? 'reduce' : 'no-preference' }] }, sessionId);
   if (THROTTLE > 1) await send('Emulation.setCPUThrottlingRate', { rate: THROTTLE }, sessionId);
   if (!intro) await send('Page.addScriptToEvaluateOnNewDocument', { source: "sessionStorage.setItem('intro-seen', '1')" }, sessionId);
   await send('Page.addScriptToEvaluateOnNewDocument', { source: RECORDER }, sessionId);
@@ -91,6 +91,12 @@ try {
   report('desktop: trackpad scroll', await d.measure(async () => { for (let i = 0; i < 40; i++) { await d.wheel(Math.max(3, 30 - i)); await sleep(16); } }, 800));
   report('desktop: About drawer open', await d.measure(() => d.eval(`document.querySelectorAll('[data-about-open]')[1].click()`), 700));
   await d.close();
+
+  const dr = await page(1440, 1024, { reduced: true });
+  await dr.goto('/');
+  await sleep(800);
+  report('desktop: reduced-motion turn', await dr.measure(() => dr.wheel(100), 500));
+  await dr.close();
 
   const di = await page(1440, 1024, { intro: true });
   await di.goto('/');

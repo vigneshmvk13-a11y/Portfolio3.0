@@ -7,7 +7,7 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 1. **The work carries the colour.** UI chrome stays grey scale. Colour comes from covers, photos and logos. The Badge (`surface-badge`, pale green) is the only exception (confirmed).
 2. **One idea per screen.** The homepage shows one project at a time. No stats strips, testimonials, marquees or extra sections.
 3. **Rationale over screens.** Case studies are built around decisions (context → options → choice → why). A screen without the reasoning behind it is weaker than the reasoning without the screen.
-4. **Quiet motion.** Motion explains a change of state. Nothing moves without input except the active cover video and **one exception**: the homepage intro choreography. It runs once per session, takes at most ~2s, any input skips it, and it never runs under reduced motion. It earns its place by teaching that the wheel scrolls. Don't add a second exception without asking.
+4. **Quiet motion.** Motion explains a change of state. Nothing moves without input except the active cover video and **one exception**: the homepage intro choreography. It runs once per session, takes at most ~2s, any input skips it, and it never runs under reduced motion. It earns its place by teaching that the wheel scrolls. Don't add a second exception without asking. Under reduced motion the wheel step still turns, briefly (0.2s; AGENTS.md → Motion rules); everything else is instant.
 5. **Figma first.** If it's designed, match it. If not, reuse tokens and components, write the decision down, and flag it.
 6. **Honest content.** No lorem ipsum, no invented metrics, quotes or outcomes. AI-written summaries are labelled and reviewed before they render.
 
