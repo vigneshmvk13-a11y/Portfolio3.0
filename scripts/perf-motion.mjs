@@ -109,7 +109,12 @@ try {
   await m.goto('/');
   await sleep(800);
   report('mobile: swipe + sheet collapse', await m.measure(() => m.drag(196, 450, 250), 900));
-  report('mobile: swipe back + sheet expand', await m.measure(() => m.drag(196, 250, 450), 1300));
+  report('mobile: swipe back (sheet stays collapsed)', await m.measure(() => m.drag(196, 250, 450), 1300));
+  // Sheet: tap the collapsed surface to open it, then drag it back down.
+  const sheetTop = await m.eval("Math.round(document.querySelector('[data-sheet-bg]').getBoundingClientRect().top)");
+  report('mobile: sheet open (tap)', await m.measure(async () => { await m.touch('touchStart', 60, sheetTop + 8); await m.touch('touchEnd'); }, 600));
+  const openTop = await m.eval("Math.round(document.querySelector('[data-sheet-bg]').getBoundingClientRect().top)");
+  report('mobile: sheet drag down + settle', await m.measure(async () => { await m.touch('touchStart', 60, openTop + 60); for (let dy = 8; dy <= 96; dy += 8) { await m.touch('touchMove', 60, openTop + 60 + dy); await sleep(16); } await m.touch('touchEnd'); }, 700));
   // TOC: press the tab (morph open), scrub down through every row (wheel spins), release (morph closed).
   const tab = await m.eval(`(() => { const r = document.querySelector('[data-toc-morph]').getBoundingClientRect(); return { x: r.right - 13, y: r.top + r.height / 2 }; })()`);
   report('mobile: TOC press → open', await m.measure(() => m.touch('touchStart', tab.x, tab.y), 500));

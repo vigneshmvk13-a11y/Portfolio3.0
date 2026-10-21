@@ -9,7 +9,7 @@ import { getAbout } from '../../lib/content';
 const { name, role, currently, affiliations } = await getAbout();
 ---
 
-<div class="flex flex-col items-center gap-5 text-center desktop:items-start desktop:gap-6 desktop:text-left">
+<div class="flex flex-col items-center gap-(--sheet-intro-gap) text-center desktop:items-start desktop:gap-6 desktop:text-left">
   <div class="flex flex-col gap-1 desktop:gap-2">
     <h1 class="text-h5 text-fg-primary desktop:text-h4">
       I'm {name}, <span class="text-fg-secondary desktop:block">{role}</span>

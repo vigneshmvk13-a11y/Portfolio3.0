@@ -107,7 +107,7 @@ Named spacing:
 | `--spacing-banner` | 200px | About banner height |
 | `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
 | `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
-| `--sheet-h` | 299px | Expanded bottom sheet height (Figma 246:2305; 297 before the buttons gained borders); reserves room under the wheel |
+| `--sheet-h` | 241–299px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
 | `--sheet-content-w` | 313px | Sheet text column; side padding flexes 24–40px around it |
 | `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 
@@ -162,7 +162,19 @@ JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Botto
 | `toc.tapMax` | `0.3` s | A press released within this, without dragging, is a tap (the panel stays open) |
 | `toc.scrubSlop` | `6` px | Travel before a press scrubs |
 | `toc.labelFadeFrom` | `0.4` | Morph progress where labels start fading in |
-| `sheet.expandDelay` | `0.25` s | After the wheel settles, before the sheet expands again |
+
+### Mobile sheet spacing (CSS, `global.css`)
+
+Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Each value scales linearly with the viewport height, from compact at 660px to Figma's at 852px, so the sheet keeps Figma's ~35% share and the wheel stays the focus (Vignesh, 2026-10-22).
+
+| Token | 660px tall → 852px | Meaning |
+|---|---|---|
+| `--sheet-pt` | 32 → 48px | Top padding (expanded) |
+| `--sheet-intro-gap` | 12 → 20px | Name/role block → logos |
+| `--sheet-gap` | 20 → 32px | Intro → buttons |
+| `--sheet-pb` | 20 → 32px | Bottom padding; also the collapsed top padding (at least twice the handle bar's 14px). Registered with `@property` so JS reads it in px |
+| `--sheet-btn` | 52px below 720px tall, else 62px | Sheet button size (52 = the desktop size) |
+| `--sheet-h` | 241 → 299px | Expanded height, derived from the above (lays out the wheel) |
 
 ### Intro timing (built; tune by eye)
 

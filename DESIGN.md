@@ -64,6 +64,13 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · layout-and-motion · **Bottom sheet: compact, user-controlled, draggable.**
+  - Spacing scales with viewport height: exactly Figma at 852px, ~241px at iPhone Safari's 660 (it was a fixed 299px, 45% of the screen).
+  - It collapses on scroll and opens only by a tap, the new handle, or a drag up; drag down or the handle closes it. No auto-reopen.
+  - The handle is a button (WCAG 2.5.7 alternative to dragging).
+  - Collapse is now compositor-only (the surface translates, the intro is clipped), so a drag follows the finger at 60fps.
+  - Why: Vignesh found the sheet crowding the wheel on his phone; checked against UX principles first (content first, user control, signifiers). The re-expand-on-settle rule from 10-21 covered the next card exactly when the user paused.
+
 - 2026-10-21 · tokens/components · Mobile design update (Figma section 246:2364):
   - Page background → `gray/50` (`surface-page`, the same as desktop); `surface-page-mobile` removed.
   - Sheet buttons (`IconButton lg`) gain a 1px `line-default` border (62px), so `--sheet-h` 297 → 299.

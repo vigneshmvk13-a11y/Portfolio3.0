@@ -214,12 +214,36 @@ Figma component 2: collapsed tab `233:4609` (27×80, five 19×4 ticks 10px apart
 
 ## Bottom sheet (mobile)
 
-**Collapses as soon as the wheel starts moving, in either direction and on any project** (a swipe, scroll, key, TOC pick or scrub). **Expands again `sheet.expandDelay` (0.25s) after the wheel settles.** (Vignesh, 2026-10-21. It used to follow direction: forward collapsed; backward or project 1 expanded.)
-- The delay stops quick consecutive swipes from pumping it open and shut.
-- It stays collapsed while a finger scrubs the TOC (`toc:hold` / `toc:release`).
-- The intro and the initial placement don't count as scrolling.
-- Animation: the intro fades (`--duration-fast`), then its row animates `grid-template-rows: 1fr → 0fr` (`--duration-base`, `--ease-in-out`). That's a layout animation, measured at 60fps (0 missed frames at 4× CPU).
-- Reduced motion: it still collapses and expands, instantly.
+Decided by Vignesh, 2026-10-22, after checking it against UX principles: content first, user control, signifiers, and WCAG 2.5.7.
+
+**States.** It starts **expanded**, so the first impression is who this is. It **collapses** as soon as the wheel moves (any input, either direction, any project) or the TOC is scrubbed. It **never reopens by itself**: the user opens it.
+- **Open:** tap the collapsed surface, tap the handle, or drag it up.
+- **Close:** drag it down or tap the handle. Scrolling the wheel also closes it.
+- **Taps on the three buttons** only do their own action; they never also open the sheet.
+- **A swipe that starts on the sheet** moves the sheet, never the wheel.
+- **Release:** a drag follows the finger, then settles to the nearer state, counting where the release speed would carry it (0.15s projection).
+
+**Handle.** A 36×4 `line-strong` bar, 10px below the top edge; not in Figma.
+- It's a real `<button>` (`aria-expanded`, "Show / Hide introduction", `aria-controls` the intro). Its 96px-wide hit area reaches 12px above the edge.
+- That gives dragging a single-tap and keyboard alternative (WCAG 2.5.7).
+
+**Compact on short screens.** All spacing scales with viewport height (`tokens.md → Mobile sheet spacing`), so the sheet stays near Figma's 35% share:
+- 852px tall: 299px, exactly Figma.
+- 783px (Nothing Phone 1 Chrome): ~282px.
+- 660px (iPhone Safari): ~241px. The wheel gains ~60px, and the card above shows 123px instead of 65.
+
+**Collapsed** (Figma 246:2333): the buttons sit `--sheet-pb` below the top edge, but never closer to the handle bar than the bar is to the edge.
+
+**Mechanics** (compositor-only, so a drag tracks the finger at 60fps):
+- The sheet keeps its expanded layout.
+- The surface (`[data-sheet-bg]`) and the handle translate by `--shift`.
+- The intro is masked by the surface's top edge (`clip-path`) and fades when collapsed.
+- The buttons never move. Only the surface, handle and buttons take pointer input, so taps above the collapsed surface reach the wheel.
+- Script: `src/scripts/sheet.ts`. It replaced the earlier `grid-template-rows` collapse, which was a layout animation.
+
+**Reduced motion:** collapsing and expanding are instant. A drag still follows the finger (direct manipulation).
+
+History: it used to follow direction (2026-10-20), then re-expand 0.25s after every settle (2026-10-21). That re-expansion covered the next card exactly when the user paused to look, so it was dropped.
 
 ## Page load
 

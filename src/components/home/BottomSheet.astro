@@ -28,23 +28,32 @@ const resumeTodo = resume ? undefined : 'todo-content';
 
 <header
   class:list={[
-    'bottom-sheet fixed inset-x-0 bottom-0 z-20 mx-auto flex flex-col items-center gap-8',
-    'rounded-t-panel border border-b-0 border-line-default bg-surface-raised pt-12',
+    'bottom-sheet fixed inset-x-0 bottom-0 z-20 mx-auto flex flex-col items-center gap-(--sheet-gap) pt-(--sheet-pt)',
     'tablet:max-w-(--spacing-card-w)',
-    'desktop:static desktop:z-auto desktop:mx-0 desktop:max-w-side desktop:items-start desktop:gap-12',
-    'desktop:rounded-none desktop:border-0 desktop:bg-transparent desktop:p-0',
+    'desktop:static desktop:z-auto desktop:mx-0 desktop:max-w-side desktop:items-start desktop:gap-12 desktop:p-0',
     className,
   ]}
   data-bottom-sheet
   data-intro-reveal="sheet"
 >
-  <div class="bottom-sheet__intro grid w-full desktop:block">
-    <div class="min-h-0">
-      <Intro />
-    </div>
+  <!-- Mobile: the sheet's surface. It slides down to collapse; the buttons stay put (src/scripts/sheet.ts). -->
+  <div class="bottom-sheet__bg rounded-t-panel border border-b-0 border-line-default bg-surface-raised desktop:hidden" data-sheet-bg></div>
+  <button
+    type="button"
+    class="bottom-sheet__grabber desktop:hidden"
+    aria-expanded="true"
+    aria-controls="sheet-intro"
+    aria-label="Hide introduction"
+    data-sheet-grabber
+  >
+    <span class="bottom-sheet__bar block rounded-full bg-line-strong" aria-hidden="true"></span>
+  </button>
+
+  <div id="sheet-intro" class="bottom-sheet__intro w-full" data-sheet-intro>
+    <Intro />
   </div>
 
-  <div class="flex gap-2 desktop:hidden">
+  <div class="bottom-sheet__actions flex gap-2 desktop:hidden" data-sheet-actions>
     <IconButton icon={User} label={nav.about} variant="lg" data-about-open aria-haspopup="dialog" aria-controls="about" />
     {showResume && <IconButton icon={File} label={resumeLabel} variant="lg" href={resumeHref} external={Boolean(resume)} class={resumeTodo} />}
     <IconButton icon={ChatCircleDots} label={nav.contact} variant="lg" href={contact} external={contactIsExternal} />
@@ -66,33 +75,100 @@ const resumeTodo = resume ? undefined : 'todo-content';
    */
   .bottom-sheet {
     padding-inline: clamp(var(--spacing) * 6, (100vw - var(--sheet-content-w)) / 2, var(--spacing) * 10);
-    padding-bottom: calc(var(--spacing) * 8 + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--sheet-pb) + env(safe-area-inset-bottom));
   }
 
   /*
-   * Collapsed state (233:4626): the intro fades, then its row animates shut; buttons stay.
-   * Driven by wheel direction (src/scripts/sheet.ts). Mobile and tablet only.
+   * Mobile and tablet. The sheet keeps its expanded layout; collapsing is compositor-only so a drag
+   * follows the finger at 60fps:
+   *   --shift  how far the surface has slid down (0 = expanded; --sheet-collapse, measured by
+   *            sheet.ts, = collapsed: the buttons then sit --sheet-pb from the top edge, Figma 246:2333);
+   *   the surface and the handle translate by --shift; the intro is masked by the surface's top edge
+   *   (clip-path), so it disappears under it; the buttons never move.
+   * Only the surface, handle and buttons take pointer input, so taps above the collapsed surface reach
+   * the wheel.
    */
-  .bottom-sheet__intro {
-    grid-template-rows: 1fr;
-    transition:
-      grid-template-rows var(--duration-base) var(--ease-in-out),
-      opacity var(--duration-fast) var(--ease-out);
-  }
-  .bottom-sheet {
-    transition:
-      row-gap var(--duration-base) var(--ease-in-out),
-      padding-top var(--duration-base) var(--ease-in-out);
-  }
-  /* Collapsed (Figma 246:2333): the buttons sit 32px from the top edge, as from the bottom. */
   @media (width < 75rem) {
-    .bottom-sheet[data-collapsed] .bottom-sheet__intro {
-      grid-template-rows: 0fr;
-      opacity: 0;
+    .bottom-sheet {
+      --shift: 0px;
+      isolation: isolate;
+      pointer-events: none;
+      /* The surface's 1px top border sits on the absolute background; keep Figma's height (299 at 852). */
+      padding-top: calc(var(--sheet-pt) + 1px);
     }
     .bottom-sheet[data-collapsed] {
-      row-gap: 0;
-      padding-top: calc(var(--spacing) * 8);
+      --shift: var(--sheet-collapse, 0px);
+    }
+
+    .bottom-sheet__bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: auto;
+      touch-action: none;
+      transform: translateY(var(--shift));
+      transition: transform var(--duration-base) var(--ease-in-out);
+    }
+
+    /* Handle: a 36×4 bar 10px below the top edge; the hit area is 96px wide and reaches above the edge. */
+    .bottom-sheet__grabber {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: calc(var(--spacing) * 24);
+      height: calc(var(--spacing) * 6);
+      translate: -50% 0;
+      border: 0;
+      background: transparent;
+      pointer-events: auto;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      transform: translateY(var(--shift));
+      transition: transform var(--duration-base) var(--ease-in-out);
+    }
+    .bottom-sheet__grabber::before {
+      content: '';
+      position: absolute;
+      inset: calc(var(--spacing) * -3) 0 0;
+    }
+    .bottom-sheet__bar {
+      width: calc(var(--spacing) * 9);
+      height: var(--spacing);
+      margin: calc(var(--spacing) * 2.5) auto 0;
+    }
+
+    .bottom-sheet__intro {
+      clip-path: inset(max(0px, var(--shift) - var(--sheet-pt) - 1px) 0 0 0);
+      transition:
+        clip-path var(--duration-base) var(--ease-in-out),
+        opacity var(--duration-fast) var(--ease-out);
+    }
+    .bottom-sheet[data-collapsed]:not([data-dragging]) .bottom-sheet__intro {
+      opacity: 0;
+    }
+
+    .bottom-sheet__actions {
+      position: relative;
+      z-index: 1;
+      pointer-events: auto;
+    }
+
+    /* While a finger drags the sheet, everything follows it directly. */
+    .bottom-sheet[data-dragging] .bottom-sheet__bg,
+    .bottom-sheet[data-dragging] .bottom-sheet__grabber,
+    .bottom-sheet[data-dragging] .bottom-sheet__intro {
+      transition: none;
+    }
+  }
+
+  /* Short screens: the sheet buttons drop to the desktop size, 52px (--sheet-btn). */
+  @media (width < 75rem) and (height < 45rem) {
+    .bottom-sheet__actions :global(:is(a, button)) {
+      padding: calc(var(--spacing) * 4);
+    }
+    .bottom-sheet__actions :global(svg) {
+      width: var(--spacing-icon-sm);
+      height: var(--spacing-icon-sm);
     }
   }
 

@@ -22,12 +22,6 @@ export const spring = {
   toc: { type: 'spring', visualDuration: 0.35, bounce: 0.15 },
 } as const;
 
-/** Mobile bottom sheet (design/layout-and-motion.md → Bottom sheet). */
-export const sheet = {
-  /** s after the wheel settles (and no finger is on the TOC) before the sheet expands again. */
-  expandDelay: 0.25,
-} as const;
-
 /** Mobile TOC (design/layout-and-motion.md → TOC handle). */
 export const toc = {
   /** A press released within this many seconds without dragging is a tap: the panel stays open. */
