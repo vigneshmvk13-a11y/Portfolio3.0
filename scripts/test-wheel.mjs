@@ -178,6 +178,13 @@ try {
   check('no JS errors (mobile)', m.errors.length === 0, m.errors.join(' | '));
   await m.close();
 
+  // Short phone (iPhone Safari leaves ~660px): the card keeps its full design width and clears the sheet.
+  const sp = await page(393, 660);
+  await sp.goto('/');
+  const geo = await sp.eval(`(() => { const c = document.querySelector('[data-wheel-card]:not([inert])'); const sh = document.querySelector('[data-bottom-sheet]').getBoundingClientRect(); const r = c.getBoundingClientRect(); return { w: c.offsetWidth, h: c.offsetHeight, bottom: Math.round(r.bottom), sheetTop: Math.round(sh.top) }; })()`);
+  check('short phone: card at full design size, clear of the expanded sheet', geo.w === 353 && geo.bottom <= geo.sheetTop - 19, JSON.stringify(geo));
+  await sp.close();
+
   // ---------- Intro ----------
   const chrome = `(() => { const v = (sel) => { const el = document.querySelector(sel); const cs = getComputedStyle(el); return cs.visibility === 'visible' ? Number(cs.opacity) : 0; }; return { intro: document.documentElement.dataset.intro, sheet: v('[data-bottom-sheet]'), toc: v('[data-intro-reveal="rise"]'), footer: v('[data-intro-reveal="fade"]') }; })()`;
   const i1 = await page(1440, 1024, { intro: true });

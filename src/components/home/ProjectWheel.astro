@@ -33,20 +33,10 @@ const offsetOf = (index: number) => {
 </section>
 
 <style is:global>
-  /* Card size (--card-w/--card-h) is derived in global.css :root, per breakpoint. */
+  /* Card size (--card-w/--card-h) and placement (--wheel-centre-y) are derived in global.css :root. */
   .wheel {
-    /* Mobile: top neighbour's far edge sits pt-10 below the top (Figma 233:4581). */
-    --wheel-centre-y: calc(
-      var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)
-    );
     position: relative;
     height: 100%;
-  }
-
-  @media (min-width: 75rem) {
-    .wheel {
-      --wheel-centre-y: 50%;
-    }
   }
 
   /*

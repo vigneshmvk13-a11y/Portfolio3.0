@@ -5,11 +5,15 @@ Written mobile-first, matching how the CSS is authored. All durations, easings, 
 ## Mobile home (base, designed at 393×852; check 360 and 412 too)
 
 - `bg-surface-page-mobile`. One viewport-height composition (`h-dvh`). The document doesn't scroll; vertical swipes step the project wheel.
-- Wheel stage: full width. Card width = viewport − 2 × `gutter-mobile`, height from `aspect-card` (553:400), **capped** so the card never slides under the expanded sheet: `h ≤ (100dvh − --sheet-h − safe-area − pt-10 − 2·gap) / 1.6585`. The cap doesn't apply at 393×852 (Figma holds exactly) but does at 360×740. The active card's centre sits at `pt-10` + (spread + reach) × h + gap from the top. That reproduces Figma at 393: the top neighbour's far edge at 40px, the active card at y = 227.
+- Wheel stage: full width. The card is **always full width**, as in Figma: viewport − 2 × `gutter-mobile`, height from `aspect-card` (553:400).
+- Its centre (`--wheel-centre-y`, global.css) is Figma's placement, `pt-10 + (spread + reach) × h + gap`: the top neighbour's far edge at 40px and the card at y = 227, at 393×852.
+- On shorter screens the centre **rises** so the card clears the expanded sheet by `--wheel-gap`: `min(figma, 100dvh − --sheet-h − safe-area − gap − h/2)`. The top neighbour then shows as a slice.
+  - Why: real phone browsers leave ~660px (iPhone Safari with its bars) to ~790px, not Figma's 852. The old rule shrank the card to fit (about ⅔ size at 660). Vignesh chose a full-size card with a cropped top neighbour (2026-10-21).
+  - The height still caps when even the card alone can't fit between `pt-10` and the sheet (landscape phones).
 - BottomSheet fixed at the bottom, overlapping the lower neighbour (as drawn). Collapsed, it reveals the lower neighbour (`233:4621`).
-- TocHandle fixed to the right edge at ~37% of the viewport height.
+- The TOC is fixed to the right edge, centred on the active card (`--wheel-centre-y`).
 - Use `dvh`/`svh`, not `vh`, for anything tied to the viewport (mobile browser chrome).
-- The stage sets `touch-action: none`. The sheet, TOC popover and drawer keep native touch behaviour.
+- The stage and the TOC set `touch-action: none` (the TOC so a press-and-drag scrubs instead of panning). The sheet and drawer keep native touch behaviour.
 
 ## Tablet (`tablet:` 768–1199): interim, not designed
 

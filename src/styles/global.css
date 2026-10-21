@@ -40,34 +40,34 @@
 
 /*
  * Derived wheel layout (design/layout-and-motion.md → Project wheel).
- * Mobile: card fills the width between gutters, but never so tall that it slides under the
- *   expanded bottom sheet (--sheet-h, Figma 233:4586) on short screens.
+ * Mobile: the card always fills the width between gutters (Figma 233:4584). Its centre sits where
+ *   Figma puts it (top neighbour's far edge at pt-10), raised on short screens so the card clears the
+ *   expanded bottom sheet (--sheet-h, Figma 233:4586) by a gap; the top neighbour then shows as a
+ *   slice. Real phone browsers leave ~660–790px, not Figma's 852. The height cap only bites when even
+ *   the card alone can't fit between pt-10 and the sheet (landscape phones).
  * Tablet: width capped at the Figma card width.
- * Desktop: sized by height; the centre column keeps Figma's margin around the card (669 − 553).
+ * Desktop: sized by height, centred; the centre column keeps Figma's margin around the card (669 − 553).
+ * The TOC handle (TocHandle.astro) anchors to --wheel-centre-y too.
  */
 :root {
   --sheet-h: 297px;
   /* Figma's sheet text column (233:4587); side padding flexes 24–40px around it. */
   --sheet-content-w: 313px;
-  --card-h: min(
-    calc((100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))),
-    calc(
-      (100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap)) /
-        (0.5 + var(--wheel-spread) + var(--wheel-reach))
-    )
-  );
+  --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
+  --card-h: min(calc((100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))), var(--wheel-room));
   --card-w: calc(var(--card-h) * (var(--aspect-card)));
   --wheel-column: calc(var(--card-w) + var(--container-stack) - var(--spacing-card-w));
+  --wheel-centre-y: min(
+    calc(var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)),
+    calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--wheel-gap) - var(--card-h) / 2)
+  );
 }
 
 @media (min-width: 48rem) {
   :root {
     --card-h: min(
       calc(min(var(--spacing-card-w), 100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))),
-      calc(
-        (100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap)) /
-          (0.5 + var(--wheel-spread) + var(--wheel-reach))
-      )
+      var(--wheel-room)
     );
   }
 }
@@ -76,6 +76,7 @@
   :root {
     --wheel-gap: 60px;
     --card-h: var(--wheel-card-h-desktop);
+    --wheel-centre-y: 50%;
   }
 }
 
