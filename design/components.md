@@ -80,7 +80,7 @@ A link to `/work/[slug]` for every status (`rules.md → Content states`). `roun
 2. **Badge** (by `status`) top-right.
 3. **Caption bar**: bottom, `bg-surface-caption backdrop-blur-caption`, `px-8 py-4`, `text-fg-on-media`. Subtitle left (`text-label-2 font-medium`; one line + ellipsis on desktop, two lines on mobile). Meta right (`text-label-2` desktop, `text-label-3` mobile). `gap-5` desktop, `gap-6` mobile.
 
-States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset.
+States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset. · lite (`html[data-quality="lite"]`, slow device): caption `[data-card-caption]` without the backdrop blur.
 
 ### ProjectWheel
 **Figma:** `233:4539` (desktop), `233:4582` (mobile) · **Status:** built (interactive, scroll-linked, with the intro)
@@ -91,6 +91,7 @@ Replaces ProjectStack. Renders every published card (server-rendered resting sta
 - `render.ts`: maps position → each card's transform, opacity, z-index, `inert`, `aria-hidden`.
 - `input.ts`: wheel (scroll-linked, snaps when quiet), pointer, keyboard.
 - `src/scripts/intro/intro.ts`: the slot-machine intro, lazy-loaded. Chrome it reveals is marked `data-intro-reveal="sheet|rise|edge|fade"` (BottomSheet, desktop TOC column, TocHandle, FooterBar).
+- `src/scripts/quality.ts`: adaptive quality; samples frames during motion and switches the page to lite on a slow device (`layout-and-motion.md → Adaptive quality`).
 
 Emits `wheel:start {index, slug, via}` (motion began; covers pause), `wheel:change {index, slug, from, via}` and `wheel:settle {index}` on the stage element; ProjectToc, BottomSheet, the hash sync and MotionCover listen. Stage: `role="region" aria-roledescription="carousel" aria-label="Projects"` plus a polite live region. Behaviour: `layout-and-motion.md → Project wheel`. Vanilla TS (no React island: the state is one number, and React alone would exceed the 30 KB homepage budget).
 

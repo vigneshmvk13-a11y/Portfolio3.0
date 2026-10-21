@@ -188,6 +188,18 @@ Geometry derived in `layout-and-motion.md → Project wheel`. `h` is the measure
 | — | — | `wheel.stepThreshold = 80` | One wheel event this big is a mouse notch (steps at once); a trackpad gesture must travel this far to commit (reduced motion: per step) |
 | — | — | `wheel.inputQuiet = 0.15` | s of wheel silence that ends a gesture (snap; reduced motion: unlock) |
 | — | — | `wheel.follow = 0.07` | s, time constant of the wheel chasing scroll input (smooths mouse notches) |
+| — | — | `wheel.reducedTurn = 0.2` | s, reduced motion: one `ease.out` turn per step (no overshoot or momentum) |
+
+### Adaptive quality
+
+JS only (`motion.ts → quality`); behaviour in `layout-and-motion.md → Adaptive quality`.
+
+| `motion.ts` | Value | Meaning |
+|---|---|---|
+| `quality.sampleFrames` | `40` | Rolling window of motion frames judged at each settle |
+| `quality.slowFrameMs` | `20` | A frame slower than this counts as slow (below ~50fps) |
+| `quality.slowShare` | `0.2` | Share of slow frames that switches to lite |
+| `quality.introSpeed` | `2` | Intro playback rate in lite |
 
 ## Breakpoints (mobile-first)
 

@@ -72,3 +72,18 @@ export const wheel = {
   /** Reduced motion: one short ease-out turn per step (s); no overshoot, momentum or scroll-linking. */
   reducedTurn: 0.2,
 } as const;
+
+/**
+ * Adaptive quality (design/rules.md → Performance). While the wheel moves, frame intervals are
+ * sampled; if too many are slow, the page switches to html[data-quality="lite"].
+ */
+export const quality = {
+  /** Motion frames to sample before deciding. */
+  sampleFrames: 40,
+  /** A frame slower than this (ms) counts as slow (below ~50fps). */
+  slowFrameMs: 20,
+  /** Share of slow frames that switches to lite. */
+  slowShare: 0.2,
+  /** Intro playback rate in lite mode. */
+  introSpeed: 2,
+} as const;

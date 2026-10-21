@@ -44,7 +44,9 @@ Agents: add to this list; don't resolve on your own.
 14. **Bio emphasis differs by breakpoint in Figma:** desktop bolds "I'm Vignesh" and the whole "@DNEG for Kotak Mahindra's corporate banking app, Fyn"; mobile bolds only "Vignesh", "@DNEG", "Kotak mahindra", "Fyn". One CMS field can hold one version; using desktop.
 15. **Mobile TOC labels:** Figma's mobile popover uses a shorter "Fyn- Wholesale Banking". There's one `tocLabel`, so the popover widens to fit "Fyn- Wholesale Banking app". Shorten the label everywhere, or keep it?
 
-16. **Reduced motion on Windows:** turning off Windows "Animation effects" (often done for speed, not accessibility) makes Chrome report `prefers-reduced-motion: reduce`. Those visitors get instant wheel steps and no intro. Keep it instant (current rule), or give reduced motion a short opacity crossfade between cards (no spatial movement)?
+### Resolved (2026-10-21)
+
+16. **Reduced motion on Windows:** a wheel step plays as a short 0.2s turn under reduced motion, not instant and not a crossfade. Vignesh's call, with the motion-sensitivity cost raised. No site motion switch. Slow hardware gets adaptive quality.
 
 ### Resolved (2026-10-20)
 
@@ -61,6 +63,12 @@ Agents: add to this list; don't resolve on your own.
 ## Changelog
 
 Newest first. Date · branch · change · why.
+
+- 2026-10-21 · rules · **Reduced motion keeps a short wheel turn** (0.2s `ease.out`, one project per gesture, no overshoot, momentum, scroll-linking or intro); it used to be instant. Why: Windows performance mode reports reduced motion, so Vignesh never saw the wheel move; the turn is the site's identity. The crossfade alternative was recommended and declined. Resolves open question 16.
+- 2026-10-21 · layout-and-motion · **Adaptive quality:**
+  - Frames are sampled while the wheel moves. A slow device (≥ 20% of the last 40 motion frames over 20ms) or Save-Data switches to `data-quality="lite"`: no caption blur, intro at 2×, the wheel motion kept.
+  - Remembered for the session, applied before paint.
+  - Tokens: `wheel.reducedTurn`, `quality.*`.
 
 - 2026-10-21 · layout-and-motion · Mouse notches step at once:
   - One wheel event ≥ 80px springs straight to the next card (no follow-then-wait); rapid notches keep the spring's speed. Trackpads stay scroll-linked.

@@ -7,7 +7,8 @@
  * (first visit this session, no reduced motion, no deep link). CSS hides [data-intro-reveal]
  * while pending and reveals it after --intro-failsafe if this never runs.
  */
-import { ease, intro } from '../../lib/motion';
+import { ease, intro, quality } from '../../lib/motion';
+import { isLite, onLite } from '../quality';
 import type { WheelController } from '../wheel/controller';
 
 const SKIP_EVENTS = ['wheel', 'keydown', 'pointerdown', 'touchstart'] as const;
@@ -88,12 +89,15 @@ export function runIntro(controller: WheelController): void {
     .then(() => {
       if (done) return; // skipped while preparing
       const end = controller.position + intro.spinTurns * controller.count;
-      controller
-        .animatePosition([end + intro.spinOvershoot, end], {
-          duration: intro.spinDuration * 1000, // animateValue takes ms (unlike animate())
-          times: [0, intro.spinOvershootAt, 1],
-          ease: [intro.spinEase, ease.inOut],
-        })
-        .then(() => finish(false));
+      const spin = controller.animatePosition([end + intro.spinOvershoot, end], {
+        duration: intro.spinDuration * 1000, // animateValue takes ms (unlike animate())
+        times: [0, intro.spinOvershootAt, 1],
+        ease: [intro.spinEase, ease.inOut],
+      });
+      // Slow device (scripts/quality.ts): same spin, played faster, also if detected mid-spin.
+      const hurry = () => (spin.speed = quality.introSpeed);
+      if (isLite()) hurry();
+      else onLite(hurry);
+      spin.then(() => finish(false));
     });
 }

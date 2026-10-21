@@ -103,7 +103,22 @@ Only the settled active card plays its cover. All others are paused and reset. F
 
 ### Reduced motion
 
-The resting layout stays (a still image, not motion). Steps are instant: no spring, no momentum (the card follows the finger, which is direct manipulation, then snaps on release), and no intro.
+The resting layout stays (a still image, not motion). Each step is a **short turn**: `wheel.reducedTurn` (0.2s) on `ease.out`, through the same 3D poses, one project per gesture. There's no spring overshoot, no carried momentum, no scroll-linked following (the card follows the finger on touch, which is direct manipulation, then turns to the nearest card on release), and no intro.
+
+Why a turn and not instant (Vignesh, 2026-10-21): Windows "Adjust for best performance" turns off "Animate controls and elements inside windows", which Chrome reports as `prefers-reduced-motion: reduce`. With instant steps, those visitors never saw the wheel move, and the wheel is the site's identity. Alternatives considered:
+- a crossfade with a 12px nudge (no 3D movement): recommended for motion-sensitive visitors, not chosen;
+- a site motion switch: not chosen;
+- instant: the old rule.
+
+### Adaptive quality (slow devices)
+
+Separate from reduced motion: the setting is normal, but the device can't hold 60fps. The motion stays; the expensive extras go.
+
+- `src/scripts/quality.ts` samples frame intervals **only while the wheel moves** (`wheel:start` → `wheel:settle`), over a rolling window of the last 40 motion frames (`quality.sampleFrames`), judged at each settle. If ≥ 20% (`quality.slowShare`) are slower than 20ms (`quality.slowFrameMs`, below ~50fps), it sets `html[data-quality="lite"]`. It's rolling, so a device that slows down later (heat, battery saver) still switches.
+- Save-Data starts in lite.
+- Lite: the card caption drops its `backdrop-filter` blur (it re-renders every frame a card moves) and keeps its translucent `surface-caption` fill. A running or later intro plays at `quality.introSpeed` (2×).
+- The verdict is kept for the session (`sessionStorage` `quality-lite`); the head script in `index.astro` applies it before first paint on the next load.
+- Verified in `test-wheel.mjs`: a normal device stays full; a main thread burning ~25ms per frame switches to lite while the wheel keeps stepping; lite is applied before paint on reload.
 
 ### Verified (Phase 4)
 
@@ -120,7 +135,8 @@ An automated CDP test (`scripts/test-wheel.mjs`) drives trusted input in Chrome 
 - swipe up/down and the sheet collapse/expand;
 - a fast flick carrying momentum (2+ steps);
 - popover pick (closes, ticks and label update);
-- reduced motion (instant);
+- reduced motion: a short turn, no scroll-linked movement (instant before 2026-10-21);
+- adaptive quality (see above);
 - no JS errors.
 
 4× CPU throttle at 412px: median and p95 frame 16.7ms, no frame over 20ms (headless Chrome; real devices still to test).

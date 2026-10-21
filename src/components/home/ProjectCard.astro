@@ -48,6 +48,7 @@ const active = offset === 0;
     <Badge status={status} class="absolute top-6 right-6" />
     <div
       class="absolute inset-x-0 bottom-0 flex items-start gap-6 bg-surface-caption px-8 py-4 text-fg-on-media backdrop-blur-caption desktop:gap-5"
+      data-card-caption
     >
       <p class="line-clamp-2 min-w-0 flex-1 text-label-2 font-medium desktop:line-clamp-1">{subtitle}</p>
       {cardMeta && <p class="shrink-0 text-right text-label-3 whitespace-nowrap desktop:text-label-2">{cardMeta}</p>}

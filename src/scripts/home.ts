@@ -8,6 +8,7 @@ import { bindToc } from './toc';
 import { bindHash, indexFromHash } from './hash';
 import { bindSheet } from './sheet';
 import { initMotionCovers, setActiveCover } from './media';
+import { watchQuality } from './quality';
 
 let controller: WheelController | null = null;
 
@@ -25,6 +26,7 @@ export function initHome(): WheelController | null {
   if (import.meta.env.DEV) (window as unknown as { __wheel: WheelController }).__wheel = wheel;
 
   initMotionCovers();
+  watchQuality(stage);
   bindWheelInput(wheel);
   bindToc(wheel);
   bindHash(wheel);

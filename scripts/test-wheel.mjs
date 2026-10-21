@@ -235,11 +235,33 @@ try {
   check('reduced motion: no intro', c.intro === undefined && c.sheet === 1, JSON.stringify(c));
   await r.wheel(100); await sleep(60);
   s = await r.state();
-  check('reduced motion: step is instant', s.index === '1' && !s.moving, JSON.stringify(s));
-  await r.wheel(30); await sleep(20); await r.wheel(30); await sleep(60);
+  check('reduced motion: a notch starts a short turn', s.moving, JSON.stringify(s));
+  await sleep(300);
+  s = await r.state();
+  check('reduced motion: the turn lands within ~0.2s', s.index === '1' && !s.moving, JSON.stringify(s));
+  await r.wheel(30); await sleep(20); await r.wheel(30); await sleep(300);
   s = await r.state();
   check('reduced motion: no scroll-linked movement', s.index === '1' && (await r.opacity(1)) === 1, JSON.stringify(s));
   await r.close();
+
+  // ---------- Adaptive quality ----------
+  const blur = `(() => ({ quality: document.documentElement.dataset.quality, blur: getComputedStyle(document.querySelector('[data-card-caption]')).backdropFilter }))()`;
+  const q1 = await page(1440, 1024);
+  await q1.goto('/');
+  for (let i = 0; i < 4; i++) { await q1.wheel(100); await sleep(700); }
+  let q = await q1.eval(blur);
+  check('quality: a fast device stays full (caption blur on)', q.quality === undefined && q.blur !== 'none', JSON.stringify(q));
+  // Simulate a slow device: every frame burns ~25ms of main thread.
+  await q1.eval(`(function burn() { const t = performance.now(); while (performance.now() - t < 25); requestAnimationFrame(burn); })()`);
+  for (let i = 0; i < 4; i++) { await q1.wheel(100); await sleep(900); }
+  q = await q1.eval(blur);
+  s = await q1.state();
+  check('quality: slow frames switch to lite (no caption blur), wheel still works', q.quality === 'lite' && q.blur === 'none' && s.index === '3', `${JSON.stringify(q)} ${JSON.stringify(s)}`);
+  await q1.goto('/');
+  q = await q1.eval(blur);
+  check('quality: lite is applied before paint on the next load', q.quality === 'lite' && q.blur === 'none', JSON.stringify(q));
+  check('no JS errors (quality)', q1.errors.length === 0, q1.errors.join(' | '));
+  await q1.close();
 } finally {
   ws.close(); chrome.kill(); await rm(profile, { recursive: true, force: true }).catch(() => {});
 }

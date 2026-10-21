@@ -36,6 +36,12 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
     } catch {
       // Storage blocked: no intro.
     }
+    // Adaptive quality (src/scripts/quality.ts): a slow-device verdict from earlier this session, or Save-Data.
+    try {
+      if (sessionStorage.getItem('quality-lite') || navigator.connection?.saveData) root.dataset.quality = 'lite';
+    } catch {
+      // Storage blocked: decided again on this page.
+    }
   </script>
 
   <div class="mx-auto h-dvh max-w-page desktop:grid desktop:grid-cols-[1fr_var(--wheel-column)_1fr]">
