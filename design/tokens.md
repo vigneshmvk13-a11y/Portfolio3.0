@@ -98,16 +98,17 @@ Named spacing:
 | `--container-prose` | 720px | Placeholder page column **(proposed)** |
 | `--spacing-card-w` / `--spacing-card-h` | 553px / 400px | Active desktop card (Figma size) |
 | `--aspect-card` | 553 / 400 | Every card. Mobile Figma (352×254.4) is the same ratio, so one token |
-| `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills |
+| `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills (desktop) |
+| `--spacing-logo-w-sm` / `--spacing-logo-h-sm` | 64px / 24px | Logo pills (mobile, Figma 246:2313) |
 | `--spacing-avatar` | 140px | About avatar |
-| `--spacing-icon-sm` / `--spacing-icon-md` | 18px / 20px | Icon glyphs |
+| `--spacing-icon-xs` / `--spacing-icon-sm` / `--spacing-icon-md` | 16px / 18px / 20px | Icon glyphs (xs: mobile sheet buttons) |
 | `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
 | `--spacing-avatar-sm` | 52px | Avatar in the mobile drawer's compact header |
 | `--spacing-avatar-overlap` | 73px | How far the avatar overlaps the banner (140 − 67) |
 | `--spacing-banner` | 200px | About banner height |
 | `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
 | `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
-| `--sheet-h` | 251–299px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
+| `--sheet-h` | 247–287px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
 | `--sheet-content-w` | 313px | Sheet text column; side padding flexes 24–40px around it |
 | `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 
@@ -173,13 +174,15 @@ Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Eac
 
 | Token | 660px tall → 852px | Meaning |
 |---|---|---|
-| `--sheet-pt` | 32 → 48px | Top padding (expanded) |
-| `--sheet-intro-gap` | 12 → 20px | Name/role block → logos |
+| `--sheet-handle-top` | 16px (open) / `--sheet-handle-top-collapsed` 12px | Handle bar (40×6, `line-strong`) below the 1px top border (Figma 246:2305 / 251:6688) |
+| `--sheet-top-gap` | 20 → 32px | Handle bar → intro (open) |
+| `--sheet-pt` | derived | 1 + handle-top + 6 + top-gap: where the intro starts |
+| `--sheet-intro-gap` | 12 → 16px | Name/role block → logos (name → subline is a fixed 8px) |
 | `--sheet-gap` | 20 → 32px | Intro → buttons |
 | `--sheet-pb` | 20 → 32px | Bottom padding |
-| `--sheet-handle-gap` | 24px (not scaled) | Collapsed: from the bottom of the handle bar to the top of the buttons. **Vignesh's dial** (24px, 2026-10-22; collapsed sheet 132px tall at 852). Registered with `@property` so JS reads it in px |
-| `--sheet-btn` | 62px | Sheet button size, Figma's 62×62 at every height (radius `button-lg`, 16px). Shrinking it to 52px on short screens kept the 20px radius and made the buttons look rounder than Figma, so it was dropped |
-| `--sheet-h` | 251 → 299px | Expanded height, derived from the above (lays out the wheel) |
+| `--sheet-handle-gap` | 32px (not scaled) | Collapsed: handle bar → buttons (Figma 251:6688; collapsed sheet 133px at 852). Registered with `@property` so JS reads it in px |
+| `--sheet-btn` | 50px | Sheet buttons 50×50: 16px padding, 16px icon (`icon-xs`), radius `button-lg` 16px (Figma 246:2317) |
+| `--sheet-h` | 247 → 287px | Expanded height, derived from the above (lays out the wheel) |
 
 ### Intro timing (built; tune by eye)
 

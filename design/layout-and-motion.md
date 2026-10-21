@@ -223,16 +223,16 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 - **A swipe that starts on the sheet** moves the sheet, never the wheel.
 - **Release:** a drag follows the finger, then settles to the nearer state, counting where the release speed would carry it (0.15s projection).
 
-**Handle.** A 36×4 `line-strong` bar, 10px below the top edge; not in Figma.
+**Handle** (Figma 251:6710). A 40×6 `line-strong` (gray/300) bar, 16px below the top border when open and 12px when collapsed. It moves between the two as the sheet slides.
 - It's a real `<button>` (`aria-expanded`, "Show / Hide introduction", `aria-controls` the intro). Its 96px-wide hit area reaches 12px above the edge.
 - That gives dragging a single-tap and keyboard alternative (WCAG 2.5.7).
 
 **Compact on short screens.** All spacing scales with viewport height (`tokens.md → Mobile sheet spacing`), so the sheet stays near Figma's 35% share:
-- 852px tall: 299px, exactly Figma.
-- 783px (Nothing Phone 1 Chrome): ~282px. The buttons stay Figma's 62×62 (radius 16px) at every height.
-- 660px (iPhone Safari): ~251px. The wheel gains ~50px, and the card above shows 113px instead of 65.
+- 852px tall: 287px, exactly Figma (246:2305).
+- 783px (Nothing Phone 1 Chrome): ~273px. The handle, the 50×50 buttons and the tag sizes stay Figma's at every height.
+- 660px (iPhone Safari): ~247px (37%). The card above shows 117px instead of 65.
 
-**Collapsed** (Figma 246:2333): the buttons sit `--sheet-handle-gap` (24px, Vignesh's dial) below the bottom of the handle bar, at every screen height (132px tall at 852; Figma's handle-less frame is 127).
+**Collapsed** (Figma 251:6688): the buttons sit `--sheet-handle-gap` (32px) below the handle bar, at every screen height: 133px tall at 852.
 
 **Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
 - One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed.

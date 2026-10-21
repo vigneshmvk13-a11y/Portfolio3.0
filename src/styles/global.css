@@ -50,36 +50,46 @@
  * The TOC handle (TocHandle.astro) anchors to --wheel-centre-y too.
  */
 /*
- * Mobile bottom sheet spacing (Figma 246:2305, designed at 852px tall). Phone browsers leave less
- * (~660px in iPhone Safari), so the spacing scales with the viewport height, linearly from compact at
- * 660px to Figma's at 852px, keeping the sheet near Figma's 35% share so the wheel stays the focus.
- * --sheet-h is the expanded height
- * (intro: 74px text + gap + 30px logos). --sheet-pb is registered so JS can read it in px.
+ * Mobile bottom sheet (Figma 246:2305 open, 251:6688 collapsed; designed at 852px tall).
+ * Fixed by Figma: the handle bar (40×6) sits --sheet-handle-top below the top border when open and
+ * --sheet-handle-top-collapsed when collapsed; collapsed, the buttons sit --sheet-handle-gap below it;
+ * buttons are 50×50.
+ * Scaled with the viewport height (phone browsers leave ~660px in iPhone Safari, not 852), linearly
+ * from compact at 660px to Figma's at 852px, so the sheet stays near Figma's ~34% share and the wheel
+ * stays the focus: --sheet-top-gap (bar → intro), --sheet-intro-gap (text → logos), --sheet-gap
+ * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 78px text + gap +
+ * 24px logos). The registered ones are read by sheet.ts in px.
  */
 @property --sheet-pb {
   syntax: '<length>';
   inherits: true;
   initial-value: 32px;
 }
-/*
- * Collapsed sheet: space between the bottom of the drag handle's bar and the top of the buttons
- * (Vignesh's dial: 24px, 2026-10-22). Same at every screen height.
- */
 @property --sheet-handle-gap {
   syntax: '<length>';
   inherits: true;
-  initial-value: 24px;
+  initial-value: 32px;
+}
+@property --sheet-handle-top {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 16px;
+}
+@property --sheet-handle-top-collapsed {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 12px;
 }
 :root {
-  --sheet-pt: clamp(32px, 32px + 16 * (100dvh - 660px) / 192, 48px);
+  --sheet-handle-h: 6px;
+  --sheet-top-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
+  --sheet-intro-gap: clamp(12px, 12px + 4 * (100dvh - 660px) / 192, 16px);
   --sheet-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
   --sheet-pb: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
-  --sheet-intro-gap: clamp(12px, 12px + 8 * (100dvh - 660px) / 192, 20px);
-  /* Sheet buttons stay Figma's 62×62 (radius 20) at every height; shrinking them changed their look. */
-  --sheet-btn: 62px;
-  --sheet-h: calc(
-    1px + var(--sheet-pt) + 104px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb)
-  );
+  --sheet-btn: 50px;
+  /* Content starts below the 1px border, the handle and its gap. */
+  --sheet-pt: calc(1px + var(--sheet-handle-top) + var(--sheet-handle-h) + var(--sheet-top-gap));
+  --sheet-h: calc(var(--sheet-pt) + 102px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb));
 }
 
 :root {
@@ -166,6 +176,8 @@
   --spacing-card-h: 400px;
   --spacing-logo-w: 80px;
   --spacing-logo-h: 30px;
+  --spacing-logo-w-sm: 64px;
+  --spacing-logo-h-sm: 24px;
   --spacing-avatar: 140px;
   --spacing-avatar-sm: 52px;
   --spacing-avatar-overlap: 73px;
@@ -174,6 +186,7 @@
   --spacing-gallery-h: 200px;
   --spacing-gallery-w-sm: 150px;
   --spacing-gallery-h-sm: 176px;
+  --spacing-icon-xs: 16px;
   --spacing-icon-sm: 18px;
   --spacing-icon-md: 20px;
   --spacing-icon-badge: 16px;

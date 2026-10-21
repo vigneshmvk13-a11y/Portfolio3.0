@@ -10,7 +10,7 @@ const { name, role, currently, affiliations } = await getAbout();
 ---
 
 <div class="flex flex-col items-center gap-(--sheet-intro-gap) text-center desktop:items-start desktop:gap-6 desktop:text-left">
-  <div class="flex flex-col gap-1 desktop:gap-2">
+  <div class="flex flex-col gap-2">
     <h1 class="text-h5 text-fg-primary desktop:text-h4">
       I'm {name}, <span class="text-fg-secondary desktop:block">{role}</span>
     </h1>
@@ -18,10 +18,10 @@ const { name, role, currently, affiliations } = await getAbout();
   </div>
   {
     affiliations.length > 0 && (
-      <ul class="flex items-center gap-2" aria-label="Works with">
+      <ul class="flex items-center gap-1" aria-label="Works with">
         {affiliations.map((affiliation, i) => (
-          <li class:list={['flex items-center', i === 0 ? 'gap-1' : 'gap-2 desktop:gap-1']}>
-            <span class="text-label-1" aria-hidden="true">
+          <li class="flex items-center gap-1">
+            <span class="text-label-2 desktop:text-label-1" aria-hidden="true">
               {i === 0 ? '@' : '&'}
             </span>
             <LogoPill src={affiliation.logo} alt={affiliation.name} />

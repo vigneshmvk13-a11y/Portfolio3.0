@@ -39,10 +39,13 @@ export function bindSheet(controller: WheelController): void {
   let animation: Controls | null = null;
   /** Distance the surface slides to collapse, px (measured). */
   let collapseShift = 0;
+  /** How far the handle rises relative to the surface when collapsed (16px → 12px below the edge). */
+  let handleLift = 0;
 
   const render = () => {
     const shift = (1 - openness) * collapseShift;
     sheet.style.setProperty('--shift', `${shift.toFixed(2)}px`);
+    sheet.style.setProperty('--handle-lift', `${((1 - openness) * handleLift).toFixed(2)}px`);
     intro.style.transform = `translateY(${(shift * look.introFollow).toFixed(2)}px)`;
     const shown = clamp01((openness - look.introGoneAt) / (1 - look.introGoneAt));
     intro.style.opacity = String(shown);
@@ -50,13 +53,15 @@ export function bindSheet(controller: WheelController): void {
   };
 
   /**
-   * Collapsed, the buttons sit --sheet-handle-gap below the bottom of the handle's bar (the bar is
-   * 10px + 4px below the surface's top edge).
+   * Collapsed (Figma 251:6688), the handle bar sits --sheet-handle-top-collapsed below the top border
+   * and the buttons --sheet-handle-gap below the bar.
    */
   const measure = () => {
-    const gap = parseFloat(getComputedStyle(sheet).getPropertyValue('--sheet-handle-gap')) || 0;
-    const barEnd = bar ? bar.offsetTop + bar.offsetHeight : 0;
-    collapseShift = Math.max(0, actions.offsetTop - barEnd - gap);
+    const style = getComputedStyle(sheet);
+    const px = (name: string) => parseFloat(style.getPropertyValue(name)) || 0;
+    handleLift = px('--sheet-handle-top') - px('--sheet-handle-top-collapsed');
+    const barEnd = bar ? bar.offsetTop + bar.offsetHeight - handleLift : 0; // collapsed position
+    collapseShift = Math.max(0, actions.offsetTop - barEnd - px('--sheet-handle-gap'));
     render();
   };
 
@@ -169,6 +174,7 @@ export function bindSheet(controller: WheelController): void {
     if (mobile.matches) return measure();
     animation?.stop();
     sheet.style.removeProperty('--shift');
+    sheet.style.removeProperty('--handle-lift');
     intro.style.opacity = '';
     intro.style.filter = '';
     intro.style.transform = '';

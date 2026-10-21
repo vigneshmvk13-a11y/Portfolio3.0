@@ -18,7 +18,7 @@ Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`Cha
 | Variant | Box | Padding | Radius | Icon | Border | Where |
 |---|---|---|---|---|---|---|
 | `sm` | 52 | `p-4` | `rounded-button-sm` | `icon-sm` | `border-line-subtle` | Desktop intro |
-| `lg` | 62 | `p-5` | `rounded-button-lg` | `icon-md` | `border-line-default` (hover `line-strong`) | Mobile sheet (border added in Figma 246:2317, 2026-10-21) |
+| `lg` | 50 | `p-4` | `rounded-button-lg` | `icon-xs` | `border-line-default` (hover `line-strong`) | Mobile sheet (border added in Figma 246:2317, 2026-10-21) |
 | `lg-outlined` | 60 | `p-5` | `rounded-button-lg` | `icon-sm` | `border-line-default` | About drawer |
 | `close` | 52 | `p-4` | `rounded-media-sm` | `icon-sm` | `border-line-default` | Drawer close |
 
@@ -41,7 +41,7 @@ Inline text link inside prose. `text-fg-strong`, underline `decoration-line-stro
 ### LogoPill
 **Figma:** `144:52` (DNEG), `144:49` (Kotak) · **Status:** built
 
-`w-logo-w h-logo-h rounded-card`. Raster in Figma; request SVGs, otherwise export 2× and 3× through `astro:assets`. Alt "DNEG", "Kotak Mahindra Bank".
+`w-logo-w-sm h-logo-h-sm` (64×24) on mobile, `w-logo-w h-logo-h` (80×30) on desktop, `rounded-card`. In the intro, "@" and "&" are `label-2` on mobile and `label-1` on desktop; the row is `gap-1` (4px) throughout (Figma 246:2310, 233:4527). Raster in Figma; request SVGs, otherwise export 2× and 3× through `astro:assets`. Alt "DNEG", "Kotak Mahindra Bank".
 
 ### Badge
 **Figma:** `230:4637` (NDA, with Lock), `230:4652` (Coming soon) · **Status:** built
@@ -119,7 +119,7 @@ Behaviour (press, scrub, release, tap, keyboard) and the morph spec: `layout-and
 ### BottomSheet (mobile) / left column (desktop)
 **Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built
 
-One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Affiliations: "@ DNEG" 4px apart, "& Kotak" 8px on mobile (Figma 246:2310), 4px on desktop. Mobile surface: an absolute `[data-sheet-bg]` (`bg-surface-raised`, `rounded-t-panel`, `border-line-default`) plus a handle button (36×4 `line-strong` bar). Spacing scales with viewport height (`--sheet-pt/gap/pb/intro-gap`); the buttons stay Figma's 62×62 (radius `button-lg`, 16px). It collapses when the wheel moves and opens only by tap, handle or drag (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
+One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding keeps Figma's 313px text column (`--sheet-content-w`) and flexes 24–40px. Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Affiliations: "@ DNEG" 4px apart, "& Kotak" 8px on mobile (Figma 246:2310), 4px on desktop. Mobile surface: an absolute `[data-sheet-bg]` (`bg-surface-raised`, `rounded-t-panel`, `border-line-default`) plus a handle button (40×6 `line-strong` bar, Figma 251:6710). Spacing scales with viewport height (`--sheet-pt/gap/pb/intro-gap`); the buttons are Figma's 50×50 (`lg`, radius 16px). It collapses when the wheel moves and opens only by tap, handle or drag (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
 
 ### FooterBar (desktop)
 **Figma:** `233:4558` · **Status:** built

@@ -92,13 +92,14 @@ const resumeTodo = resume ? undefined : 'todo-content';
       --shift: 0px;
       isolation: isolate;
       pointer-events: none;
-      /* The surface's 1px top border sits on the absolute background; keep Figma's height (299 at 852). */
-      padding-top: calc(var(--sheet-pt) + 1px);
     }
 
-    .bottom-sheet__bg,
-    .bottom-sheet__grabber {
+    .bottom-sheet__bg {
       transform: translateY(var(--shift));
+    }
+    /* The handle also rises from 16px to 12px below the edge as the sheet collapses (Figma 251:6688). */
+    .bottom-sheet__grabber {
+      transform: translateY(calc(var(--shift) - var(--handle-lift, 0px)));
     }
 
     .bottom-sheet__bg {
@@ -109,13 +110,13 @@ const resumeTodo = resume ? undefined : 'todo-content';
       touch-action: none;
     }
 
-    /* Handle: a 36×4 bar 10px below the top edge; the hit area is 96px wide and reaches above the edge. */
+    /* Handle (Figma 251:6710): a 40×6 bar below the 1px top border; the hit area is 96×32 and reaches above the edge. */
     .bottom-sheet__grabber {
       position: absolute;
       top: 0;
       left: 50%;
       width: calc(var(--spacing) * 24);
-      height: calc(var(--spacing) * 6);
+      height: calc(var(--spacing) * 8);
       translate: -50% 0;
       /* Buttons centre their content vertically; a top-aligned flex column puts the bar at its margin. */
       display: flex;
@@ -135,9 +136,9 @@ const resumeTodo = resume ? undefined : 'todo-content';
       inset: calc(var(--spacing) * -3) 0 0;
     }
     .bottom-sheet__bar {
-      width: calc(var(--spacing) * 9);
-      height: var(--spacing);
-      margin-top: calc(var(--spacing) * 2.5);
+      width: calc(var(--spacing) * 10);
+      height: var(--sheet-handle-h);
+      margin-top: calc(1px + var(--sheet-handle-top));
     }
 
     /* Its own layer: its position, opacity and blur change every frame while the sheet moves. */

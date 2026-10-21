@@ -64,6 +64,14 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · tokens/components · Footer update (Figma 246:2305 open, 251:6688 collapsed) plus desktop tags (233:4527):
+  - The handle is now in Figma: 40×6 `gray/300`, 16px below the top border open and 12px collapsed. Bar → intro 32px; collapsed bar → buttons 32px (`--sheet-handle-gap`, superseding the 24px dial).
+  - Name → subline 8px; text → tags 16px.
+  - Mobile tags: `label-2` "@"/"&", 64×24 logo pills.
+  - Tags 4px apart on mobile and desktop.
+  - Sheet buttons 50×50 with 16px icons (`icon-xs`).
+  - Sheet 287 open / 133 collapsed at 852, exactly Figma; compact screens scale the spacing as before (247px at 660).
+
 - 2026-10-22 · tokens · Vignesh's phone review:
   - `--sheet-handle-gap` 19 → **24px**.
   - Sheet buttons no longer shrink to 52px on short screens. Keeping the 20px radius on the smaller button made it look rounder than Figma, so they stay 62×62 at every height.

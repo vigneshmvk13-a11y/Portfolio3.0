@@ -1,5 +1,8 @@
 ---
-/** Company logo pill (80×30). Raster from Figma, optimised by astro:assets. design/components.md → LogoPill. */
+/**
+ * Company logo pill: 64×24 on mobile (Figma 246:2313), 80×30 on desktop. Raster from Figma, optimised
+ * by astro:assets (sized for the larger one). design/components.md → LogoPill.
+ */
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 
@@ -19,5 +22,5 @@ const { src, alt, class: className } = Astro.props;
   height={30}
   densities={[2, 3]}
   fit="cover"
-  class:list={['w-logo-w h-logo-h rounded-card object-cover', className]}
+  class:list={['w-logo-w-sm h-logo-h-sm rounded-card object-cover desktop:w-logo-w desktop:h-logo-h', className]}
 />
