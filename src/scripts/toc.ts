@@ -6,7 +6,7 @@
 import type { WheelController, WheelDetail } from './wheel/controller';
 
 const ACTIVE = ['bg-surface-selected', 'text-fg-strong'];
-const INACTIVE = ['text-fg-secondary', 'hover:bg-surface-hover'];
+const INACTIVE = ['text-fg-secondary', 'hover:bg-surface-hover', 'hover:text-fg-primary'];
 
 export function bindToc(controller: WheelController): void {
   const items = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-item]')];

@@ -99,7 +99,7 @@ Emits `wheel:start {index, slug, via}` (motion began; covers pause), `wheel:chan
 **Figma:** `233:4545` · **Status:** built
 
 `<nav aria-label="Projects">`, `w-side`, `gap-1`. Items: `p-2 rounded-item text-body-3 font-medium`. Each item is an `<a href="/work/slug">`. JS makes a plain click rotate the wheel; modifier-clicks still open the page.
-- Inactive: `text-fg-secondary`. Hover (proposed): `bg-surface-hover`.
+- Inactive: `text-fg-secondary`. Hover (proposed): `bg-surface-hover` with `text-fg-primary` (secondary fails contrast on the hover grey).
 - Active: `bg-surface-selected text-fg-strong` (gray/900, Figma 261:7057), leading dash 12×2 `bg-indicator rounded-item` with `gap-2`. `aria-current="true"`.
 
 ### TocHandle (mobile)

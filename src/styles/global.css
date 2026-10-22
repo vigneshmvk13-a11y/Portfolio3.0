@@ -14,6 +14,8 @@
   --gray-200: #dddddd;
   --gray-300: #c6c6c6;
   --gray-500: #868686;
+  /* Figma gray/600 is #727272 (4.34:1 on gray-50); nudged to the lightest grey that passes 4.5:1. */
+  --gray-600: #6f6f6f;
   --gray-700: #5e5e5e;
   --gray-900: #282828;
   --gray-black: #000000;
@@ -221,15 +223,15 @@
   --color-surface-caption: var(--overlay-84);
   --color-surface-scrim: var(--scrim-24);
   --color-surface-badge: var(--lime-200);
-  --color-fg-primary: var(--gray-black);
+  --color-fg-primary: var(--gray-900);
   --color-fg-strong: var(--gray-900);
-  --color-fg-secondary: var(--gray-700);
+  --color-fg-secondary: var(--gray-600);
   --color-fg-tertiary: var(--gray-500);
   --color-fg-on-media: var(--gray-white);
   --color-line-subtle: var(--gray-100);
   --color-line-default: var(--gray-200);
   --color-line-strong: var(--gray-300);
-  --color-indicator: var(--gray-black);
+  --color-indicator: var(--gray-900);
   --color-focus: var(--gray-900);
   --color-transparent: transparent;
   --color-current: currentColor;

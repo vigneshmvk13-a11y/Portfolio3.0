@@ -25,6 +25,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `--gray-200` | `gray/200` | `#DDDDDD` |
 | `--gray-300` | `gray/300` | `#C6C6C6` |
 | `--gray-500` | `gray/500` | `#868686` |
+| `--gray-600` | `gray/600` | `#6F6F6F` (Figma `#727272`, 4.34:1 on gray/50; nudged to pass 4.5:1) |
 | `--gray-700` | `gray/700` | `#5E5E5E` |
 | `--gray-900` | `gray/900` | `#282828` |
 | `--gray-black` | `gray/black` | `#000000` |
@@ -43,18 +44,18 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-caption` | `--overlay-84` | Card caption bar |
 | `surface-scrim` | `--scrim-24` **(proposed)** | Behind the drawer |
 | `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |
-| `fg-primary` | `--gray-black` | Name, active TOC |
-| `fg-strong` | `--gray-900` | Emphasis in About, timeline roles |
-| `fg-secondary` | `--gray-700` | Default body/support text, icons |
+| `fg-primary` | `--gray-900` | Primary text: name, headings, active TOC, hovered TOC rows (Figma 233:4518, 2026-10-22) |
+| `fg-strong` | `--gray-900` | Emphasis in About, timeline roles. Same value as `fg-primary` since 2026-10-22 |
+| `fg-secondary` | `--gray-600` | Secondary text, icons: 4.53:1 on `surface-page`, 5.02:1 on white. Fails on `surface-hover` (4.10:1), so hovered rows switch to `fg-primary` |
 | `fg-tertiary` | `--gray-500` | Non-text only (fails 4.5:1 on `surface-page`). Footer credits use `fg-secondary` |
 | `fg-on-media` | `--gray-white` | Card captions |
 | `line-subtle` | `--gray-100` | Desktop icon buttons |
 | `line-default` | `--gray-200` | Drawer buttons, dividers, sheet edge |
 | `line-strong` | `--gray-300` **(proposed)** | Button hover border |
-| `indicator` | `--gray-black` | TOC active dash |
+| `indicator` | `--gray-900` | TOC active dash |
 | `focus` | `--gray-900` **(proposed)** | Focus ring |
 
-**Contrast:** `fg-tertiary` (#868686) on `surface-page` (#F3F3F3) is ~3.3:1, below 4.5:1. Figma used it for the footer credits; they use `fg-secondary` (~6:1) instead (decided 2026-10-20).
+**Contrast:** `fg-tertiary` (#868686) on `surface-page` (#F3F3F3) is ~3.3:1, below 4.5:1. Figma used it for the footer credits; they use `fg-secondary` (4.53:1) instead (decided 2026-10-20). `gray/600` is `#6F6F6F`, not Figma's `#727272` (4.34:1 fails on the page background; decided 2026-10-22).
 
 ## Typography
 

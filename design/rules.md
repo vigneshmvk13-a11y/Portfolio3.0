@@ -27,7 +27,7 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 ## Accessibility (target: Lighthouse 100)
 
 - **Focus ring:** `outline-2 outline-offset-2 outline-focus` on `:focus-visible` for every interactive element; offset 4px on cards. Never `outline-none` without a replacement.
-- **Contrast:** text ≥ 4.5:1, large text and UI boundaries ≥ 3:1. The Figma footer credits used `fg-tertiary` (~3.3:1); they use `fg-secondary` (~6:1) instead. Don't use `fg-tertiary` for text.
+- **Contrast:** text ≥ 4.5:1, large text and UI boundaries ≥ 3:1. The Figma footer credits used `fg-tertiary` (~3.3:1); they use `fg-secondary` (4.53:1) instead. Don't use `fg-tertiary` for text. `fg-secondary` fails on `surface-hover` (4.10:1): anything grey that gets a hover background switches its text to `fg-primary`.
 - Caption bar: white on `surface-caption` is ~7:1 over dark covers but drops toward ~4.5:1 over very light ones. Check each cover; raise the overlay opacity for light covers rather than accepting low contrast.
 - Faded neighbour cards are `inert` + `aria-hidden` (they're decorative previews; the TOC is the accessible route). A polite live region announces the active project ("Fyn, 2 of 5") when the wheel settles.
 - Icon buttons always have `aria-label`; decorative SVGs are `aria-hidden="true" focusable="false"`.
