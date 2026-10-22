@@ -22,7 +22,6 @@ const caseStudies = defineCollection({
       role: z.string().optional(),
       timeline: z.string().optional(),
       tools: z.array(z.string()).default([]),
-      tags: z.array(z.string()).default([]),
       heroVideo: z
         .object({
           poster: image().optional(),

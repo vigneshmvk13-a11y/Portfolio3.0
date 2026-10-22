@@ -16,12 +16,12 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, subtitle, status, role, timeline, tags, heroVideo, seoDescription, ogImage, cardMeta } = entry.data;
+const { subtitle, tocLabel, status, role, timeline, heroVideo, seoDescription, ogImage, cardMeta } = entry.data;
 const { contact, nav } = await getSiteSettings();
-const meta = [role, timeline, ...tags].filter(Boolean);
+const meta = [role, timeline, cardMeta].filter(Boolean);
 ---
 
-<Base title={title} description={seoDescription} ogImage={ogImage} class="min-h-dvh bg-surface-page">
+<Base title={tocLabel} description={seoDescription} ogImage={ogImage} class="min-h-dvh bg-surface-page">
   <main id="main" class="mx-auto flex max-w-prose flex-col gap-8 px-gutter-mobile py-10 desktop:py-20">
     <Button href={`/#${entry.id}`} leadingIcon={ArrowLeft} class="self-start">All work</Button>
 
@@ -41,7 +41,7 @@ const meta = [role, timeline, ...tags].filter(Boolean);
 
     <header class="flex flex-col gap-2">
       <h1 class="text-h5 text-fg-primary desktop:text-h4">{subtitle}</h1>
-      {(meta.length > 0 || cardMeta) && <p class="text-label-2">{meta.length > 0 ? meta.join(' • ') : cardMeta}</p>}
+      {meta.length > 0 && <p class="text-label-2">{meta.join(' • ')}</p>}
     </header>
 
     {

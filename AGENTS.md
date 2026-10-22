@@ -119,13 +119,13 @@ Astro ignores page files that start with `_`, so dev-only pages live in `src/dev
 
 | Field | Type | Notes |
 |---|---|---|
-| `title` | slug field | Slug from title, editable |
+| `title` | slug field | Labelled **Project name**. Sets the URL slug only |
 | `subtitle` | text | Labelled **Title** in Keystatic. The full title: homepage card (desktop and mobile) and the case-study page heading ("Simplifying data mapping for enterprise integrations") |
-| `tocLabel` | text | Labelled **Short title**. TOC on mobile and desktop ("Data mapping") |
-| `cardMeta` | text | Labelled **Card tags**. "B2B • SAAS", desktop card only |
+| `tocLabel` | text | Labelled **Short title**. TOC on mobile and desktop, and the browser tab / share title ("Data mapping") |
+| `cardMeta` | text | Labelled **Tags**. "B2B • SAAS": desktop card and the case-study meta row (the only tag field) |
 | `status` | select | `live` · `nda` · `coming-soon` · `placeholder`. Drives the card badge and link |
 | `role`, `timeline` | text | |
-| `tools`, `tags` | array of text | |
+| `tools` | array of text | |
 | `heroVideo` | object | `mp4`, `webm` (paths under `/media/<slug>/`), `poster` (image), `alt` |
 | `ogImage` | image | Exported from Figma, 1200×630 |
 | `seoDescription` | text, ≤160 chars | |

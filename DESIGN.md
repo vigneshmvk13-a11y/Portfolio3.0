@@ -64,6 +64,7 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · content · Case-study browser tab (and share) title is the short title (`tocLabel`); the slug field only sets the URL. One tag field: `cardMeta` ("Tags") feeds the desktop card and the case-study meta row; the separate `tags` array is removed (no content used it). Why: Vignesh's CMS answers.
 - 2026-10-22 · tokens · Text colours (Figma 233:4518): `fg-primary` gray/900 (was black), `fg-secondary` gray/600 (was gray/700), `indicator` gray/900. New primitive `--gray-600` is **#6F6F6F**, not Figma's #727272: that fails 4.5:1 on the page background (4.34); #6F6F6F is the lightest that passes (4.53). Hovered TOC rows go `fg-primary` (secondary on the hover grey is 4.10). Why: Vignesh's colour pass; he'll update the Figma variable.
 - 2026-10-22 · components · Mobile TOC colours (Figma 261:7057): active tick and highlighted row text gray/900 (`fg-strong`, was black), other ticks gray/300 (`line-strong`, was gray/700). Desktop TOC: active text gray/900 too (the dash stays black). Why: Vignesh's colour pass.
 - 2026-10-22 · components · Mobile card caption is the title alone; the tags (`cardMeta`) show on desktop only (Figma 260:6971–260:6975). Titles wrap to two lines, then ellipsis (Figma's Gyst variant truncates at one line; the others wrap). Keystatic labels now say where each field shows: Title, Short title, Card tags, Cover image (keys unchanged). Why: Vignesh's mobile card update and CMS brief.

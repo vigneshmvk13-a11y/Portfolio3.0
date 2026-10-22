@@ -27,7 +27,7 @@ export default config({
       columns: ['title', 'order', 'status'],
       schema: {
         title: fields.slug({
-          name: { label: 'Project name', description: 'Sets the URL and the browser tab title, e.g. "Smart Mapping"' },
+          name: { label: 'Project name', description: 'Sets the URL, e.g. "Smart Mapping" → /work/smart-mapping' },
         }),
         subtitle: fields.text({
           label: 'Title',
@@ -36,10 +36,10 @@ export default config({
         }),
         tocLabel: fields.text({
           label: 'Short title',
-          description: 'Shown in the TOC (mobile and desktop), e.g. "Data mapping"',
+          description: 'TOC (mobile and desktop) and the browser tab title, e.g. "Data mapping"',
           validation: { isRequired: true },
         }),
-        cardMeta: fields.text({ label: 'Card tags', description: 'Desktop card, e.g. "B2B • SAAS"' }),
+        cardMeta: fields.text({ label: 'Tags', description: 'Desktop card and the case-study page, e.g. "B2B • SAAS"' }),
         status: fields.select({ label: 'Status', options: STATUS, defaultValue: 'placeholder' }),
         order: fields.integer({ label: 'Homepage order', validation: { isRequired: true, min: 1 } }),
         draft: fields.checkbox({
@@ -51,11 +51,6 @@ export default config({
         timeline: fields.text({ label: 'Timeline' }),
         tools: fields.array(fields.text({ label: 'Tool' }), {
           label: 'Tools',
-          itemLabel: (props) => props.value,
-        }),
-        tags: fields.array(fields.text({ label: 'Tag' }), {
-          label: 'Case-study tags',
-          description: 'Case-study page, after role and timeline',
           itemLabel: (props) => props.value,
         }),
         heroVideo: fields.object(
