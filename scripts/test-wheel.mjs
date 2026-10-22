@@ -297,7 +297,7 @@ try {
   const sp = await page(393, 660);
   await sp.goto('/');
   const geo = await sp.eval(`(() => { const c = document.querySelector('[data-wheel-card]:not([inert])'); const sh = document.querySelector('[data-bottom-sheet]').getBoundingClientRect(); const r = c.getBoundingClientRect(); return { w: c.offsetWidth, h: c.offsetHeight, bottom: Math.round(r.bottom), sheetTop: Math.round(sh.top) }; })()`);
-  check('short phone: card at full design size, clear of the expanded sheet', geo.w === 353 && geo.bottom <= geo.sheetTop - 19, JSON.stringify(geo));
+  check('short phone: card at full design size, clear of the expanded sheet', geo.w === 289 && geo.bottom <= geo.sheetTop - 51, JSON.stringify(geo));
   await sp.close();
 
   // ---------- Intro ----------

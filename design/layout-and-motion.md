@@ -5,8 +5,8 @@ Written mobile-first, matching how the CSS is authored. All durations, easings, 
 ## Mobile home (base, designed at 393×852; check 360 and 412 too)
 
 - `bg-surface-page` (gray/50, as on desktop). One viewport-height composition (`h-dvh`). The document doesn't scroll; vertical swipes step the project wheel.
-- Wheel stage: full width. The card is **always full width**, as in Figma: viewport − 2 × `gutter-mobile`, height from `aspect-card` (553:400).
-- Its centre (`--wheel-centre-y`, global.css) is Figma's placement, `pt-10 + (spread + reach) × h + gap`: the top neighbour's far edge at 40px and the card at y = 227, at 393×852.
+- Wheel stage: full width. The card always fills the width inside `--wheel-inset` (52px each side): viewport − 104px, height from `aspect-card` (553:400). At 393 that's 289 × 209 (Figma 230:4858: 288 × 208). Neighbours sit `--wheel-gap` (52px) from the card.
+- Its centre (`--wheel-centre-y`, global.css) is Figma's placement, `pt-10 + (spread + reach) × h + gap`: the top neighbour's far edge at 40px and the card's centre at y ≈ 334, at 393×852.
 - On shorter screens the centre **rises** so the card clears the expanded sheet by `--wheel-gap`: `min(figma, 100dvh − --sheet-h − safe-area − gap − h/2)`. The top neighbour then shows as a slice.
   - Why: real phone browsers leave ~660px (iPhone Safari with its bars) to ~790px, not Figma's 852. The old rule shrank the card to fit (about ⅔ size at 660). Vignesh chose a full-size card with a cropped top neighbour (2026-10-21).
   - The height still caps when even the card alone can't fit between `pt-10` and the sheet (landscape phones).
@@ -66,7 +66,7 @@ step = 38.1° (--wheel-step)
 - With the per-card vanishing point, solving for (step, R, P) against height, near width and far width gives step 38.1°, R 835px, P 840px. That model reproduces 263.6 / 519.3 / 407.0 (residual 0.15px²).
 - The near edge sits 0.3695·h from the neighbour's centre, so `Y(±1) = 0.5h + gap + 0.3695h`.
 - Desktop (h = 400, gap 60): Y = 407.8, far edge at 523.6. Figma has 523.4.
-- Mobile (h = 254.4, gap 20): far edge at 314.7. Figma has 314.6.
+- Mobile (h = 254.4, gap 20): far edge at 314.7. Figma 233:4584 has 314.6. (Mobile is now h ≈ 209, gap 52, Figma 230:4858; its neighbours are still the old flattened images, so the constants weren't refitted.)
 - The same constants hold at both sizes. Only `h` and `gap` change.
 
 ### Visibility

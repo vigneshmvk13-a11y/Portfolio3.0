@@ -34,13 +34,15 @@
   --wheel-spread: 0.8695;
   --wheel-reach: 0.289;
   --wheel-fade: 0.2;
-  --wheel-gap: 20px;
+  /* Mobile: card → neighbour gap and the card's side inset, both 52px (Figma 230:4858). */
+  --wheel-gap: 52px;
+  --wheel-inset: 52px;
   --wheel-card-h-desktop: min(400px, 39dvh);
 }
 
 /*
  * Derived wheel layout (design/layout-and-motion.md → Project wheel).
- * Mobile: the card always fills the width between gutters (Figma 233:4584). Its centre sits where
+ * Mobile: the card always fills the width inside --wheel-inset (Figma 230:4858). Its centre sits where
  *   Figma puts it (top neighbour's far edge at pt-10), raised on short screens so the card clears the
  *   expanded bottom sheet (--sheet-h, Figma 233:4586) by a gap; the top neighbour then shows as a
  *   slice. Real phone browsers leave ~660–790px, not Figma's 852. The height cap only bites when even
@@ -97,7 +99,7 @@
   /* Figma's sheet text column (233:4587); side padding flexes 24–40px around it. */
   --sheet-content-w: 313px;
   --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
-  --card-h: min(calc((100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))), var(--wheel-room));
+  --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))), var(--wheel-room));
   --card-w: calc(var(--card-h) * (var(--aspect-card)));
   --wheel-column: calc(var(--card-w) + var(--container-stack) - var(--spacing-card-w));
   --wheel-centre-y: min(
@@ -109,7 +111,7 @@
 @media (min-width: 48rem) {
   :root {
     --card-h: min(
-      calc(min(var(--spacing-card-w), 100vw - 2 * var(--spacing-gutter-mobile)) / (var(--aspect-card))),
+      calc(min(var(--spacing-card-w), 100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))),
       var(--wheel-room)
     );
   }

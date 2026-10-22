@@ -214,7 +214,8 @@ Geometry derived in `layout-and-motion.md → Project wheel`. `h` is the measure
 | `--wheel-spread` | `0.8695` | `wheel.spread = 0.8695` | Y(±1) = spread × h + gap |
 | `--wheel-reach` | `0.289` | `wheel.reach = 0.289` | Far edge of a ±1 neighbour beyond its centre, × h (positions the mobile stage) |
 | `--wheel-fade` | `0.2` | `wheel.fade = 0.2` | Opacity at ±1 step; 0 by ±1.5 |
-| `--wheel-gap` | `20px` mobile / `60px` desktop | read from CSS | Gap between active card and neighbour (`gap-5` / `gap-15`) |
+| `--wheel-gap` | `52px` mobile / `60px` desktop | read from CSS | Gap between the active card and a neighbour's near edge; on short screens also the card's clearance above the expanded sheet (Figma 230:4858 / 233:4518) |
+| `--wheel-inset` | `52px` | — | Mobile card's side inset: card width = viewport − 2 × inset (Figma 230:4858). Not `gutter-mobile`, which stays the 20px page padding elsewhere |
 | `--wheel-card-h-desktop` | `min(400px, 39dvh)` | — | Desktop card height |
 | — | — | `wheel.stepThreshold = 80` | One wheel event this big is a mouse notch (steps at once); a trackpad gesture must travel this far to commit (reduced motion: per step) |
 | — | — | `wheel.inputQuiet = 0.15` | s of wheel silence that ends a gesture (snap; reduced motion: unlock) |
