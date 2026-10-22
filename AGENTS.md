@@ -120,9 +120,9 @@ Astro ignores page files that start with `_`, so dev-only pages live in `src/dev
 | Field | Type | Notes |
 |---|---|---|
 | `title` | slug field | Slug from title, editable |
-| `subtitle` | text | Card title on the homepage ("Simplifying data mapping for enterprise integrations") |
-| `tocLabel` | text | Short TOC name ("Data mapping") |
-| `cardMeta` | text | "B2B • SAAS" |
+| `subtitle` | text | Labelled **Title** in Keystatic. The full title: homepage card (desktop and mobile) and the case-study page heading ("Simplifying data mapping for enterprise integrations") |
+| `tocLabel` | text | Labelled **Short title**. TOC on mobile and desktop ("Data mapping") |
+| `cardMeta` | text | Labelled **Card tags**. "B2B • SAAS", desktop card only |
 | `status` | select | `live` · `nda` · `coming-soon` · `placeholder`. Drives the card badge and link |
 | `role`, `timeline` | text | |
 | `tools`, `tags` | array of text | |

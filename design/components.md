@@ -78,7 +78,7 @@ A link to `/work/[slug]` for every status (`rules.md → Content states`). `roun
 
 1. **MotionCover** fills the card (`object-cover`). The small white square in the Smart Mapping cover is part of the cover image, not UI.
 2. **Badge** (by `status`) top-right.
-3. **Caption bar**: bottom, `bg-surface-caption backdrop-blur-caption`, `text-fg-on-media`. Subtitle left (`text-label-2 font-medium`; one line + ellipsis on desktop, two lines on mobile). Meta right (`text-label-2`). Mobile and tablet: `p-4`, `gap-4` (Figma 256:6791, 2026-10-22). Desktop: `px-8 py-4`, `gap-5`.
+3. **Caption bar**: bottom, `bg-surface-caption backdrop-blur-caption`, `text-fg-on-media`. Subtitle left (`text-label-2 font-medium`; one line + ellipsis on desktop, two lines on mobile). Meta right (`text-label-2`), **desktop only**: the mobile caption is the title alone (Figma 260:6971–260:6975). Mobile and tablet: `p-4` (Figma 256:6791, 2026-10-22). Desktop: `px-8 py-4`, `gap-5`.
 
 States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset. · lite (`html[data-quality="lite"]`, slow device): caption `[data-card-caption]` without the backdrop blur.
 

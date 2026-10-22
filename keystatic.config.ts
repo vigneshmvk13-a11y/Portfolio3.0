@@ -26,18 +26,20 @@ export default config({
       entryLayout: 'content',
       columns: ['title', 'order', 'status'],
       schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
+        title: fields.slug({
+          name: { label: 'Project name', description: 'Sets the URL and the browser tab title, e.g. "Smart Mapping"' },
+        }),
         subtitle: fields.text({
-          label: 'Card title',
-          description: 'The outcome, shown on the homepage card',
+          label: 'Title',
+          description: 'The full title: homepage card (desktop and mobile) and the case-study page heading',
           validation: { isRequired: true },
         }),
         tocLabel: fields.text({
-          label: 'TOC label',
-          description: 'Short name, e.g. "Data mapping"',
+          label: 'Short title',
+          description: 'Shown in the TOC (mobile and desktop), e.g. "Data mapping"',
           validation: { isRequired: true },
         }),
-        cardMeta: fields.text({ label: 'Card meta', description: 'e.g. "B2B • SAAS"' }),
+        cardMeta: fields.text({ label: 'Card tags', description: 'Desktop card, e.g. "B2B • SAAS"' }),
         status: fields.select({ label: 'Status', options: STATUS, defaultValue: 'placeholder' }),
         order: fields.integer({ label: 'Homepage order', validation: { isRequired: true, min: 1 } }),
         draft: fields.checkbox({
@@ -52,13 +54,14 @@ export default config({
           itemLabel: (props) => props.value,
         }),
         tags: fields.array(fields.text({ label: 'Tag' }), {
-          label: 'Tags',
+          label: 'Case-study tags',
+          description: 'Case-study page, after role and timeline',
           itemLabel: (props) => props.value,
         }),
         heroVideo: fields.object(
           {
             poster: fields.image({
-              label: 'Poster (LCP image)',
+              label: 'Poster (still frame, shown until the video plays)',
               directory: 'src/assets/covers',
               publicPath: '../../assets/covers/',
             }),
@@ -66,7 +69,10 @@ export default config({
             mp4: fields.file({ label: 'MP4 (H.264, ≤ 4 MB)', directory: 'public/media', publicPath: '/media/' }),
             webm: fields.file({ label: 'WebM (≤ 4 MB)', directory: 'public/media', publicPath: '/media/' }),
           },
-          { label: 'Cover' },
+          {
+            label: 'Cover image',
+            description: 'Looping video (MP4 + WebM, ≤ 4 MB each) and its poster. Card and case-study page.',
+          },
         ),
         ogImage: fields.image({
           label: 'OG image (1200×630)',
