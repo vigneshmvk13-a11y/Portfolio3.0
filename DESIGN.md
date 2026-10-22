@@ -64,6 +64,7 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · components · Mobile card badge ("NDA protected", "Coming soon") inset 16px from the card's top and right edges (Figma 256:6804 / 256:6813), matching the caption's 16px. Desktop stays 24px.
 - 2026-10-22 · layout-and-motion · Sheet drag release: the settle now takes as long as the release speed needs to cover the rest of the way, from 0.25s (`sheet.flickMin`, a quick swipe) to 0.5s (`spring.sheet`, a slow drag). Why: Vignesh found a quick swipe slow to finish. 60fps at 4× CPU.
 - 2026-10-22 · components · Mobile card caption (Figma 256:6791): `p-4`, `gap-4`, meta `label-2` (was `px-8 py-4`, `gap-6`, `label-3`). Desktop unchanged.
 

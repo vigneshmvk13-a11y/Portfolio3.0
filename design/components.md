@@ -46,7 +46,7 @@ Inline text link inside prose. `text-fg-strong`, underline `decoration-line-stro
 ### Badge
 **Figma:** `230:4637` (NDA, with Lock), `230:4652` (Coming soon) · **Status:** built
 
-Pill top-right on ProjectCard, inset `p-6` from the card corner. `bg-surface-badge rounded-full py-2`, `text-label-3 font-medium text-fg-strong`. Without icon: `px-4`. With icon (16px Phosphor Lock, fill weight): `pl-3 pr-4 gap-1`. Variants come from `status`: `nda` → Lock + "NDA protected"; `coming-soon` → "Coming soon". Other statuses render nothing. It's the one colour in the chrome (confirmed).
+Pill top-right on ProjectCard, inset from the card corner by 16px (`top-4 right-4`) on mobile and tablet (Figma 256:6791) and 24px (`top-6 right-6`) on desktop. `bg-surface-badge rounded-full py-2`, `text-label-3 font-medium text-fg-strong`. Without icon: `px-4`. With icon (16px Phosphor Lock, fill weight): `pl-3 pr-4 gap-1`. Variants come from `status`: `nda` → Lock + "NDA protected"; `coming-soon` → "Coming soon". Other statuses render nothing. It's the one colour in the chrome (confirmed).
 
 ### MotionCover
 **Figma:** card covers · **Status:** built (video playback untested: no cover videos exist yet)
