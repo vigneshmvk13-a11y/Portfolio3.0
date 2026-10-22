@@ -223,16 +223,16 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 - **A swipe that starts on the sheet** moves the sheet, never the wheel.
 - **Release:** a drag follows the finger, then settles to the nearer state, counting where the release speed would carry it (0.15s projection).
 
-**Handle** (Figma 251:6710). A 40×6 `line-strong` (gray/300) bar, 16px below the top border when open and 12px when collapsed. It moves between the two as the sheet slides.
+**Handle** (Figma 260:6908). A 40×6 `line-strong` (gray/300) bar, 16px below the top border, open and collapsed.
 - It's a real `<button>` (`aria-expanded`, "Show / Hide introduction", `aria-controls` the intro). Its 96px-wide hit area reaches 12px above the edge.
 - That gives dragging a single-tap and keyboard alternative (WCAG 2.5.7).
 
 **Compact on short screens.** All spacing scales with viewport height (`tokens.md → Mobile sheet spacing`), so the sheet stays near Figma's 35% share:
-- 852px tall: 279px, exactly Figma (246:2305).
-- 783px (Nothing Phone 1 Chrome): ~269px. The handle, its 24px gap, the 50×50 buttons and the tag sizes stay Figma's at every height.
-- 660px (iPhone Safari): ~251px (38%).
+- 852px tall: 265px, exactly Figma (260:6906).
+- 783px (Nothing Phone 1 Chrome): ~255px. The handle and its gaps, the 50×50 buttons, the type and the tag sizes stay Figma's at every height.
+- 660px (iPhone Safari): ~237px (36%).
 
-**Collapsed** (Figma 251:6688): the buttons sit `--sheet-handle-gap` (24px) below the handle bar, at every screen height: 125px tall at 852. Open, the intro sits the same 24px below the bar (`--sheet-top-gap`), so the handle's spacing doesn't change between states.
+**Collapsed** (Figma 260:6936): the buttons sit `--sheet-handle-gap` (32px) below the handle bar, at every screen height: 137px tall at 852. Open, the intro sits 24px below the bar (`--sheet-top-gap`).
 
 **Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
 - One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed. The settle takes as long as that speed needs to cover the rest of the way, between 0.25s (`sheet.flickMin`, a quick swipe) and 0.5s (a slow drag), so a flick doesn't drag on (Vignesh, 2026-10-22).

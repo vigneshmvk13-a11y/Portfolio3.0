@@ -64,6 +64,7 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · tokens/components · Mobile footer (Figma 260:6906 open, 260:6936 collapsed): name `text-h6` (20/24, new) and subline `text-body-4` (12/16, new); side padding 52px (`--wheel-inset`, replacing the 313px column and `--sheet-content-w`); handle 16px below the edge in both states; collapsed bar → buttons 32px (was 24); bar → intro stays 24. Sheet 265 open / 137 collapsed at 852. Why: Vignesh's revised footer.
 - 2026-10-22 · layout-and-motion · Mobile wheel (Figma 230:4858): the card sits 52px from each side (new `--wheel-inset`; 289×209 at 393, was 353×255) and neighbours sit 52px from it (`--wheel-gap` 20 → 52), which is also the card's clearance above the expanded sheet on short screens. `gutter-mobile` stays 20px for other pages. Why: Vignesh's revised mobile margins.
 - 2026-10-22 · components · Mobile card badge ("NDA protected", "Coming soon") inset 16px from the card's top and right edges (Figma 256:6804 / 256:6813), matching the caption's 16px. Desktop stays 24px.
 - 2026-10-22 · layout-and-motion · Sheet drag release: the settle now takes as long as the release speed needs to cover the rest of the way, from 0.25s (`sheet.flickMin`, a quick swipe) to 0.5s (`spring.sheet`, a slow drag). Why: Vignesh found a quick swipe slow to finish. 60fps at 4× CPU.

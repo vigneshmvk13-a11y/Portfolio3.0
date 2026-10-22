@@ -52,15 +52,15 @@
  * The TOC handle (TocHandle.astro) anchors to --wheel-centre-y too.
  */
 /*
- * Mobile bottom sheet (Figma 246:2305 open, 251:6688 collapsed; designed at 852px tall).
- * Fixed by Figma: the handle bar (40×6) sits --sheet-handle-top below the top border when open and
- * --sheet-handle-top-collapsed when collapsed. The bar's gap to what follows it is the same open
- * (--sheet-top-gap, to the intro) and collapsed (--sheet-handle-gap, to the buttons), at every
- * height, so the handle reads the same in both states. Buttons are 50×50.
+ * Mobile bottom sheet (Figma 260:6906 open, 260:6936 collapsed; designed at 852px tall).
+ * Fixed by Figma at every height: the handle bar (40×6) sits --sheet-handle-top below the top border
+ * (--sheet-handle-top-collapsed when collapsed; both 16px now); --sheet-top-gap (bar → intro, 24px)
+ * open; --sheet-handle-gap (bar → buttons, 32px) collapsed. Buttons are 50×50. Side padding is
+ * --wheel-inset, so the text column lines up with the card.
  * Scaled with the viewport height (phone browsers leave ~660px in iPhone Safari, not 852), linearly
  * from compact at 660px to Figma's at 852px, so the sheet stays near Figma's ~34% share and the wheel
  * stays the focus: --sheet-intro-gap (text → logos), --sheet-gap
- * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 78px text + gap +
+ * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 64px text + gap +
  * 24px logos). The registered ones are read by sheet.ts in px.
  */
 @property --sheet-pb {
@@ -71,7 +71,7 @@
 @property --sheet-handle-gap {
   syntax: '<length>';
   inherits: true;
-  initial-value: 24px;
+  initial-value: 32px;
 }
 @property --sheet-handle-top {
   syntax: '<length>';
@@ -81,23 +81,21 @@
 @property --sheet-handle-top-collapsed {
   syntax: '<length>';
   inherits: true;
-  initial-value: 12px;
+  initial-value: 16px;
 }
 :root {
   --sheet-handle-h: 6px;
-  --sheet-top-gap: var(--sheet-handle-gap);
+  --sheet-top-gap: 24px;
   --sheet-intro-gap: clamp(12px, 12px + 4 * (100dvh - 660px) / 192, 16px);
   --sheet-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
   --sheet-pb: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
   --sheet-btn: 50px;
   /* Content starts below the 1px border, the handle and its gap. */
   --sheet-pt: calc(1px + var(--sheet-handle-top) + var(--sheet-handle-h) + var(--sheet-top-gap));
-  --sheet-h: calc(var(--sheet-pt) + 102px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb));
+  --sheet-h: calc(var(--sheet-pt) + 88px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb));
 }
 
 :root {
-  /* Figma's sheet text column (233:4587); side padding flexes 24–40px around it. */
-  --sheet-content-w: 313px;
   --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
   --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))), var(--wheel-room));
   --card-w: calc(var(--card-h) * (var(--aspect-card)));
@@ -146,12 +144,17 @@
   --text-h5--line-height: 1.875rem;
   --text-h5--letter-spacing: -0.15px;
   --text-h5--font-weight: 500;
+  --text-h6: 1.25rem;
+  --text-h6--line-height: 1.5rem;
+  --text-h6--font-weight: 500;
   --text-body-1: 1.125rem;
   --text-body-1--line-height: 1.75rem;
   --text-body-2: 1rem;
   --text-body-2--line-height: 1.5rem;
   --text-body-3: 0.875rem;
   --text-body-3--line-height: 1.25rem;
+  --text-body-4: 0.75rem;
+  --text-body-4--line-height: 1rem;
   --text-label-1: 1rem;
   --text-label-1--line-height: 1.375rem;
   --text-label-1--letter-spacing: -0.18px;

@@ -69,12 +69,11 @@ const resumeTodo = resume ? undefined : 'todo-content';
 
 <style>
   /*
-   * Safe area under the sheet's buttons (iPhone home indicator). Side padding keeps Figma's
-   * 313px text column at 393 (40px each side) and shrinks to 24px on narrower phones, so the
-   * name stays on one line and the sheet keeps its designed height.
+   * Safe area under the sheet's buttons (iPhone home indicator). Side padding is the wheel's inset
+   * (52px, Figma 260:6906), so the text column lines up with the card above.
    */
   .bottom-sheet {
-    padding-inline: clamp(var(--spacing) * 6, (100vw - var(--sheet-content-w)) / 2, var(--spacing) * 10);
+    padding-inline: var(--wheel-inset);
     padding-bottom: calc(var(--sheet-pb) + env(safe-area-inset-bottom));
   }
 
