@@ -42,7 +42,7 @@ const ticks = entries.slice(0, 5).map((_, i, all) => barAt(i, all.length, 0, 0, 
             width={bar.w}
             height={bar.h}
             rx={bar.rx}
-            class={i === activeIndex ? 'fill-indicator' : 'fill-fg-secondary'}
+            class={i === activeIndex ? 'fill-fg-strong' : 'fill-line-strong'}
             data-toc-tick={i}
           />
         ))
@@ -119,7 +119,7 @@ const ticks = entries.slice(0, 5).map((_, i, all) => barAt(i, all.length, 0, 0, 
     color: var(--color-fg-secondary);
   }
   .toc-morph :global([data-toc-item][data-hl]) {
-    color: var(--color-fg-primary);
+    color: var(--color-fg-strong);
   }
 
   .toc-morph__handle {

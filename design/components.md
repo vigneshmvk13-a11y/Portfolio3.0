@@ -100,7 +100,7 @@ Emits `wheel:start {index, slug, via}` (motion began; covers pause), `wheel:chan
 
 `<nav aria-label="Projects">`, `w-side`, `gap-1`. Items: `p-2 rounded-item text-body-3 font-medium`. Each item is an `<a href="/work/slug">`. JS makes a plain click rotate the wheel; modifier-clicks still open the page.
 - Inactive: `text-fg-secondary`. Hover (proposed): `bg-surface-hover`.
-- Active: `bg-surface-selected text-fg-primary`, leading dash 12×2 `bg-indicator rounded-item` with `gap-2`. `aria-current="true"`.
+- Active: `bg-surface-selected text-fg-strong` (gray/900, Figma 261:7057), leading dash 12×2 `bg-indicator rounded-item` with `gap-2`. `aria-current="true"`.
 
 ### TocHandle (mobile)
 **Figma:** `233:4609` (27×80), `233:4714` (193×223) · **Status:** built
@@ -112,7 +112,7 @@ Anatomy, inside `[data-toc-morph]`, which is fixed right and centred on `--wheel
 2. The outline SVG (1px `stroke-line-strong`).
 3. A transparent `<button>` over the tab: `aria-expanded`, `aria-controls`, and a 44px hit area via `::before`.
 
-The tab is server-rendered from Figma's path, so it matches with no JS. Ticks: active `fill-indicator`, others `fill-fg-secondary`. The tab fits five ticks; more projects need a taller tab.
+The tab is server-rendered from Figma's path, so it matches with no JS. Ticks: active `fill-fg-strong` (gray/900), others `fill-line-strong` (gray/300). Open panel: highlighted row text `fg-strong`, others `fg-secondary`, highlight `surface-selected` (Figma 261:7057). The tab fits five ticks; more projects need a taller tab.
 
 Behaviour (press, scrub, release, tap, keyboard) and the morph spec: `layout-and-motion.md → TOC handle`. Scripts: `toc-morph.ts`, `toc-shape.ts`; `toc.ts` keeps ticks, labels and `aria-current` in sync.
 

@@ -5,7 +5,7 @@
  */
 import type { WheelController, WheelDetail } from './wheel/controller';
 
-const ACTIVE = ['bg-surface-selected', 'text-fg-primary'];
+const ACTIVE = ['bg-surface-selected', 'text-fg-strong'];
 const INACTIVE = ['text-fg-secondary', 'hover:bg-surface-hover'];
 
 export function bindToc(controller: WheelController): void {
@@ -23,8 +23,8 @@ export function bindToc(controller: WheelController): void {
     }
     for (const tick of ticks) {
       const active = Number(tick.dataset.tocTick) === index;
-      tick.classList.toggle('fill-indicator', active);
-      tick.classList.toggle('fill-fg-secondary', !active);
+      tick.classList.toggle('fill-fg-strong', active);
+      tick.classList.toggle('fill-line-strong', !active);
     }
     handle?.setAttribute('aria-label', `Projects, ${index + 1} of ${controller.count}`);
   };

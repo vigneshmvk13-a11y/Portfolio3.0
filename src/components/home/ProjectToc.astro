@@ -27,7 +27,7 @@ const { entries, variant = 'side', activeIndex = 0, class: className } = Astro.p
             class:list={[
               'toc-item flex items-center gap-2 rounded-item p-2 text-body-3 font-medium whitespace-nowrap',
               'transition-[background-color,color] duration-(--duration-base) ease-out',
-              active ? 'bg-surface-selected text-fg-primary' : 'text-fg-secondary hover:bg-surface-hover',
+              active ? 'bg-surface-selected text-fg-strong' : 'text-fg-secondary hover:bg-surface-hover',
             ]}
             data-toc-item
             data-index={index}

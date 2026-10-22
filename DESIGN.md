@@ -64,6 +64,7 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · components · Mobile TOC colours (Figma 261:7057): active tick and highlighted row text gray/900 (`fg-strong`, was black), other ticks gray/300 (`line-strong`, was gray/700). Desktop TOC: active text gray/900 too (the dash stays black). Why: Vignesh's colour pass.
 - 2026-10-22 · components · Mobile card caption is the title alone; the tags (`cardMeta`) show on desktop only (Figma 260:6971–260:6975). Titles wrap to two lines, then ellipsis (Figma's Gyst variant truncates at one line; the others wrap). Keystatic labels now say where each field shows: Title, Short title, Card tags, Cover image (keys unchanged). Why: Vignesh's mobile card update and CMS brief.
 - 2026-10-22 · tokens/components · Mobile footer (Figma 260:6906 open, 260:6936 collapsed): name `text-h6` (20/24, new) and subline `text-body-4` (12/16, new); side padding 52px (`--wheel-inset`, replacing the 313px column and `--sheet-content-w`); handle 16px below the edge in both states; collapsed bar → buttons 32px (was 24); bar → intro stays 24. Sheet 265 open / 137 collapsed at 852. Why: Vignesh's revised footer.
 - 2026-10-22 · layout-and-motion · Mobile wheel (Figma 230:4858): the card sits 52px from each side (new `--wheel-inset`; 289×209 at 393, was 353×255) and neighbours sit 52px from it (`--wheel-gap` 20 → 52), which is also the card's clearance above the expanded sheet on short screens. `gutter-mobile` stays 20px for other pages. Why: Vignesh's revised mobile margins.
