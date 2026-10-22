@@ -64,6 +64,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · tokens · Handle spacing matches Figma 246:2364 again: bar → intro (open) and bar → buttons (collapsed) are both **24px** (were 32), and the open gap no longer scales with viewport height. Sheet 279 open / 125 collapsed at 852 (251 open at 660). Why: on Vignesh's iPhone 16 the open gap had scaled down to ~22px while the collapsed one stayed 32, so the handle felt inconsistent between states.
+
 - 2026-10-22 · layout-and-motion · Fix: the TOC's corners jumped at the end of a collapse. The morph drew circular corners and swapped to Figma's smoothed tab corners only at rest, and the spring's undershoot could flip it twice. The corners now blend continuously from the tab's smoothed shape to the panel's circular one (same three cubics), and the outline holds at the tab during undershoot. Why: Vignesh spotted the jerk on his phone.
 
 - 2026-10-22 · tokens/components · Footer update (Figma 246:2305 open, 251:6688 collapsed) plus desktop tags (233:4527):

@@ -52,11 +52,12 @@
 /*
  * Mobile bottom sheet (Figma 246:2305 open, 251:6688 collapsed; designed at 852px tall).
  * Fixed by Figma: the handle bar (40×6) sits --sheet-handle-top below the top border when open and
- * --sheet-handle-top-collapsed when collapsed; collapsed, the buttons sit --sheet-handle-gap below it;
- * buttons are 50×50.
+ * --sheet-handle-top-collapsed when collapsed. The bar's gap to what follows it is the same open
+ * (--sheet-top-gap, to the intro) and collapsed (--sheet-handle-gap, to the buttons), at every
+ * height, so the handle reads the same in both states. Buttons are 50×50.
  * Scaled with the viewport height (phone browsers leave ~660px in iPhone Safari, not 852), linearly
  * from compact at 660px to Figma's at 852px, so the sheet stays near Figma's ~34% share and the wheel
- * stays the focus: --sheet-top-gap (bar → intro), --sheet-intro-gap (text → logos), --sheet-gap
+ * stays the focus: --sheet-intro-gap (text → logos), --sheet-gap
  * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 78px text + gap +
  * 24px logos). The registered ones are read by sheet.ts in px.
  */
@@ -68,7 +69,7 @@
 @property --sheet-handle-gap {
   syntax: '<length>';
   inherits: true;
-  initial-value: 32px;
+  initial-value: 24px;
 }
 @property --sheet-handle-top {
   syntax: '<length>';
@@ -82,7 +83,7 @@
 }
 :root {
   --sheet-handle-h: 6px;
-  --sheet-top-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
+  --sheet-top-gap: var(--sheet-handle-gap);
   --sheet-intro-gap: clamp(12px, 12px + 4 * (100dvh - 660px) / 192, 16px);
   --sheet-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
   --sheet-pb: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);

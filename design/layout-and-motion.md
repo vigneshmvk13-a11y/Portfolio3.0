@@ -228,11 +228,11 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 - That gives dragging a single-tap and keyboard alternative (WCAG 2.5.7).
 
 **Compact on short screens.** All spacing scales with viewport height (`tokens.md → Mobile sheet spacing`), so the sheet stays near Figma's 35% share:
-- 852px tall: 287px, exactly Figma (246:2305).
-- 783px (Nothing Phone 1 Chrome): ~273px. The handle, the 50×50 buttons and the tag sizes stay Figma's at every height.
-- 660px (iPhone Safari): ~247px (37%). The card above shows 117px instead of 65.
+- 852px tall: 279px, exactly Figma (246:2305).
+- 783px (Nothing Phone 1 Chrome): ~269px. The handle, its 24px gap, the 50×50 buttons and the tag sizes stay Figma's at every height.
+- 660px (iPhone Safari): ~251px (38%).
 
-**Collapsed** (Figma 251:6688): the buttons sit `--sheet-handle-gap` (32px) below the handle bar, at every screen height: 133px tall at 852.
+**Collapsed** (Figma 251:6688): the buttons sit `--sheet-handle-gap` (24px) below the handle bar, at every screen height: 125px tall at 852. Open, the intro sits the same 24px below the bar (`--sheet-top-gap`), so the handle's spacing doesn't change between states.
 
 **Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
 - One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed.

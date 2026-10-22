@@ -170,19 +170,19 @@ JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Botto
 
 ### Mobile sheet spacing (CSS, `global.css`)
 
-Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Each value scales linearly with the viewport height, from compact at 660px to Figma's at 852px, so the sheet keeps Figma's ~35% share and the wheel stays the focus (Vignesh, 2026-10-22).
+Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Each value given as a range scales linearly with the viewport height, from compact at 660px to Figma's at 852px, so the sheet keeps Figma's ~35% share and the wheel stays the focus (Vignesh, 2026-10-22).
 
 | Token | 660px tall → 852px | Meaning |
 |---|---|---|
 | `--sheet-handle-top` | 16px (open) / `--sheet-handle-top-collapsed` 12px | Handle bar (40×6, `line-strong`) below the 1px top border (Figma 246:2305 / 251:6688) |
-| `--sheet-top-gap` | 20 → 32px | Handle bar → intro (open) |
+| `--sheet-top-gap` | 24px (not scaled) | Handle bar → intro (open). Equals `--sheet-handle-gap` so the handle sits the same open and collapsed (Figma 246:2305) |
 | `--sheet-pt` | derived | 1 + handle-top + 6 + top-gap: where the intro starts |
 | `--sheet-intro-gap` | 12 → 16px | Name/role block → logos (name → subline is a fixed 8px) |
 | `--sheet-gap` | 20 → 32px | Intro → buttons |
 | `--sheet-pb` | 20 → 32px | Bottom padding |
-| `--sheet-handle-gap` | 32px (not scaled) | Collapsed: handle bar → buttons (Figma 251:6688; collapsed sheet 133px at 852). Registered with `@property` so JS reads it in px |
+| `--sheet-handle-gap` | 24px (not scaled) | Collapsed: handle bar → buttons (Figma 251:6688; collapsed sheet 125px at 852). Registered with `@property` so JS reads it in px |
 | `--sheet-btn` | 50px | Sheet buttons 50×50: 16px padding, 16px icon (`icon-xs`), radius `button-lg` 16px (Figma 246:2317) |
-| `--sheet-h` | 247 → 287px | Expanded height, derived from the above (lays out the wheel) |
+| `--sheet-h` | 251 → 279px | Expanded height, derived from the above (lays out the wheel) |
 
 ### Intro timing (built; tune by eye)
 
