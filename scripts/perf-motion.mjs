@@ -115,6 +115,8 @@ try {
   report('mobile: sheet open (tap)', await m.measure(async () => { await m.touch('touchStart', 60, sheetTop + 8); await m.touch('touchEnd'); }, 600));
   const openTop = await m.eval("Math.round(document.querySelector('[data-sheet-bg]').getBoundingClientRect().top)");
   report('mobile: sheet drag down + settle', await m.measure(async () => { await m.touch('touchStart', 60, openTop + 60); for (let dy = 8; dy <= 96; dy += 8) { await m.touch('touchMove', 60, openTop + 60 + dy); await sleep(16); } await m.touch('touchEnd'); }, 700));
+  const closedTop = await m.eval("Math.round(document.querySelector('[data-sheet-bg]').getBoundingClientRect().top)");
+  report('mobile: sheet quick flick up', await m.measure(async () => { await m.touch('touchStart', 60, closedTop + 8); for (let dy = 12; dy <= 48; dy += 12) { await m.touch('touchMove', 60, closedTop + 8 - dy); await sleep(16); } await m.touch('touchEnd'); }, 500));
   // TOC: press the tab (morph open), scrub down through every row (wheel spins), release (morph closed).
   const tab = await m.eval(`(() => { const r = document.querySelector('[data-toc-morph]').getBoundingClientRect(); return { x: r.right - 13, y: r.top + r.height / 2 }; })()`);
   report('mobile: TOC press → open', await m.measure(() => m.touch('touchStart', tab.x, tab.y), 500));

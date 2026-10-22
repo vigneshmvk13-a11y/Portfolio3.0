@@ -68,8 +68,10 @@ export function bindSheet(controller: WheelController): void {
   const collapsed = () => sheet.hasAttribute('data-collapsed');
 
   /**
-   * Settle open or collapsed. After a drag, a spring carries the release speed (openness per second);
-   * otherwise (tap, handle, scroll) an even ease-in-out over duration.slow, so the intro's fade is slow.
+   * Settle open or collapsed. After a drag, a spring carries the release speed (openness per second),
+   * taking as long as that speed needs to cover the rest of the way (sheet.flickMin to spring.sheet's
+   * visualDuration), so a quick swipe finishes quickly and a slow drag eases in. Otherwise (tap,
+   * handle, scroll) an even ease-in-out over duration.slow, so the intro's fade is slow.
    */
   const settle = (collapse: boolean, velocity?: number) => {
     sheet.toggleAttribute('data-collapsed', collapse);
@@ -83,12 +85,19 @@ export function bindSheet(controller: WheelController): void {
       render();
       return;
     }
-    const motion = velocity === undefined ? { duration: duration.slow * 1000, ease: ease.inOut } : { ...spring.sheet, velocity };
+    let motion;
+    if (velocity === undefined) motion = { duration: duration.slow * 1000, ease: ease.inOut };
+    else {
+      const toward = (target - openness) * velocity > 0 ? Math.abs(velocity) : 0;
+      const needed = toward > 0 ? Math.abs(target - openness) / toward : Infinity;
+      const visualDuration = Math.min(spring.sheet.visualDuration, Math.max(look.flickMin, needed));
+      motion = { ...spring.sheet, visualDuration, velocity };
+    }
     animation = animateValue<number>({
       keyframes: [openness, target],
       ...motion,
       onUpdate: (value) => {
-        openness = value;
+        openness = clamp01(value); // a fast flick can carry a stiff spring past the end
         render();
       },
     });

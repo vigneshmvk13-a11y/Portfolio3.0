@@ -235,7 +235,7 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 **Collapsed** (Figma 251:6688): the buttons sit `--sheet-handle-gap` (24px) below the handle bar, at every screen height: 125px tall at 852. Open, the intro sits the same 24px below the bar (`--sheet-top-gap`), so the handle's spacing doesn't change between states.
 
 **Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
-- One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed.
+- One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed. The settle takes as long as that speed needs to cover the rest of the way, between 0.25s (`sheet.flickMin`, a quick swipe) and 0.5s (a slow drag), so a flick doesn't drag on (Vignesh, 2026-10-22).
 - The surface (`[data-sheet-bg]`) and the handle slide by `--shift`. The buttons never move.
 - The **intro blurs and fades with the sheet's position**. It's fully visible when open and gone by halfway (`sheet.introGoneAt`), blurring up to 10px as it fades. When opening it comes back only past halfway, sharpening as it arrives.
 - The intro slides at half the sheet's speed (`sheet.introFollow`), so it sinks into the sheet. It's gone before the surface's top edge or the buttons could reach it, so it needs no clip.

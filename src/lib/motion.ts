@@ -20,7 +20,10 @@ export const spring = {
   wheel: { type: 'spring', visualDuration: 0.4, bounce: 0.12 },
   /** Mobile TOC: tab ⇄ panel morph and the row highlight following the finger. */
   toc: { type: 'spring', visualDuration: 0.35, bounce: 0.15 },
-  /** Mobile bottom sheet settling after a drag (carries the release speed). Taps use duration.slow + ease.inOut. */
+  /**
+   * Mobile bottom sheet settling after a drag (carries the release speed). This visualDuration is the
+   * slowest settle; a quick swipe shortens it down to sheet.flickMin. Taps use duration.slow + ease.inOut.
+   */
   sheet: { type: 'spring', visualDuration: 0.5, bounce: 0 },
 } as const;
 
@@ -35,6 +38,11 @@ export const sheet = {
   introGoneAt: 0.5,
   /** The intro rides at this fraction of the sheet's slide, so it sinks into the sheet as it fades. */
   introFollow: 0.5,
+  /**
+   * Shortest settle after a drag, s. The settle takes as long as the release speed would need to cover
+   * the rest of the way, between this and spring.sheet's visualDuration, so a quick swipe finishes fast.
+   */
+  flickMin: 0.25,
 } as const;
 
 /** Mobile TOC (design/layout-and-motion.md → TOC handle). */

@@ -152,7 +152,7 @@ Motion's `visualDuration` + `bounce` form, so the values read like durations. Sp
 | `motion.ts` | Value | Use |
 |---|---|---|
 | `spring.wheel` | `{ visualDuration: 0.4, bounce: 0.12 }` | Wheel step (mouse notch, key, TOC), trackpad snap, drag release. Starts at the wheel's current speed when retargeted |
-| `spring.sheet` | `{ visualDuration: 0.5, bounce: 0 }` | Mobile sheet settling after a drag (carries the release speed). Taps, the handle and scroll use `duration.slow` + `ease.inOut` so the intro fades slowly |
+| `spring.sheet` | `{ visualDuration: 0.5, bounce: 0 }` | Mobile sheet settling after a drag (carries the release speed). 0.5s is the slowest settle: the settle takes as long as the release speed needs to cover the rest of the way, down to `sheet.flickMin` (0.25s) for a quick swipe. Taps, the handle and scroll use `duration.slow` + `ease.inOut` so the intro fades slowly |
 | `spring.toc` | `{ visualDuration: 0.35, bounce: 0.15 }` | Mobile TOC: tab ⇄ panel morph, and the row highlight following the finger |
 
 ### Mobile TOC and sheet
