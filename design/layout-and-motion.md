@@ -246,6 +246,70 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 
 History: it used to follow direction (2026-10-20), then re-expand 0.25s after every settle (2026-10-21). That re-expansion covered the next card exactly when the user paused to look, so it was dropped.
 
+## Case study (`/work/[slug]`)
+
+Figma section `234:33903` (Data mapping): desktop `234:18762` (1440), mobile `234:5721` (402; built at 393 and checked at 360 and 412). Components: `components.md → Case study`.
+
+### Layout
+
+| | Mobile (base) | Desktop (`desktop:`) |
+|---|---|---|
+| Column | full width, `px-6` | `max-w-case` 846, centred; text in `max-w-case-text` 668 |
+| Top | `pt-20` (80) to the tags | `pt-20` (80) to the tags (Vignesh, 2026-10-23) |
+| Cover | `aspect-card` | `aspect-cover` (846×556) |
+| Facts | `pt-6 pb-8`, 2 + 1 | `py-22`, three 176 columns |
+| Tabs → first section | `pb-10` (40) | `pb-10` (40) |
+| Section rhythm | 32 between blocks, 32 inside (`mt-8`, `pt-8`) | 88 (`22`) inside each section (Figma's 89) |
+| Cards (Overview, Reflection) | `rounded-panel`, `px-6 py-8`, inset 24 | `rounded-section` 48, `p-22` |
+| More projects bottom | `pb-30` (120) | `pb-40` (160): room for the nav |
+
+Tablet (768–1199, not designed): the mobile layout in the 846 column.
+
+### Tabs
+
+- Built from the sections that have content; no tabs with fewer than two. Order = page order: Overview, Solution, Final designs, Outcome, Reflection.
+- Sticky 40px from the top (`top-10`, Figma `234:27448`) from where they sit until the end of Reflection; then they scroll away with it, before More projects.
+- **Active follows the scroll:** the last section whose top has passed 35% of the viewport height.
+- **Tap:** smooth-scrolls the section to 120px below the top (`scroll-mt-30`, clear of the tabs), holds that tab active until the scroll ends (`scrollend`, 1.2s fallback), and puts `#section` in the URL (`replaceState`). Reduced motion: instant scroll.
+- The pill slides to the active tab (`translate` + `width`, `duration-base`, `ease-out`). Mobile: the row scrolls sideways to keep the active tab in view.
+
+### Floating nav
+
+- Previous · Home · Next, fixed 32px above the bottom. Wraps round the homepage order (Next from Gyst is Data mapping).
+- **Collapses to Home** when the page scrolls down by 8px or more (`caseStudy.navScrollSlop`); **expands** when it scrolls up as much, at the top, within 160px of the end (`caseStudy.navEndZone`), and while any of its links has keyboard focus.
+- **Collapse:** Previous / Next fade out first (`duration-fast`), then the surface clips in to Home (`clip-path: inset(… round)`) and they slide under it on the CSS spring (`ease-spring`, 0.6s, slight overshoot). Home sits above them. **Expand** runs backwards: the surface opens, the labels fade in after `duration-fast`. 60fps at 4× CPU.
+- The surface blurs what scrolls under it (`backdrop-blur-nav`, 40px). It must not carry a `view-transition-name` at rest (that makes it a backdrop root, so the blur sees nothing); it's named only during a slide.
+
+### Swipe (touch only)
+
+- A horizontal touch drag moves the page with the finger at 60% (`caseStudy.swipeFollow`). Release past 25% of the screen width (`swipeCommit`) or faster than 0.5 px/ms (`swipeVelocity`) goes to the previous (swipe right) or next (swipe left) project with the slide transition. Anything less springs back (`duration-base`, `ease-out`, WAAPI).
+- Recognised after 10px (`swipeSlop`) of mostly horizontal travel; a mostly vertical start is a scroll and the browser keeps it. The page is `touch-action: pan-y pinch-zoom`, so vertical scrolling and zoom stay native.
+- Never starts on the tab row (`[data-no-swipe]`, it scrolls sideways) or within 24px of the screen edges (`swipeEdge`, the browser's back/forward). No trackpad or mouse swipe: two-finger horizontal swipe is the browser's back gesture.
+- Reduced motion: the drag still follows the finger (direct manipulation); the page change is instant.
+- The page never stays pushed aside: a committed swipe starts the next page and springs this one back at once. A prefetched or prerendered page takes over within a frame or two and slides on from about where the finger left it; a slow one (a cold load, the dev server) no longer leaves this page frozen shifted (once a navigation starts, Chrome throttles the old page's frames and shows its last one). The browser taking the gesture over (`pointercancel`, `lostpointercapture`) springs it back too, and any return to the page (`pageshow`) resets it. Fix for Vignesh's report (2026-10-23) of a case study shown shifted to the side.
+
+## Page transitions
+
+Cross-document View Transitions (no dependency; the site stays static). `src/scripts/page-transition.js`, inlined in every page's `<head>` with the opt-in (`@view-transition { navigation: auto }` under `prefers-reduced-motion: no-preference`). The opt-in must be inline: in an external stylesheet the incoming page could render before it loaded, and the transition was dropped. Chrome, Edge and Safari 18.2+; other browsers navigate normally.
+
+The page being left picks the type (`pageswap`) from what was tapped (Safari doesn't expose the destination) or the destination URL (back/forward), and hands it over in `sessionStorage`; the new page applies it (`pagereveal`). Only the two morphing covers get `view-transition-name: case-cover`, and only for that navigation.
+
+| Type | When | What moves |
+|---|---|---|
+| `expand` | A project card (homepage wheel, More projects) | The card's cover grows into the case-study cover (ratio change via `object-fit: cover`, corners `radius-card`); everything else crossfades ("dissolves") |
+| `collapse` | Home, or back to the homepage | The cover shrinks into the homepage card |
+| `next` / `prev` | Previous / Next, swipe, back/forward between neighbours | The pages slide like a carousel (old out, new in, full width); the nav (`case-nav`) stays put |
+
+**Card ⇄ cover** (expand, collapse) moves on the CSS spring (`ease-spring`, 0.6s). The outgoing image stays fully opaque for the whole morph (no see-through midpoint); the incoming one fades in over it in the second half. If its image hasn't loaded yet (`html[data-vt-cover-wait]`), it never does: the outgoing image carries the whole morph and the page takes over at the end. The rest of each page fades (`duration-base`; the new page starts `duration-fast` later). On the homepage the whole card link morphs (cover, badge, caption, clipped; the hover zoom stays inside). Going back, the card snapshot (with its caption and badge) fades in over the shrinking cover in the second half, so they arrive in place on top. Opening a project, the caption and badge get their own names (`card-caption`, `card-badge`), leave the card's snapshot and fade out where they are (`duration-fast`), so only the image grows, even when the new cover isn't loaded and the old snapshot carries the morph. Every `pagereveal` first clears names left from leaving the page (bfcache).
+
+**Slides** take `duration-slow` (0.5s) `ease-in-out`. The page doesn't take input during a transition.
+
+**Any project back to the wheel:** the homepage is reached as `/#slug`. An inline script right after the wheel markup (ProjectWheel.astro) places the wheel on that project while the page parses, and the first frame waits for it (`<link rel="expect" href="#wheel-placed" blocking="render">`), so the cover shrinks straight into that card.
+
+**Speed:** the homepage prerenders a case study on hover or press (speculation rules, `moderate`), so its cover is painted before the tap; case pages prerender Previous / Next on hover and prefetch them and home. Chrome disables prerendering while DevTools is attached, so the automated tests run on prefetched pages.
+
+Measured (4× CPU, headless): 0 missed frames through card → cover, the slide, and Fyn → home.
+
 ## Page load
 
-Apart from the homepage intro above, there's no load animation. Content must be visible without JS: animate from a state JS adds, never from a hidden initial CSS state. The intro's `data-intro="pending"` is set by JS, and the CSS failsafe still applies.
+Apart from the homepage intro and the page transitions above, there's no load animation. Content must be visible without JS: animate from a state JS adds, never from a hidden initial CSS state. The intro's `data-intro="pending"` is set by JS, and the CSS failsafe still applies.

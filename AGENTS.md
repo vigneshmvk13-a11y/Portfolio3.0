@@ -29,8 +29,11 @@ Vignesh wants to be challenged, not agreed with. If an instruction here is a bad
 | Mobile About / on scroll | `234:5489` / `234:5601` |
 | Project card | `228:4582` (desktop), `230:4671` (mobile) |
 | Icon button | `178:1441` |
+| Case study (Data mapping) section | `234:33903` |
+| Case study desktop / viewport / on scroll | `234:18762` / `234:23105` / `234:27448` |
+| Case study mobile / viewport / on scroll | `234:5721` / `234:10073` / `234:14425` |
 
-Case study designs exist in Figma but come later. Until then `/work/[slug]` renders a placeholder template.
+The case-study template is built from the Data mapping design; every case study uses it, with sections appearing as their content is filled in.
 
 ## Stack (decided; don't substitute without asking)
 
@@ -71,10 +74,12 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
 │   └── resume.pdf
 ├── scripts/
 │   ├── check-media.mjs         ← fails on any /public/media file > 4 MB
-│   └── check-tokens.mjs        ← fails on raw hex / arbitrary Tailwind values in src/
+│   ├── check-tokens.mjs        ← fails on raw hex / arbitrary Tailwind values in src/
+│   └── screenshot · test-wheel · test-case-study · perf-motion (.mjs)
 └── src/
     ├── assets/                 ← images optimised by astro:assets (AVIF/WebP)
     │   ├── covers/<slug>/      ← posters (the LCP image)
+    │   ├── case-studies/<slug>/← section images, in Keystatic's field-path folders
     │   ├── logos/ · about/ · og/
     ├── styles/
     │   ├── global.css          ← @import "tailwindcss"; @theme from design/tokens.md; base layer
@@ -86,21 +91,24 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
     ├── scripts/                ← client modules (no DOM in geometry.ts)
     │   ├── wheel/              ← geometry, controller, render, input
     │   ├── intro/              ← load choreography, lazy-loaded
+    │   ├── case-study/         ← tabs, floating nav, swipe
+    │   ├── page-transition.js  ← plain JS, inlined in every <head> (cross-document view transitions)
     │   └── toc.ts · sheet.ts · drawer.ts · hash.ts · media.ts
     ├── components/
     │   ├── icons/
     │   ├── ui/                 ← IconButton, Button, Link, LogoPill, Badge
-    │   ├── home/               ← Intro, ProjectWheel, ProjectCard, ProjectToc, TocHandle, BottomSheet, FooterBar
+    │   ├── home/               ← Intro, ProjectWheel, ProjectCard, ProjectCardLink, ProjectToc, TocHandle, BottomSheet, FooterBar
     │   ├── about/              ← AboutDrawer, TimelineRow, Gallery
     │   ├── media/              ← MotionCover (video + poster + reduced motion)
     │   ├── summary/            ← LensSummary (recruiter / designer / curious)
-    │   └── case-study/         ← DecisionBlock, Outcomes, MetaRow
+    │   └── case-study/         ← CaseHero, CaseTabs, Eyebrow, SectionLead, Overview/Solution/Outcome/ReflectionSection,
+    │                             FinalDesigns, CaseImage, MoreProjects, CaseNav
     ├── dev/                    ← system.astro, lab-*.astro (routes injected in dev only)
     ├── layouts/
     │   ├── Base.astro          ← <head>, SEO/OG from siteSettings + page overrides
     │   └── CaseStudy.astro
     ├── content/
-    │   ├── case-studies/<slug>.mdx
+    │   ├── case-studies/<slug>.yaml
     │   ├── summaries/<page>.yaml
     │   ├── about.yaml
     │   └── site-settings.yaml
@@ -115,27 +123,30 @@ Astro ignores page files that start with `_`, so dev-only pages live in `src/dev
 
 ## Content model (Keystatic; propose exact schema before building)
 
-**`caseStudies`** — collection, `src/content/case-studies/*`, MDX body.
+**`caseStudies`** — collection, `src/content/case-studies/<slug>.yaml` (data only, no MDX body since 2026-10-22). Images live in `src/assets/case-studies/<slug>/<field path>/`, where Keystatic puts them.
 
 | Field | Type | Notes |
 |---|---|---|
 | `title` | slug field | Labelled **Project name**. Sets the URL slug only |
 | `subtitle` | text | Labelled **Title** in Keystatic. The full title: homepage card (desktop and mobile) and the case-study page heading ("Simplifying data mapping for enterprise integrations") |
 | `tocLabel` | text | Labelled **Short title**. TOC on mobile and desktop, and the browser tab / share title ("Data mapping") |
-| `cardMeta` | text | Labelled **Tags**. "B2B • SAAS": desktop card and the case-study meta row (the only tag field) |
-| `status` | select | `live` · `nda` · `coming-soon` · `placeholder`. Drives the card badge and link |
-| `role`, `timeline` | text | |
-| `tools` | array of text | |
-| `heroVideo` | object | `mp4`, `webm` (paths under `/media/<slug>/`), `poster` (image), `alt` |
+| `cardMeta` | text | Labelled **Tags**. "B2B • SAAS": desktop card and above the case-study title (the only tag field) |
+| `status` | select | `live` · `nda` · `coming-soon` · `placeholder`. Drives the card badge, and the case-study status line when there are no sections |
+| `order` | integer | Homepage order; also Previous / Next and More projects |
+| `draft` | checkbox | Draft entries never build to production |
+| `heroVideo` | object | Labelled **Cover image**. `mp4`, `webm` (paths under `/media/<slug>/`), `poster` (image), `alt`. The homepage card and the case-study cover |
 | `ogImage` | image | Exported from Figma, 1200×630 |
 | `seoDescription` | text, ≤160 chars | |
-| `order` | integer | Homepage order |
-| `draft` | checkbox | Draft entries never build to production |
-| `outcomes` | array of `{ label, value, note? }` | Real numbers only. Empty is fine; invented is not |
-| `decisions` | array of `decision` | See below |
-| `body` | MDX | Can embed `<Decision id="…" />` and future prototype islands |
+| `role`, `timeline` | text | Case-study facts row |
+| `team` | array of `{ name, role? }` | Facts row, "Name (Role)" |
+| `tools` | array of text | Not shown yet |
+| `overview` | object | `heading`, `intro`, `challengeLabel` ("The challenge"), `challenge` (bullets), `insightLabel` ("The key insight"), `insight` |
+| `solution` | array of steps | `heading`, `body`, `media { image, alt, mp4?, webm? }` |
+| `finalDesigns` | array | `image`, `imageMobile?` (recomposed phone crop), `alt`, `layout` (`full` · `half`) |
+| `outcome` | object | `heading`, `intro`, `cards` (`{ title, body }`). Title and text only, no metrics (Vignesh, 2026-10-22) |
+| `reflection` | object | `heading`, `body` |
 
-**`decision`** (repeatable block): `title`, `context`, `optionsConsidered` (array of `{ option, tradeoff }`), `chosen`, `why`, optional `evidence` (text or image). Rendered by `DecisionBlock`. This block is the core of the site's positioning; give it the best treatment in the case-study design.
+Long text is plain multiline text; a blank line starts a new paragraph. Each section, and its tab, renders only when it has content. The Decision block (options, trade-offs) was dropped on 2026-10-22: the Figma Solution steps carry the decisions in lighter form.
 
 **`summaries`** — collection keyed by page id (`home`, `about`, or a case-study slug): `recruiter`, `designer`, `curious` (each short rich text), `generatedWith` (model + date, for honesty), `reviewed` (checkbox; unreviewed summaries don't render). **The site never calls an AI API at build or runtime.** Summaries are written or pre-generated outside the build and committed.
 
@@ -161,7 +172,7 @@ Keystatic's admin UI and its GitHub mode need server routes, which a static buil
 - Motion explains a change of state. No decorative or ambient animation beyond the active cover video.
 - **One exception: the homepage intro choreography** (`design/layout-and-motion.md → Intro choreography`). At most ~2s, once per session, skipped by any input, absent under reduced motion. It never delays the LCP card. No other load or ambient animation.
 - Durations, easings and springs come from tokens (`design/tokens.md → Motion`), mirrored in `src/lib/motion.ts`. No magic numbers.
-- **Reduced motion:** no scroll-triggered or scroll-linked animation, no parallax, no intro. Other state changes are instant. **One exception, Vignesh's call (2026-10-21):** a homepage wheel step plays as a short turn (`wheel.reducedTurn`, 0.2s ease-out, one project per gesture, no overshoot or momentum). Why: Windows "best performance" mode reports reduced motion too, and the wheel turn is the site's identity. The cost (motion-sensitive visitors see a brief 3D turn; WCAG 2.3.3, AAA) was raised and accepted. Don't extend the exception without asking. The wheel's resting layout (tilted, faded neighbours) is a still image and stays.
+- **Reduced motion:** no scroll-triggered or scroll-linked animation, no parallax, no intro, no page transitions. Other state changes are instant. **One exception, Vignesh's call (2026-10-21):** a homepage wheel step plays as a short turn (`wheel.reducedTurn`, 0.2s ease-out, one project per gesture, no overshoot or momentum). Why: Windows "best performance" mode reports reduced motion too, and the wheel turn is the site's identity. The cost (motion-sensitive visitors see a brief 3D turn; WCAG 2.3.3, AAA) was raised and accepted. Don't extend the exception without asking. The wheel's resting layout (tilted, faded neighbours) is a still image and stays.
 - **Slow devices:** keep the motion, drop the extras. `src/scripts/quality.ts` samples frames while the wheel moves; too many slow frames (or Save-Data) switch the page to `html[data-quality="lite"]` (no caption blur, faster intro) for the session.
 - Load Motion only in the scripts/islands that animate. Check the bundle: the homepage JS should stay small (target < 30 KB gzipped total).
 - **Every motion holds 60fps** (Vignesh, 2026-10-21), including under 4× CPU throttling. Animate `transform` and `opacity`; anything else (layout, filters, `grid-template-rows`) only if `scripts/perf-motion.mjs` shows no missed frames. Prepare before moving, never in the first moving frame (decode images, make layers exist). Add each new motion to `perf-motion.mjs` and report the table.
@@ -213,12 +224,14 @@ node scripts/screenshot.mjs <url> <outDir> [393x852 412x915 1440x1024]
                 # env: FULL_PAGE=1, REDUCED_MOTION=1, DELAY=ms, DPR=n, EVAL="js", SUFFIX=name
 node scripts/test-wheel.mjs [baseUrl]
                 # homepage wheel interaction test (trusted input via DevTools Protocol)
+node scripts/test-case-study.mjs [baseUrl]
+                # case-study tabs, floating nav, swipe and page transitions (expand, collapse, slide)
 node scripts/perf-motion.mjs [baseUrl]
                 # fps + missed frames for every homepage motion; env THROTTLE=4 (CPU), HEADFUL=1 (real vsync)
                 # run against `pnpm preview`, not dev
 ```
 
-Headless Chrome reports `prefers-reduced-motion: reduce` by default; both scripts set it explicitly.
+Headless Chrome reports `prefers-reduced-motion: reduce` by default; the scripts set it explicitly. Chrome skips view transitions in tabs created over CDP (they count as background tabs), so transition checks drive the browser's first tab.
 
 `/_system` (tokens and components) and `/keystatic` exist only under `pnpm dev`.
 

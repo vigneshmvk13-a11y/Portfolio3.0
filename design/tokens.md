@@ -41,13 +41,14 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-raised` | `--gray-white` | Buttons, drawer, sheet |
 | `surface-selected` | `--gray-100` | Active TOC item |
 | `surface-hover` | `--gray-100` **(proposed)** | Hover on TOC items and text buttons |
-| `surface-caption` | `--overlay-84` | Card caption bar |
+| `surface-caption` | `--overlay-84` | Card caption bar; floating case-study nav (white text 4.5–4.7:1, where Figma's 70% grey fill gives 2.8:1) |
 | `surface-scrim` | `--scrim-24` **(proposed)** | Behind the drawer |
 | `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |
 | `fg-primary` | `--gray-900` | Primary text: name, headings, active TOC, hovered TOC rows (Figma 233:4518, 2026-10-22) |
 | `fg-strong` | `--gray-900` | Emphasis in About, timeline roles. Same value as `fg-primary` since 2026-10-22 |
 | `fg-secondary` | `--gray-600` | Secondary text, icons: 4.53:1 on `surface-page`, 5.02:1 on white. Fails on `surface-hover` (4.10:1), so hovered rows switch to `fg-primary` |
-| `fg-tertiary` | `--gray-500` | Non-text only (fails 4.5:1 on `surface-page`). Footer credits use `fg-secondary` |
+| `fg-secondary-on-fill` | `--gray-700` | Secondary text on `surface-selected` (gray/100) fills: inactive case-study tabs, 5.29:1. Figma uses gray/500 there (3.0:1) and `fg-secondary` would be 4.10:1 |
+| `fg-tertiary` | `--gray-500` | Non-text only (fails 4.5:1 on `surface-page`). Footer credits and case-study eyebrows use `fg-secondary` |
 | `fg-on-media` | `--gray-white` | Card captions |
 | `line-subtle` | `--gray-100` | Desktop icon buttons |
 | `line-default` | `--gray-200` | Drawer buttons, dividers, sheet edge |
@@ -76,11 +77,17 @@ Tailwind v4 text tokens carry line height, tracking and default weight, so `text
 | `text-label-2` | 14 / 20 | -0.16px | 400 | Captions, timeline |
 | `text-label-3` | 12 / 16 | -0.12px | 400 | Footer, mobile meta, roles (500) |
 
-Override weight with `font-medium` / `font-regular`. Nothing below 12px. Case-study headings (H1–H3) aren't designed yet; add them here when they are.
+Override weight with `font-medium` / `font-regular`. Nothing below 12px.
+
+Case study (Figma `234:33903`), mobile → desktop: title (`<h1>`) `h5` → `h4`; section heading `h6` → `h5`; body `body-3` → `body-2`; subheads, card titles and fact labels `label-2` → `label-1` (500); tags `label-2` → `label-1` (400); tabs `label-2` → `label-1` (500); "More projects" `h5`.
+
+| Utility | Value | Use |
+|---|---|---|
+| `tracking-eyebrow` | 2px | Section eyebrows ("OVERVIEW"): `text-label-3` (desktop `text-label-2`) `font-medium uppercase tracking-eyebrow` |
 
 ## Spacing
 
-Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20** (= 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80px). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
+Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 22, 30, 40** (= 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80, 88, 120, 160px). 22 is the case study's section padding (Figma 89); 30 and 40 are its bottom padding above the floating nav (mobile, desktop). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
 
 Named spacing:
 
@@ -99,6 +106,13 @@ Named spacing:
 | `--container-side` | 265.5px | Intro and TOC width cap |
 | `--container-drawer` | 576px | About drawer |
 | `--container-prose` | 720px | Placeholder page column **(proposed)** |
+| `--container-case` | 846px | Case-study column (Figma `234:18763`) |
+| `--container-case-text` | 668px | Case-study text column inside it (846 − 2 × 89) |
+| `--aspect-cover` | 846 / 556 | Desktop case-study cover (mobile uses `aspect-card`) |
+| `--aspect-media` / `--aspect-media-sm` | 846 / 476 · 354 / 219 | Solution step media, desktop / mobile |
+| `--spacing-meta-col` | 176px | Desktop Role / Timeline / Team columns |
+| `--spacing-nav-btn` | 97px | Previous / Next in the floating case-study nav |
+| `--spacing-icon-lg` | 22px | Home icon in the floating nav |
 | `--spacing-card-w` / `--spacing-card-h` | 553px / 400px | Active desktop card (Figma size) |
 | `--aspect-card` | 553 / 400 | Every card. Mobile Figma (352×254.4) is the same ratio, so one token |
 | `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills (desktop) |
@@ -119,12 +133,15 @@ Named spacing:
 | Utility | Value | Use |
 |---|---|---|
 | `rounded-item` | 8px | TOC items, dash |
-| `rounded-button-sm` | 12px | Desktop icon button |
+| `rounded-button-sm` | 12px | Desktop icon button, case-study tab |
+| `rounded-tabs` | 14px | Case-study tab track (12 + its 2px padding) |
+| `rounded-tile` | 20px | Case-study Outcome cards |
 | `rounded-media-sm` | 16px | Gallery photos, close button |
 | `rounded-button-lg` | 16px | Mobile sheet and drawer icon buttons (Vignesh, 2026-10-22: 16px, plain circular corners; Figma drew 20) |
 | `rounded-card` | 24px | Project card, logo pills |
 | `rounded-panel` | 32px | Drawer, sheet top |
 | `rounded-panel-inner` | 28px | Inside a `p-1` panel (32 − 4): mobile drawer banner |
+| `rounded-section` | 48px | Desktop case-study Overview and Reflection cards (mobile: `rounded-panel`) |
 | `rounded-full` | 9999px | Avatar |
 
 ## Effects
@@ -132,6 +149,7 @@ Named spacing:
 | Token | Value | Use |
 |---|---|---|
 | `--blur-caption` | 12.5px | `backdrop-blur-caption` on the card caption |
+| `--blur-nav` | 40px | `backdrop-blur-nav` on the floating case-study nav (Vignesh, 2026-10-23; Figma drew 20) |
 | `--wheel-fade` | 0.2 | Neighbour card opacity (see Wheel) |
 | `--shadow-panel` | `0 24px 64px rgb(0 0 0 / 0.12)` **(proposed)** | Drawer on the grey page |
 
@@ -144,6 +162,7 @@ Named spacing:
 | `--duration-fast` | 150ms | `0.15` | Hover, focus |
 | `--duration-base` | 300ms | `0.3` | TOC, sheet |
 | `--duration-slow` | 500ms | `0.5` | Drawer |
+| `--ease-spring` + `--duration-spring` | `linear(…)` over 600ms | `spring.css = { visualDuration: 0.4, bounce: 0.2 }` | CSS transitions that should move like a spring: the floating nav, the card ⇄ cover transition. Motion's spring sampled into 33 `linear()` stops; 1.5% overshoot. Regenerate both together |
 
 Motion takes seconds and arrays, CSS takes ms and `cubic-bezier()`; keep both in sync by hand and test both.
 
@@ -185,6 +204,20 @@ Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Eac
 | `--sheet-handle-gap` | 32px (not scaled) | Collapsed: handle bar → buttons (Figma 260:6936; collapsed sheet 137px at 852). Registered with `@property` so JS reads it in px |
 | `--sheet-btn` | 50px | Sheet buttons 50×50: 16px padding, 16px icon (`icon-xs`), radius `button-lg` 16px (Figma 246:2317) |
 | `--sheet-h` | 237 → 265px | Expanded height, derived from the above (lays out the wheel) |
+
+### Case study (built; tune by eye)
+
+JS only (`motion.ts → caseStudy`); behaviour in `layout-and-motion.md → Case study`. In CSS: the nav collapse runs on `ease-spring` (labels fade on `duration-fast` first); the tab pill `duration-base` + `ease-out`; the card ⇄ cover morph `ease-spring`; the slide `duration-slow` + `ease-in-out`.
+
+| `motion.ts` | Value | Meaning |
+|---|---|---|
+| `caseStudy.navScrollSlop` | `8` px | Scroll in one direction before the floating nav collapses (down) or expands (up) |
+| `caseStudy.navEndZone` | `160` px | Within this of the page end the nav always shows in full |
+| `caseStudy.swipeSlop` | `10` px | Horizontal travel before a touch drag is a swipe |
+| `caseStudy.swipeEdge` | `24` px | No swipe starts this close to the screen edges (the browser's back/forward) |
+| `caseStudy.swipeCommit` | `0.25` | Share of the screen width past which a release changes project |
+| `caseStudy.swipeVelocity` | `0.5` px/ms | A flick this fast changes project at any distance |
+| `caseStudy.swipeFollow` | `0.6` | The page follows the finger at this fraction of its travel |
 
 ### Intro timing (built; tune by eye)
 

@@ -27,9 +27,9 @@ Figma names map to primitives: `gray/700` → `--gray-700`; `Heading/H4` → `te
 
 | Area | State |
 |---|---|
-| Tokens | v0.4: scroll-follow constant; intro timings rebuilt for the slot-machine spin |
-| Components | Foundation, homepage (static) and About built; case-study components specced |
-| Case study pages | Content model defined; visuals not designed yet; placeholders only |
+| Tokens | v0.5: case-study tokens (column, radii, eyebrow tracking, nav blur, `fg-secondary-on-fill`, spacing 22/30/40) |
+| Components | Foundation, homepage, About and case study built |
+| Case study pages | Built from Figma `234:33903` (Data mapping); other four have hero, More projects and nav only until their content exists |
 | Tablet (768–1199) | Not designed; interim rule in `layout-and-motion.md` |
 | Dark mode | Not designed. Don't build |
 
@@ -43,6 +43,10 @@ Agents: add to this list; don't resolve on your own.
 13. **Journey, last row:** desktop Figma says "Bizzon info solutions/ Edure, India", mobile says "…/ Edure learning". Using the desktop text.
 14. **Bio emphasis differs by breakpoint in Figma:** desktop bolds "I'm Vignesh" and the whole "@DNEG for Kotak Mahindra's corporate banking app, Fyn"; mobile bolds only "Vignesh", "@DNEG", "Kotak mahindra", "Fyn". One CMS field can hold one version; using desktop.
 15. **Mobile TOC labels:** Figma's mobile TOC panel uses a shorter "Fyn- Wholesale Banking". There's one `tocLabel`, so the panel widens to fit "Fyn- Wholesale Banking app". Shorten the label everywhere, or keep it?
+17. **Case-study colours that fail contrast** (Figma `234:33903`): eyebrows gray/500 → built `fg-secondary`; inactive tabs gray/500 → `fg-secondary-on-fill` (gray/700); floating nav 70% grey → `surface-caption`. Update the Figma variables, or choose other values?
+18. **Mobile Reflection card:** Figma draws it edge to edge (`234:10044`) while Overview is inset 24px. Built inset like Overview. Intended?
+19. **Case-study cover frame:** Figma's case-study cover shows the "Contract / Sales order / Deal / Asset register" frame; the homepage card shows the text-cursor frame. One field (the cover poster) feeds both, so the page uses the card's frame (the morph needs the same image). When the cover video exists, both play the same loop.
+20. **Mobile frame width:** the case-study mobile frames are 402 wide; the homepage's are 393. Built with Figma's 24px gutters, so it holds at 360–412.
 
 ### Resolved (2026-10-21)
 
@@ -64,6 +68,19 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-23 · layout-and-motion · Case-study fixes from Vignesh's review:
+  - **Card ⇄ cover zoom:** no jump at the start. It had captured the card's hover zoom unclipped, and a cover still loading as an empty box. It now moves on a CSS spring, with the old image opaque under the new. Home from *any* project shrinks into that project's card: the wheel places itself from `/#slug` before the first frame. Case studies prerender on hover.
+  - **Floating nav:** the labels fade out before the pill collapses, then it collapses on the spring; Home stays above the sliding labels (they overlapped it). Blur 40px, and it now works: a permanent view-transition-name had made the nav a backdrop root.
+  - **Spacing:** 80px to the tags at every width; 40px under the tabs.
+  - **Card caption in the zoom:** going back home, the card's caption bar showed up from behind the shrinking cover (only the image morphed). The whole card now morphs, and its caption and badge fade in on top as it lands; opening a project, they fade out in place instead of growing. Covers decode asynchronously (a sync decode mid-transition dropped frames).
+  - **Swipe:** a case study could stay shifted sideways after a swipe (a slow next page: once a navigation starts, Chrome freezes the old page's last frame). A committed swipe now springs the page back at once; the browser taking a gesture over springs it back too.
+  - **Tokens:** `--ease-spring` / `--duration-spring` (Motion's spring sampled into `linear()`); `--blur-nav` 20 → 40.
+- 2026-10-22 · all · **Case-study pages built** from Figma `234:33903` (Data mapping):
+  - **Content:** case studies are YAML with fixed sections (Overview, Solution steps, Final designs, Outcome cards, Reflection), each optional; new `team`. Removed the MDX body, `decisions` (and DecisionBlock) and the numeric `outcomes`. Why: Vignesh's CMS answers; the Figma steps are lighter than the Decision block.
+  - **Components:** CaseHero, CaseTabs, the five sections, CaseImage (art-directed mobile crops), MoreProjects (next three, compact cards), CaseNav. The homepage card's face is now `ProjectCardLink`, shared with More projects.
+  - **Motion:** sticky tabs with scrollspy and a sliding pill; the floating nav collapses to Home on scroll down; touch swipe between projects; cross-document view transitions (card → cover, cover → card, slide between neighbours), off under reduced motion. All 60fps at 4× CPU.
+  - **Decisions Figma didn't cover:** tab order follows the page; Previous / Next wrap; See all → home; contrast fixes (open question 17); mobile Reflection inset (18); 24px between desktop half images (Vignesh).
+  - **Tokens:** `fg-secondary-on-fill`, `tracking-eyebrow`, `rounded-tabs/tile/section`, `container-case(-text)`, `aspect-cover/media/media-sm`, `meta-col`, `nav-btn`, `icon-lg`, `blur-nav`, spacing 22/30/40, `motion.ts → caseStudy`.
 - 2026-10-22 · content · Case-study browser tab (and share) title is the short title (`tocLabel`); the slug field only sets the URL. One tag field: `cardMeta` ("Tags") feeds the desktop card and the case-study meta row; the separate `tags` array is removed (no content used it). Why: Vignesh's CMS answers.
 - 2026-10-22 · tokens · Text colours (Figma 233:4518): `fg-primary` gray/900 (was black), `fg-secondary` gray/600 (was gray/700), `indicator` gray/900. New primitive `--gray-600` is **#6F6F6F**, not Figma's #727272: that fails 4.5:1 on the page background (4.34); #6F6F6F is the lightest that passes (4.53). Hovered TOC rows go `fg-primary` (secondary on the hover grey is 4.10). Why: Vignesh's colour pass; he'll update the Figma variable.
 - 2026-10-22 · components · Mobile TOC colours (Figma 261:7057): active tick and highlighted row text gray/900 (`fg-strong`, was black), other ticks gray/300 (`line-strong`, was gray/700). Desktop TOC: active text gray/900 too (the dash stays black). Why: Vignesh's colour pass.

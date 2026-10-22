@@ -28,6 +28,8 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 
 - **Focus ring:** `outline-2 outline-offset-2 outline-focus` on `:focus-visible` for every interactive element; offset 4px on cards. Never `outline-none` without a replacement.
 - **Contrast:** text ≥ 4.5:1, large text and UI boundaries ≥ 3:1. The Figma footer credits used `fg-tertiary` (~3.3:1); they use `fg-secondary` (4.53:1) instead. Don't use `fg-tertiary` for text. `fg-secondary` fails on `surface-hover` (4.10:1): anything grey that gets a hover background switches its text to `fg-primary`.
+- Case study (Figma `234:33903`), where the drawn colours fail 4.5:1: eyebrows use `fg-secondary` (Figma gray/500, 3.6:1 on white); inactive tabs `fg-secondary-on-fill` (gray/500 on gray/100 is 3.0:1); the floating nav's surface is `surface-caption` (Figma's 70% grey under white text is 2.8:1). The Figma variables should follow.
+- Case-study headings: one `<h1>` (the title); each section's eyebrow is its `<h2>` (the tab names), headings `<h3>`, subheads and card titles `<h4>`. Tabs are in-page links with `aria-current="location"`, not ARIA tabs.
 - Caption bar: white on `surface-caption` is ~7:1 over dark covers but drops toward ~4.5:1 over very light ones. Check each cover; raise the overlay opacity for light covers rather than accepting low contrast.
 - Faded neighbour cards are `inert` + `aria-hidden` (they're decorative previews; the TOC is the accessible route). A polite live region announces the active project ("Fyn, 2 of 5") when the wheel settles.
 - Icon buttons always have `aria-label`; decorative SVGs are `aria-hidden="true" focusable="false"`.
@@ -66,6 +68,8 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 | `coming-soon` | "Coming soon" badge | `/work/[slug]`, placeholder |
 | `placeholder` | No badge | `/work/[slug]`, placeholder |
 | `draft: true` | Not rendered in production | Route not built |
+
+On the case-study page, status doesn't choose the layout; content does. Each section (and its tab) renders only when filled; with no sections, the NDA or "being written" line takes their place. Hero, More projects and the floating nav are on every case study, and every published one is in the Previous / Next ring.
 
 ## SEO
 

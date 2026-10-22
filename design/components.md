@@ -4,7 +4,7 @@ One entry per component: Figma node, anatomy, variants, states, tokens, status. 
 
 Status: `specced` (from Figma, not built) · `proposed` (not in Figma, needs Vignesh's OK) · `built` · `verified` (matched to Figma at 393 and 1440, Lighthouse and keyboard checked).
 
-Build order: **foundation** (IconButton, Button, Link, LogoPill, Badge, MotionCover) → **home** (Intro, ProjectCard, ProjectWheel, ProjectToc, FooterBar, BottomSheet, TocHandle) → **about** (AboutDrawer, TimelineRow) → **case study** (CaseStudyPlaceholder, DecisionBlock, LensSummary).
+Build order: **foundation** (IconButton, Button, Link, LogoPill, Badge, MotionCover) → **home** (Intro, ProjectCard, ProjectWheel, ProjectToc, FooterBar, BottomSheet, TocHandle) → **about** (AboutDrawer, TimelineRow) → **case study** (CaseStudy layout, CaseHero, CaseTabs, the sections, MoreProjects, CaseNav; LensSummary later).
 
 ---
 
@@ -51,8 +51,9 @@ Pill top-right on ProjectCard, inset from the card corner by 16px (`top-4 right-
 ### MotionCover
 **Figma:** card covers · **Status:** built (video playback untested: no cover videos exist yet)
 
-The only component that renders `<video>`. Props: `mp4?`, `webm?`, `poster?` (an `astro:assets` image from `src/assets/covers/<slug>/`), `alt`, `priority?` (eager poster for LCP), `active` (controls play). Without `mp4`/`webm` it renders the poster only. Without a poster it renders a neutral `bg-surface-selected` block (plus `TODO(content)` in dev).
+The only component that renders `<video>`. Props: `mp4?`, `webm?`, `poster?` (an `astro:assets` image from `src/assets/covers/<slug>/`), `alt`, `priority?` (eager poster for LCP), `active` (controls play), `transitionCover?` (marks a project cover for the card ⇄ cover page transition). Without `mp4`/`webm` it renders the poster only. Without a poster it renders a neutral `bg-surface-selected` block (plus `TODO(content)` in dev).
 
+- Posters decode asynchronously (`decoding="async"`, also the eager LCP one): a synchronous decode landing mid page transition dropped frames.
 - Renders the poster as `<img>` underneath (LCP, alt text) and the `<video>` on top with `aria-hidden="true"`, `muted loop playsinline preload="none"`.
 - Sources attach only when near the viewport. Plays only while `active`; pauses and resets otherwise. A global controller ensures one playing video.
 - Reduced motion or `Save-Data`: the video is never attached; poster only.
@@ -74,7 +75,7 @@ Gaps: name↔subline `gap-1` mobile / `gap-2` desktop; text↔affiliations `gap-
 ### ProjectCard
 **Figma:** component set `228:4583` (desktop variants 553×400, mobile 362×262), e.g. `228:4582` · **Status:** built
 
-A link to `/work/[slug]` for every status (`rules.md → Content states`). `rounded-card overflow-hidden aspect-card`.
+A link to `/work/[slug]` for every status (`rules.md → Content states`). `rounded-card overflow-hidden aspect-card`. The face (link, cover, badge, caption) is `ProjectCardLink`, shared with the case-study More projects grid; its `compact` variant is title-only at every width with the badge 16px in. The page transition morphs the whole link (`data-vt-cover`): cover, badge and caption as one clipped card, so the hover zoom (1.03) stays inside and the caption never shows up behind the cover on the way back. Opening a project, the caption (`data-card-caption`) and badge (`data-card-badge`) are captured on their own and fade out in place instead of growing with the card.
 
 1. **MotionCover** fills the card (`object-cover`). The small white square in the Smart Mapping cover is part of the cover image, not UI.
 2. **Badge** (by `status`) top-right.
@@ -158,15 +159,76 @@ Role (`text-label-3 font-medium text-fg-strong`, flex 1) · years (`text-label-2
 
 ## Case study
 
-### CaseStudyPlaceholder (template)
-**Figma:** none · **Status:** built (placeholder)
+Figma section `234:33903` (Data mapping): desktop `234:18762`, mobile `234:5721`, on-scroll frames `234:27448` / `234:14425`. Page layout and behaviour: `layout-and-motion.md → Case study`. Every component reads the `caseStudies` entry (`AGENTS.md → Content model`); nothing is hardcoded but the section names.
 
-Until real designs: `bg-surface-page`, column `max-w-prose` centred. Back Button ("All work"), MotionCover full width, title `text-h4`, meta row (role, timeline, `cardMeta` tags) `text-label-2 text-fg-secondary`; browser tab title is `tocLabel`, and `text-body-2`: "This case study is being written." No invented content. `nda` status replaces the line with how to request access (contact from `siteSettings`). Figma has copy for that (`206:18486`): "This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and design decisions are available for discussion during a private portfolio walkthrough."
+### CaseStudy (layout)
+**Figma:** `234:18762`, `234:5721` · **Status:** built
 
-### DecisionBlock
-**Figma:** to be designed with the case studies · **Status:** proposed (structure only)
+`src/layouts/CaseStudy.astro`. CaseHero → CaseTabs (two or more sections) → the filled sections in page order → MoreProjects, with CaseNav fixed on top. Column `max-w-case` (846) centred; mobile `px-6` (24px, Figma's mobile gutter). Without sections (NDA, placeholder, coming soon) a status line replaces the tabs: `nda` gets Figma's NDA copy (`206:18486`) and the Contact button; the others "This case study is being written." Browser tab title is `tocLabel`.
 
-Renders one `decision`: title, context, options considered (each with its trade-off; the chosen one marked in text, not just colour), what was chosen, why, optional evidence. Must read well when skimmed: a recruiter should get the decision and the reason from the title and the "why" alone. Semantic: `<section aria-labelledby>`; options as a list. Final visual design comes from Figma.
+### CaseHero
+**Figma:** `234:18764`–`234:18769`, mobile `234:5723` · **Status:** built
+
+1. Tags (`cardMeta`): `text-label-2`, desktop `text-label-1 font-regular`, `fg-secondary`.
+2. Title (`subtitle`) as the page `<h1>`: `text-h5`, desktop `text-h4`, `fg-primary`.
+3. Cover: MotionCover, `rounded-card`, `aspect-card` on mobile (Figma 354×256, the card's ratio) and `aspect-cover` on desktop (846×556). Eager, high priority (the LCP image). Same poster as the homepage card, so the page transition morphs one image. `id="case-cover"`.
+4. Facts `<dl>`: Role, Timeline, Team ("Name (Role)" per line). Label `text-label-2 font-medium fg-primary` (desktop `text-label-1`); value `text-body-3` (desktop `text-label-2`). Mobile: Role and Timeline side by side (`gap-x-4`), Team below, `pt-6 pb-8`. Desktop: three `w-meta-col` (176) columns centred, `gap-6`, `py-22`. Empty facts are left out.
+
+Tags start 80px from the top at every width (`pt-20`; Vignesh, 2026-10-23). Desktop text sits in `max-w-case-text` (668) inside the 846 column; Figma's 89px insets are 88 (`22`).
+
+### CaseTabs
+**Figma:** `234:18780`, mobile `234:5742` · **Status:** built
+
+In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-selected rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary-on-fill` (Figma's gray/500 is 3.0:1 on the track); active `fg-primary` on a white pill with a `line-subtle` border. 40px below the tabs (`pb-10`) to the first section at every width (Vignesh, 2026-10-23). Sticky at `top-10` from the tabs to the end of Reflection. Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
+
+States: active (`aria-current="location"`) · hover → `fg-primary` · focus ring. Without JS the active tab draws its own pill; with JS one pill slides between tabs (`translate` + `width`, `duration-base`, `ease-out`).
+
+### Eyebrow
+**Figma:** `234:18795` · **Status:** built
+
+The section name ("OVERVIEW") as the section's `<h2>`, so the outline is Section › heading › subheads and matches the tab. `text-label-3` (desktop `text-label-2`) `font-medium uppercase tracking-eyebrow`, `fg-secondary` (Figma's gray/500 is 3.6:1 on white).
+
+### SectionLead
+**Figma:** `234:18796` · **Status:** built
+
+Heading (`<h3>`, `text-h6`, desktop `text-h5`, `fg-primary`) and intro paragraphs (`text-body-3`, desktop `text-body-2`), `gap-4` (desktop `gap-3`). Used by Overview, Outcome and each Solution step.
+
+### OverviewSection
+**Figma:** `234:18793`, mobile `234:5756` · **Status:** built
+
+White card: `bg-surface-raised rounded-panel px-6 py-8`, desktop `rounded-section p-22`. Eyebrow + SectionLead, then The challenge (bullets, `list-disc pl-5`, desktop `pl-6`) and The key insight, stacked on mobile (`gap-6`), two columns on desktop (`gap-5`). Subheads `<h4>` `text-label-2 font-medium` (desktop `text-label-1`). Both labels come from the CMS.
+
+### SolutionSection
+**Figma:** `234:18806`, mobile `234:5769` · **Status:** built
+
+Eyebrow, then one step per entry: SectionLead in the text column, then the step's media full width in a MotionCover (`rounded-card`, `aspect-media-sm` on mobile, `aspect-media` 846×476 on desktop). Steps `gap-8` (desktop `gap-15`). A step can carry MP4/WebM later; the most-visible-cover rule keeps one video playing.
+
+### FinalDesigns · CaseImage
+**Figma:** `234:18819` + `234:18821`, mobile `234:5782` · **Status:** built
+
+Eyebrow (it's the only heading here), then the images. Desktop: a 2-column grid, `gap-6`; `full` spans both, two `half`s sit side by side (411 each; Figma draws 413, which overflows the column). Mobile: one column, `gap-4`. CaseImage renders a `<picture>`: with `imageMobile`, phones and tablets get that crop (Figma recomposes them at 354×256) and desktop the main image, each source with its own width/height so nothing shifts; AVIF/WebP, lazy, `rounded-card`, natural ratio.
+
+### OutcomeSection
+**Figma:** `234:23062`, mobile `234:10028` · **Status:** built
+
+Eyebrow + SectionLead, then one card per result: `bg-surface-raised rounded-tile`, `p-6 gap-2` mobile, `p-5 gap-10` desktop (3 columns, `gap-6`, in the text column). Title `<h4>` `text-label-2 font-medium` (desktop `text-label-1`), text `text-body-3` (desktop `text-body-2`). Title and text only: no metric (Vignesh, 2026-10-22).
+
+### ReflectionSection
+**Figma:** `234:23078`, mobile `234:10044` · **Status:** built
+
+White card like Overview. Eyebrow, heading, paragraphs (no gap between them, as drawn on mobile). Mobile keeps Overview's 24px inset; Figma draws it edge to edge (`DESIGN.md → Open questions`).
+
+### MoreProjects
+**Figma:** `234:23083`, mobile `234:10050` · **Status:** built
+
+`<h2>` "More projects" (`text-h5`) and "See all" (→ `/`, `text-label-1 font-medium fg-secondary`, hover `fg-primary`): beside the heading on desktop, under the cards on mobile. The next three projects in homepage order, wrapping, never the current one, as compact ProjectCardLinks (posters only, badge 16px in, title only). Desktop 3 columns `gap-5` in the text column; mobile one column `gap-5`. `pb-30` (desktop `pb-40`) leaves room for CaseNav.
+
+### CaseNav
+**Figma:** `234:23100` (expanded), `234:31771` (collapsed), mobile `234:10068` · **Status:** built
+
+Fixed, centred, 32px above the bottom (plus the safe area). A pill (`p-1 gap-1 rounded-full`) on `surface-caption` with `backdrop-blur-nav` (40px: what scrolls under it blurs): Previous and Next (`w-nav-btn` 97, `px-4 py-3`, `text-label-1 font-medium fg-on-media`) and Home (`p-3`, HouseSimple `icon-lg` 22, `z-10` so the sliding labels pass under it). Each has a `line-default` border, hover `surface-raised` border. Figma's fill (70% grey, white text 2.8:1) is replaced by `surface-caption` (4.5–4.7:1). Previous / Next wrap round the homepage order; their accessible names add the project ("Previous: Gyst - Productivity app"). Home goes to `/#slug` (`/` for the first project), so the wheel lands on this project.
+
+States: expanded · collapsed (Previous / Next fade out first, `duration-fast`; then the surface clips in to Home and they slide under it on `ease-spring`; expanding runs it backwards, the labels fading in last) · any link focused → expanded (`:focus-within`) · lite: no blur. Named `case-nav` only during a slide transition, so it stays put; a permanent `view-transition-name` would make it a backdrop root and kill the blur.
 
 ### LensSummary
 **Figma:** to be designed · **Status:** proposed (structure only)
