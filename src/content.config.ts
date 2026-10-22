@@ -8,49 +8,75 @@ import { z } from 'astro/zod';
 
 const STATUS = ['live', 'nda', 'coming-soon', 'placeholder'] as const;
 
+/** Keystatic writes empty text fields as "" (or omits them); treat both as missing. */
+const text = () => z.string().nullish().transform((value) => value?.trim() || undefined);
+
 const caseStudies = defineCollection({
-  loader: glob({ pattern: '*.mdx', base: './src/content/case-studies' }),
+  loader: glob({ pattern: '*.yaml', base: './src/content/case-studies' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       subtitle: z.string(),
       tocLabel: z.string(),
-      cardMeta: z.string().optional(),
+      cardMeta: text(),
       status: z.enum(STATUS).default('placeholder'),
       order: z.number().int().min(1),
       draft: z.boolean().default(false),
-      role: z.string().optional(),
-      timeline: z.string().optional(),
-      tools: z.array(z.string()).default([]),
       heroVideo: z
         .object({
-          poster: image().optional(),
+          poster: image().nullish().transform((value) => value ?? undefined),
           alt: z.string().default(''),
-          mp4: z.string().optional(),
-          webm: z.string().optional(),
+          mp4: text(),
+          webm: text(),
         })
-        .default({ alt: '' }),
-      ogImage: image().optional(),
-      seoDescription: z.string().max(160).optional(),
-      outcomes: z
-        .array(z.object({ label: z.string(), value: z.string(), note: z.string().optional() }))
-        .default([]),
-      decisions: z
+        .default({ poster: undefined, alt: '', mp4: undefined, webm: undefined }),
+      ogImage: image().nullish().transform((value) => value ?? undefined),
+      seoDescription: z.string().max(160).nullish().transform((value) => value ?? undefined),
+
+      role: text(),
+      timeline: text(),
+      team: z.array(z.object({ name: z.string(), role: text() })).default([]),
+      tools: z.array(z.string()).default([]),
+
+      overview: z
+        .object({
+          heading: text(),
+          intro: text(),
+          challengeLabel: z.string().default('The challenge'),
+          challenge: z.array(z.string()).default([]),
+          insightLabel: z.string().default('The key insight'),
+          insight: text(),
+        })
+        .optional(),
+      solution: z
         .array(
           z.object({
-            id: z.string(),
-            title: z.string(),
-            context: z.string().optional(),
-            optionsConsidered: z
-              .array(z.object({ option: z.string(), tradeoff: z.string().optional() }))
-              .default([]),
-            chosen: z.string().optional(),
-            why: z.string().optional(),
-            evidenceText: z.string().optional(),
-            evidenceImage: image().optional(),
+            heading: z.string(),
+            body: text(),
+            media: z
+              .object({ image: image().nullish().transform((value) => value ?? undefined), alt: z.string().default(''), mp4: text(), webm: text() })
+              .optional(),
           }),
         )
         .default([]),
+      finalDesigns: z
+        .array(
+          z.object({
+            image: image(),
+            imageMobile: image().nullish().transform((value) => value ?? undefined),
+            alt: z.string().default(''),
+            layout: z.enum(['full', 'half']).default('full'),
+          }),
+        )
+        .default([]),
+      outcome: z
+        .object({
+          heading: text(),
+          intro: text(),
+          cards: z.array(z.object({ title: z.string(), body: text() })).default([]),
+        })
+        .optional(),
+      reflection: z.object({ heading: text(), body: text() }).optional(),
     }),
 });
 

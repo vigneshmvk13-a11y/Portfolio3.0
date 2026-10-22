@@ -8,6 +8,42 @@ export async function getPublishedCaseStudies(): Promise<CaseStudy[]> {
   return entries.sort((a, b) => a.data.order - b.data.order);
 }
 
+/** Previous and next case study in homepage order, wrapping at both ends. */
+export function neighboursOf(entries: CaseStudy[], id: string): { previous: CaseStudy; next: CaseStudy } {
+  const i = entries.findIndex((entry) => entry.id === id);
+  const n = entries.length;
+  return { previous: entries[(i - 1 + n) % n], next: entries[(i + 1) % n] };
+}
+
+/** The `count` case studies after `id` in homepage order, wrapping, never `id` itself. */
+export function moreProjects(entries: CaseStudy[], id: string, count = 3): CaseStudy[] {
+  const i = entries.findIndex((entry) => entry.id === id);
+  const others = [...entries.slice(i + 1), ...entries.slice(0, i)];
+  return others.slice(0, count);
+}
+
+/** Splits CMS long text into paragraphs: a blank line starts a new one. */
+export function paragraphs(text: string | undefined): string[] {
+  return (text ?? '')
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
+export type CaseSection = { id: string; label: string };
+
+/** Case-study sections that have content, in page order. They drive the tabs and the section anchors. */
+export function sectionsOf({ data }: CaseStudy): CaseSection[] {
+  const sections: (CaseSection & { filled: boolean })[] = [
+    { id: 'overview', label: 'Overview', filled: Boolean(data.overview?.heading || data.overview?.intro) },
+    { id: 'solution', label: 'Solution', filled: data.solution.length > 0 },
+    { id: 'final-designs', label: 'Final designs', filled: data.finalDesigns.length > 0 },
+    { id: 'outcome', label: 'Outcome', filled: Boolean(data.outcome?.heading || data.outcome?.cards.length) },
+    { id: 'reflection', label: 'Reflection', filled: Boolean(data.reflection?.heading || data.reflection?.body) },
+  ];
+  return sections.filter((s) => s.filled).map(({ id, label }) => ({ id, label }));
+}
+
 export async function getAbout() {
   const entry = await getEntry('about', 'about');
   if (!entry) throw new Error('Missing src/content/about.yaml');

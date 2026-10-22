@@ -3,7 +3,6 @@
  * src/content.config.ts mirrors this schema with Zod; change both together.
  */
 import { config, collection, singleton, fields } from '@keystatic/core';
-import { block } from '@keystatic/core/content-components';
 
 const STATUS = [
   { label: 'Live', value: 'live' },
@@ -22,8 +21,7 @@ export default config({
       label: 'Case studies',
       slugField: 'title',
       path: 'src/content/case-studies/*',
-      format: { contentField: 'body' },
-      entryLayout: 'content',
+      format: { data: 'yaml' },
       columns: ['title', 'order', 'status'],
       schema: {
         title: fields.slug({
@@ -39,19 +37,20 @@ export default config({
           description: 'TOC (mobile and desktop) and the browser tab title, e.g. "Data mapping"',
           validation: { isRequired: true },
         }),
-        cardMeta: fields.text({ label: 'Tags', description: 'Desktop card and the case-study page, e.g. "B2B • SAAS"' }),
+        cardMeta: fields.text({
+          label: 'Tags',
+          description: 'Desktop card and above the case-study title, e.g. "B2B • SAAS"',
+        }),
         status: fields.select({ label: 'Status', options: STATUS, defaultValue: 'placeholder' }),
-        order: fields.integer({ label: 'Homepage order', validation: { isRequired: true, min: 1 } }),
+        order: fields.integer({
+          label: 'Homepage order',
+          description: 'Also the order of Previous / Next and More projects',
+          validation: { isRequired: true, min: 1 },
+        }),
         draft: fields.checkbox({
           label: 'Draft',
           description: 'Never built in production',
           defaultValue: false,
-        }),
-        role: fields.text({ label: 'Role' }),
-        timeline: fields.text({ label: 'Timeline' }),
-        tools: fields.array(fields.text({ label: 'Tool' }), {
-          label: 'Tools',
-          itemLabel: (props) => props.value,
         }),
         heroVideo: fields.object(
           {
@@ -79,55 +78,110 @@ export default config({
           multiline: true,
           validation: { length: { max: 160 } },
         }),
-        outcomes: fields.array(
+
+        // Meta row under the cover.
+        role: fields.text({ label: 'Role' }),
+        timeline: fields.text({ label: 'Timeline' }),
+        team: fields.array(
           fields.object({
-            label: fields.text({ label: 'Label', validation: { isRequired: true } }),
-            value: fields.text({ label: 'Value', validation: { isRequired: true } }),
-            note: fields.text({ label: 'Note' }),
+            name: fields.text({ label: 'Name', validation: { isRequired: true } }),
+            role: fields.text({ label: 'Role' }),
           }),
           {
-            label: 'Outcomes',
-            description: 'Real numbers only. Leave empty rather than estimate.',
-            itemLabel: (props) => `${props.fields.value.value} ${props.fields.label.value}`,
+            label: 'Team',
+            description: 'Shown as "Name (Role)"',
+            itemLabel: (props) => props.fields.name.value,
           },
         ),
-        decisions: fields.array(
+        tools: fields.array(fields.text({ label: 'Tool' }), {
+          label: 'Tools',
+          description: 'Not shown on the page yet',
+          itemLabel: (props) => props.value,
+        }),
+
+        // Sections, in page order. Each one (and its tab) appears only when it has content.
+        overview: fields.object(
+          {
+            heading: fields.text({ label: 'Heading' }),
+            intro: fields.text({ label: 'Intro', multiline: true }),
+            challengeLabel: fields.text({ label: 'Challenge label', defaultValue: 'The challenge' }),
+            challenge: fields.array(fields.text({ label: 'Point', multiline: true }), {
+              label: 'Challenge (bullets)',
+              itemLabel: (props) => props.value,
+            }),
+            insightLabel: fields.text({ label: 'Insight label', defaultValue: 'The key insight' }),
+            insight: fields.text({ label: 'Insight', multiline: true }),
+          },
+          { label: 'Overview', description: 'Long text: a blank line starts a new paragraph' },
+        ),
+        solution: fields.array(
           fields.object({
-            id: fields.text({
-              label: 'Id',
-              description: 'Referenced by <Decision id="…" /> in the body',
+            heading: fields.text({ label: 'Heading', validation: { isRequired: true } }),
+            body: fields.text({ label: 'Text', multiline: true }),
+            media: fields.object(
+              {
+                image: fields.image({
+                  label: 'Image (the poster, if there is a video)',
+                  directory: 'src/assets/case-studies',
+                  publicPath: '../../assets/case-studies/',
+                }),
+                alt: fields.text({ label: 'Alt text', description: 'Describe the content, not the file' }),
+                mp4: fields.file({ label: 'MP4 (optional, ≤ 4 MB)', directory: 'public/media', publicPath: '/media/' }),
+                webm: fields.file({ label: 'WebM (optional, ≤ 4 MB)', directory: 'public/media', publicPath: '/media/' }),
+              },
+              { label: 'Media' },
+            ),
+          }),
+          { label: 'Solution', description: 'One step per decision', itemLabel: (props) => props.fields.heading.value },
+        ),
+        finalDesigns: fields.array(
+          fields.object({
+            image: fields.image({
+              label: 'Image (desktop)',
+              directory: 'src/assets/case-studies',
+              publicPath: '../../assets/case-studies/',
               validation: { isRequired: true },
             }),
-            title: fields.text({ label: 'Decision', validation: { isRequired: true } }),
-            context: fields.text({ label: 'Context', multiline: true }),
-            optionsConsidered: fields.array(
-              fields.object({
-                option: fields.text({ label: 'Option' }),
-                tradeoff: fields.text({ label: 'Trade-off', multiline: true }),
-              }),
-              { label: 'Options considered', itemLabel: (props) => props.fields.option.value },
-            ),
-            chosen: fields.text({ label: 'Chosen' }),
-            why: fields.text({ label: 'Why', multiline: true }),
-            evidenceText: fields.text({ label: 'Evidence (text)', multiline: true }),
-            evidenceImage: fields.image({
-              label: 'Evidence (image)',
-              directory: 'src/assets/evidence',
-              publicPath: '../../assets/evidence/',
+            imageMobile: fields.image({
+              label: 'Image (mobile, optional)',
+              description: 'A recomposed crop for phones. Without it, phones get the desktop image.',
+              directory: 'src/assets/case-studies',
+              publicPath: '../../assets/case-studies/',
+            }),
+            alt: fields.text({ label: 'Alt text', description: 'Describe the content, not the file' }),
+            layout: fields.select({
+              label: 'Layout (desktop)',
+              description: 'Two half-width images in a row sit side by side',
+              options: [
+                { label: 'Full width', value: 'full' },
+                { label: 'Half width', value: 'half' },
+              ],
+              defaultValue: 'full',
             }),
           }),
-          { label: 'Decisions', itemLabel: (props) => props.fields.title.value },
+          { label: 'Final designs', itemLabel: (props) => props.fields.alt.value || 'Image' },
         ),
-        body: fields.mdx({
-          label: 'Body',
-          extension: 'mdx',
-          components: {
-            Decision: block({
-              label: 'Decision',
-              schema: { id: fields.text({ label: 'Decision id' }) },
-            }),
+        outcome: fields.object(
+          {
+            heading: fields.text({ label: 'Heading' }),
+            intro: fields.text({ label: 'Intro', multiline: true }),
+            cards: fields.array(
+              fields.object({
+                title: fields.text({ label: 'Title', validation: { isRequired: true } }),
+                body: fields.text({ label: 'Text', multiline: true }),
+              }),
+              { label: 'Cards', itemLabel: (props) => props.fields.title.value },
+            ),
           },
-        }),
+          { label: 'Outcome' },
+        ),
+        reflection: fields.object(
+          {
+            heading: fields.text({ label: 'Heading' }),
+            body: fields.text({ label: 'Text', multiline: true, description: 'A blank line starts a new paragraph' }),
+          },
+          { label: 'Reflection' },
+        ),
       },
     }),
 
