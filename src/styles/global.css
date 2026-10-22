@@ -27,6 +27,7 @@
   --duration-fast: 150ms;
   --duration-base: 300ms;
   --duration-slow: 500ms;
+  --duration-spring: 600ms;
   --intro-failsafe: 3s;
 
   /* Wheel geometry (mirrored in src/lib/motion.ts; derivation in layout-and-motion.md) */
@@ -167,14 +168,19 @@
   --text-label-3: 0.75rem;
   --text-label-3--line-height: 1rem;
   --text-label-3--letter-spacing: -0.12px;
+  /* Case-study section eyebrows ("OVERVIEW"), uppercase. */
+  --tracking-eyebrow: 2px;
 
   --radius-item: 8px;
   --radius-button-sm: 12px;
   --radius-media-sm: 16px;
   --radius-button-lg: 16px;
+  --radius-tabs: 14px;
+  --radius-tile: 20px;
   --radius-card: 24px;
   --radius-panel: 32px;
   --radius-panel-inner: 28px;
+  --radius-section: 48px;
   --radius-full: 9999px;
 
   --spacing-gutter: 80px;
@@ -197,21 +203,35 @@
   --spacing-icon-xs: 16px;
   --spacing-icon-sm: 18px;
   --spacing-icon-md: 20px;
+  --spacing-icon-lg: 22px;
   --spacing-icon-badge: 16px;
+  --spacing-meta-col: 176px;
+  --spacing-nav-btn: 97px;
 
   --container-page: 1736px;
   --container-stack: 669px;
   --container-side: 265.5px;
   --container-drawer: 576px;
   --container-prose: 720px;
+  --container-case: 846px;
+  --container-case-text: 668px;
 
   --aspect-card: 553 / 400;
+  --aspect-cover: 846 / 556;
+  --aspect-media: 846 / 476;
+  --aspect-media-sm: 354 / 219;
 
   --blur-caption: 12.5px;
+  --blur-nav: 40px;
   --shadow-panel: 0 24px 64px rgb(0 0 0 / 0.12);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /*
+   * spring.css (motion.ts): Motion's spring { visualDuration: 0.4, bounce: 0.2 } sampled into linear(),
+   * so CSS transitions move like the JS springs. Settles in --duration-spring with a 1.5% overshoot.
+   */
+  --ease-spring: linear(0, 0.026, 0.091, 0.18, 0.28, 0.383, 0.483, 0.575, 0.659, 0.732, 0.795, 0.848, 0.891, 0.925, 0.952, 0.973, 0.988, 0.999, 1.007, 1.011, 1.014, 1.015, 1.015, 1.014, 1.013, 1.012, 1.01, 1.009, 1.007, 1.006, 1.005, 1.004, 1);
 }
 
 /* ---------- Semantic colour (references primitives) ---------- */
@@ -226,6 +246,7 @@
   --color-fg-primary: var(--gray-900);
   --color-fg-strong: var(--gray-900);
   --color-fg-secondary: var(--gray-600);
+  --color-fg-secondary-on-fill: var(--gray-700);
   --color-fg-tertiary: var(--gray-500);
   --color-fg-on-media: var(--gray-white);
   --color-line-subtle: var(--gray-100);
@@ -268,6 +289,113 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/*
+ * Page transitions (src/scripts/page-transition.js; design/layout-and-motion.md → Page transitions).
+ * The opt-in (@view-transition, off under reduced motion) is inline in Base.astro's <head>.
+ */
+::view-transition-group(*) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-in-out);
+}
+
+/*
+ * expand / collapse: the whole project card (cover, badge, caption) and the case-study cover are one
+ * image at two sizes and ratios. It moves on the CSS spring. The old snapshot stays opaque throughout (no
+ * see-through midpoint) and the new one fades in over it:
+ * - expand: early (within duration-base), so the card's caption and badge dissolve before they grow;
+ * - collapse: in the second half, so the caption and badge arrive in place as the card lands, on top.
+ * If the new image isn't loaded yet (data-vt-cover-wait), the old snapshot carries the whole morph.
+ * The rest of the page dissolves quickly underneath.
+ */
+::view-transition-group(case-cover) {
+  overflow: clip;
+  border-radius: var(--radius-card);
+  animation-duration: var(--duration-spring);
+  animation-timing-function: var(--ease-spring);
+}
+::view-transition-old(case-cover),
+::view-transition-new(case-cover) {
+  height: 100%;
+  object-fit: cover;
+}
+::view-transition-old(case-cover) {
+  animation: none;
+}
+::view-transition-new(case-cover) {
+  animation: var(--duration-spring) var(--ease-out) both vt-cover-in;
+}
+html[data-vt='expand']::view-transition-new(case-cover) {
+  animation: var(--duration-base) var(--ease-out) both vt-fade-in;
+}
+/* expand: the card's caption and badge are captured on their own and fade out where they are. */
+::view-transition-old(card-caption),
+::view-transition-old(card-badge) {
+  animation: var(--duration-fast) var(--ease-out) both vt-fade-out;
+}
+html[data-vt-cover-wait]::view-transition-new(case-cover) {
+  animation: none;
+  opacity: 0;
+}
+html:is([data-vt='expand'], [data-vt='collapse'])::view-transition-old(root) {
+  animation: var(--duration-base) var(--ease-out) both vt-fade-out;
+}
+html:is([data-vt='expand'], [data-vt='collapse'])::view-transition-new(root) {
+  animation: var(--duration-base) var(--ease-out) var(--duration-fast) both vt-fade-in;
+}
+@keyframes vt-cover-in {
+  0%,
+  50% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* next / prev: the page slides like a carousel; the floating nav (case-nav) stays put. */
+html[data-vt='next']::view-transition-old(root) {
+  animation: var(--duration-slow) var(--ease-in-out) both vt-to-left;
+}
+html[data-vt='next']::view-transition-new(root) {
+  animation: var(--duration-slow) var(--ease-in-out) both vt-from-right;
+}
+html[data-vt='prev']::view-transition-old(root) {
+  animation: var(--duration-slow) var(--ease-in-out) both vt-to-right;
+}
+html[data-vt='prev']::view-transition-new(root) {
+  animation: var(--duration-slow) var(--ease-in-out) both vt-from-left;
+}
+@keyframes vt-to-left {
+  to {
+    translate: -100% 0;
+  }
+}
+@keyframes vt-from-right {
+  from {
+    translate: 100% 0;
+  }
+}
+@keyframes vt-to-right {
+  to {
+    translate: 100% 0;
+  }
+}
+@keyframes vt-from-left {
+  from {
+    translate: -100% 0;
   }
 }
 

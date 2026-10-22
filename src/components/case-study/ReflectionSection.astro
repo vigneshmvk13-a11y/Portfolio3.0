@@ -1,0 +1,31 @@
+---
+/**
+ * Reflection card (Figma 234:23078 desktop, 234:10044 mobile). Mobile keeps the Overview card's 24px
+ * inset; Figma draws it edge to edge (DESIGN.md → Open questions).
+ */
+import Eyebrow from './Eyebrow.astro';
+import { paragraphs, type CaseStudy } from '../../lib/content';
+
+interface Props {
+  reflection: NonNullable<CaseStudy['data']['reflection']>;
+}
+
+const { heading, body } = Astro.props.reflection;
+---
+
+<section
+  id="reflection"
+  aria-labelledby="reflection-label"
+  class="mt-8 flex scroll-mt-30 flex-col gap-6 rounded-panel bg-surface-raised px-6 py-8 desktop:mt-0 desktop:rounded-section desktop:p-22"
+  data-case-section
+>
+  <Eyebrow id="reflection-label">Reflection</Eyebrow>
+  <div class="flex flex-col gap-4 desktop:gap-3">
+    {heading && <h3 class="text-h6 text-fg-primary desktop:text-h5">{heading}</h3>}
+    <div>
+      {paragraphs(body).map((p) => (
+        <p class="text-body-3 desktop:text-body-2">{p}</p>
+      ))}
+    </div>
+  </div>
+</section>

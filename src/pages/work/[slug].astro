@@ -4,10 +4,10 @@ import { getPublishedCaseStudies } from '../../lib/content';
 
 export async function getStaticPaths() {
   const entries = await getPublishedCaseStudies();
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry, entries } }));
 }
 
-const { entry } = Astro.props;
+const { entry, entries } = Astro.props;
 ---
 
-<CaseStudy entry={entry} />
+<CaseStudy entry={entry} entries={entries} />

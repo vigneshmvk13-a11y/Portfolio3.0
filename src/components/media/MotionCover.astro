@@ -18,6 +18,8 @@ interface Props {
   /** The active cover plays (when motion and data saving allow). */
   active?: boolean;
   sizes?: string;
+  /** A project cover: the homepage card ⇄ case-study cover page transition morphs it (src/scripts/page-transition). */
+  transitionCover?: boolean;
   class?: string;
 }
 
@@ -29,6 +31,7 @@ const {
   priority = false,
   active = false,
   sizes = '(min-width: 75rem) 553px, calc(100vw - 40px)',
+  transitionCover = false,
   class: className,
 } = Astro.props;
 
@@ -39,6 +42,7 @@ const hasVideo = Boolean(mp4 || webm);
   class:list={['motion-cover relative overflow-hidden bg-surface-selected', className]}
   data-motion-cover
   data-active={active ? '' : undefined}
+  data-vt-cover={transitionCover ? '' : undefined}
 >
   {
     poster ? (
@@ -51,7 +55,7 @@ const hasVideo = Boolean(mp4 || webm);
         sizes={sizes}
         loading={priority ? 'eager' : 'lazy'}
         fetchpriority={priority ? 'high' : 'auto'}
-        decoding={priority ? 'sync' : 'async'}
+        decoding="async"
         class="absolute inset-0 size-full object-cover"
       />
     ) : (

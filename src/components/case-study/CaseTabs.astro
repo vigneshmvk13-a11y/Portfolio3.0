@@ -1,0 +1,80 @@
+---
+/**
+ * Section tabs (Figma 234:18780 desktop, 234:5742 mobile). In-page links, not ARIA tabs: each one
+ * scrolls to its section, and the active one follows the scroll (aria-current="location").
+ * Sticks 40px from the top until More projects; the white pill slides between tabs.
+ * Behaviour: src/scripts/case-study/tabs.ts, design/layout-and-motion.md → Case study.
+ */
+import type { CaseSection } from '../../lib/content';
+
+interface Props {
+  sections: CaseSection[];
+}
+
+const { sections } = Astro.props;
+---
+
+<nav
+  aria-label="Sections"
+  class="case-tabs sticky top-10 z-10 flex justify-center pb-10"
+  data-case-tabs
+  data-no-swipe
+>
+  <div class="w-full overflow-hidden rounded-tabs bg-surface-selected desktop:w-auto">
+    <ul class="case-tabs__list relative flex gap-1 overflow-x-auto p-0.5" data-case-tabs-list>
+      <li aria-hidden="true" class="case-tabs__pill absolute top-0.5 bottom-0.5 left-0 rounded-button-sm border border-line-subtle bg-surface-raised" data-case-tabs-pill></li>
+      {
+        sections.map((section, i) => (
+          <li class="relative shrink-0">
+            <a
+              href={`#${section.id}`}
+              class:list={[
+                'case-tabs__tab block rounded-button-sm border border-transparent px-5 py-3',
+                'text-label-2 font-medium whitespace-nowrap text-fg-secondary-on-fill desktop:text-label-1',
+                'transition-colors duration-(--duration-fast) ease-out hover:text-fg-primary',
+              ]}
+              aria-current={i === 0 ? 'location' : undefined}
+              data-case-tab={section.id}
+            >
+              {section.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>
+
+<style>
+  /* Phones scroll the row sideways (and that gesture isn't a page swipe); no scrollbar. */
+  .case-tabs__list {
+    scrollbar-width: none;
+    touch-action: pan-x pinch-zoom;
+  }
+  .case-tabs__list::-webkit-scrollbar {
+    display: none;
+  }
+  .case-tabs__tab[aria-current='location'] {
+    color: var(--color-fg-primary);
+  }
+  /* Without JS, the active tab carries its own pill; with JS the shared pill slides under it. */
+  .case-tabs__pill {
+    display: none;
+  }
+  .case-tabs__tab[aria-current='location'] {
+    background: var(--color-surface-raised);
+    border-color: var(--color-line-subtle);
+  }
+  [data-case-tabs][data-ready] .case-tabs__pill {
+    display: block;
+    width: var(--pill-w, 0);
+    translate: var(--pill-x, 0) 0;
+    transition:
+      translate var(--duration-base) var(--ease-out),
+      width var(--duration-base) var(--ease-out);
+  }
+  [data-case-tabs][data-ready] .case-tabs__tab[aria-current='location'] {
+    background: transparent;
+    border-color: transparent;
+  }
+</style>

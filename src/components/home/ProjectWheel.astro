@@ -32,6 +32,38 @@ const offsetOf = (index: number) => {
   <p class="sr-only" aria-live="polite" data-wheel-status></p>
 </section>
 
+<!--
+  Deep link (/#slug, e.g. Home from a case study): place the wheel on that project while the page is
+  still parsing, so the first frame already shows it. The case-study cover then shrinks straight into
+  this card (src/scripts/page-transition.js). Same ring maths as geometry.ts; the controller takes
+  over with an identical pose.
+-->
+<script is:inline>
+  (() => {
+    const slug = decodeURIComponent(location.hash.slice(1));
+    const cards = [...document.querySelectorAll('[data-wheel-card]')];
+    const index = cards.findIndex((card) => card.dataset.slug === slug);
+    if (index > 0) {
+      const n = cards.length;
+      cards.forEach((card, i) => {
+        const raw = (((i - index) % n) + n) % n;
+        const offset = raw >= n / 2 ? raw - n : raw;
+        card.dataset.offset = String(offset);
+        card.inert = offset !== 0;
+        if (offset === 0) {
+          card.removeAttribute('aria-hidden');
+          // Its poster is lazy (only project 1 is eager); it's on screen now.
+          card.querySelector('img')?.setAttribute('loading', 'eager');
+        } else {
+          card.setAttribute('aria-hidden', 'true');
+        }
+      });
+    }
+    document.documentElement.removeAttribute('data-wheel-pending');
+  })();
+</script>
+<span id="wheel-placed" hidden></span>
+
 <style is:global>
   /* Card size (--card-w/--card-h) and placement (--wheel-centre-y) are derived in global.css :root. */
   .wheel {

@@ -1,0 +1,36 @@
+---
+/**
+ * More projects (Figma 234:23083 desktop, 234:10050 mobile): the next three case studies in homepage
+ * order, as small project cards (posters only). "See all" goes home: right of the heading on desktop,
+ * under the cards on mobile.
+ */
+import ProjectCardLink from '../home/ProjectCardLink.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entries: CaseStudy[];
+}
+
+const { entries } = Astro.props;
+const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors duration-(--duration-fast) ease-out hover:text-fg-primary';
+---
+
+<section
+  aria-labelledby="more-projects"
+  class="pb-30 desktop:mx-auto desktop:max-w-case-text desktop:pt-22 desktop:pb-40"
+>
+  <div class="flex items-end justify-between py-8 desktop:pt-0 desktop:pb-6">
+    <h2 id="more-projects" class="text-h5 text-fg-primary">More projects</h2>
+    <a href="/" class:list={['hidden desktop:block', seeAll]}>See all</a>
+  </div>
+  <ul class="grid gap-5 desktop:grid-cols-3">
+    {
+      entries.map((entry) => (
+        <li class="aspect-card">
+          <ProjectCardLink entry={entry} compact sizes="(min-width: 75rem) 209px, min(calc(100vw - 48px), 846px)" />
+        </li>
+      ))
+    }
+  </ul>
+  <a href="/" class:list={['inline-block py-8 desktop:hidden', seeAll]}>See all</a>
+</section>

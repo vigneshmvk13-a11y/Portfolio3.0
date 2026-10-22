@@ -1,0 +1,21 @@
+---
+/**
+ * Section name above a case-study section ("OVERVIEW"); the section's <h2>, so the outline reads
+ * Overview › heading › subheads, and its text matches the tab. design/components.md → Case study.
+ */
+interface Props {
+  id: string;
+  class?: string;
+}
+const { id, class: className } = Astro.props;
+---
+
+<h2
+  id={id}
+  class:list={[
+    'text-label-3 font-medium tracking-eyebrow text-fg-secondary uppercase desktop:text-label-2',
+    className,
+  ]}
+>
+  <slot />
+</h2>

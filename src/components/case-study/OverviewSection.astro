@@ -1,0 +1,50 @@
+---
+/** Overview card (Figma 234:18793 desktop, 234:5756 mobile): heading, intro, the challenge, the key insight. */
+import Eyebrow from './Eyebrow.astro';
+import SectionLead from './SectionLead.astro';
+import { paragraphs, type CaseStudy } from '../../lib/content';
+
+interface Props {
+  overview: NonNullable<CaseStudy['data']['overview']>;
+}
+
+const { heading, intro, challengeLabel, challenge, insightLabel, insight } = Astro.props.overview;
+const subhead = 'text-label-2 font-medium text-fg-primary desktop:text-label-1';
+const body = 'text-body-3 desktop:text-body-2';
+---
+
+<section
+  id="overview"
+  aria-labelledby="overview-label"
+  class="flex scroll-mt-30 flex-col gap-6 rounded-panel bg-surface-raised px-6 py-8 desktop:gap-12 desktop:rounded-section desktop:p-22"
+  data-case-section
+>
+  <div class="flex flex-col gap-6">
+    <Eyebrow id="overview-label">Overview</Eyebrow>
+    <SectionLead heading={heading} intro={intro} />
+  </div>
+  {
+    (challenge.length > 0 || insight) && (
+      <div class="grid gap-6 desktop:grid-cols-2 desktop:gap-5">
+        {challenge.length > 0 && (
+          <div class="flex flex-col gap-4 desktop:gap-5">
+            <h4 class={subhead}>{challengeLabel}</h4>
+            <ul class:list={['list-disc pl-5 desktop:pl-6', body]}>
+              {challenge.map((point) => (
+                <li>{point}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {insight && (
+          <div class="flex flex-col gap-4 desktop:gap-5">
+            <h4 class={subhead}>{insightLabel}</h4>
+            {paragraphs(insight).map((p) => (
+              <p class={body}>{p}</p>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+</section>

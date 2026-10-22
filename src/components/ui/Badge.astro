@@ -1,19 +1,21 @@
 ---
 /** Card status pill (Figma 230:4637 / 230:4652). Renders nothing for statuses without a badge. */
+import type { HTMLAttributes } from 'astro/types';
 import Lock from '../icons/Lock.astro';
 
-interface Props {
+/** Extra attributes (data-*) pass through to the pill. */
+interface Props extends HTMLAttributes<'span'> {
   status: 'live' | 'nda' | 'coming-soon' | 'placeholder';
-  class?: string;
 }
 
-const { status, class: className } = Astro.props;
+const { status, class: className, ...rest } = Astro.props;
 const label = status === 'nda' ? 'NDA protected' : status === 'coming-soon' ? 'Coming soon' : null;
 ---
 
 {
   label && (
     <span
+      {...rest}
       class:list={[
         'inline-flex items-center gap-1 py-2 rounded-full bg-surface-badge',
         'text-label-3 font-medium text-fg-strong whitespace-nowrap',

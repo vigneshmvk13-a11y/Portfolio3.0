@@ -1,63 +1,125 @@
 ---
 /**
- * Case-study placeholder template (design/components.md → CaseStudyPlaceholder).
- * Real case-study designs come later; until then: back link, cover, title, meta, status line.
+ * Case-study page (Figma section 234:33903: desktop 234:18762, mobile 234:5721).
+ * Hero (tags, title, cover, meta) → sticky section tabs → Overview, Solution, Final designs, Outcome,
+ * Reflection (each only when filled) → More projects, with the floating Previous / Home / Next nav.
+ * A case study without sections (NDA, placeholder, coming soon) shows a status line instead of tabs.
+ * Layout and behaviour: design/layout-and-motion.md → Case study.
  */
 import Base from './Base.astro';
 import Button from '../components/ui/Button.astro';
-import MotionCover from '../components/media/MotionCover.astro';
-import Badge from '../components/ui/Badge.astro';
-import ArrowLeft from '../components/icons/ArrowLeft.astro';
 import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
-import { getSiteSettings, type CaseStudy } from '../lib/content';
+import CaseHero from '../components/case-study/CaseHero.astro';
+import CaseTabs from '../components/case-study/CaseTabs.astro';
+import OverviewSection from '../components/case-study/OverviewSection.astro';
+import SolutionSection from '../components/case-study/SolutionSection.astro';
+import FinalDesigns from '../components/case-study/FinalDesigns.astro';
+import OutcomeSection from '../components/case-study/OutcomeSection.astro';
+import ReflectionSection from '../components/case-study/ReflectionSection.astro';
+import MoreProjects from '../components/case-study/MoreProjects.astro';
+import CaseNav from '../components/case-study/CaseNav.astro';
+import {
+  getSiteSettings,
+  moreProjects,
+  neighboursOf,
+  sectionsOf,
+  type CaseStudy,
+} from '../lib/content';
 
 interface Props {
   entry: CaseStudy;
+  /** Every published case study in homepage order (neighbours, More projects). */
+  entries: CaseStudy[];
 }
 
-const { entry } = Astro.props;
-const { subtitle, tocLabel, status, role, timeline, heroVideo, seoDescription, ogImage, cardMeta } = entry.data;
+const { entry, entries } = Astro.props;
+const { tocLabel, status, seoDescription, ogImage, overview, solution, finalDesigns, outcome, reflection } = entry.data;
 const { contact, nav } = await getSiteSettings();
-const meta = [role, timeline, cardMeta].filter(Boolean);
+
+const sections = sectionsOf(entry);
+const hasFacts = Boolean(entry.data.role || entry.data.timeline || entry.data.team.length);
+const has = (id: string) => sections.some((s) => s.id === id);
+const { previous, next } = neighboursOf(entries, entry.id);
+const isFirst = entries[0]?.id === entry.id;
+const homeHref = isFirst ? '/' : `/#${entry.id}`;
+
+// Fetch the pages a visitor is one tap away from, so a transition starts at once; prerender the
+// neighbours on hover or press so the slide has the next page fully painted. (Home isn't prerendered:
+// it's reached as /#slug, and the wheel places itself from the hash while parsing.)
+const neighbours = [...new Set([`/work/${previous.id}/`, `/work/${next.id}/`])];
+const speculation = JSON.stringify({
+  prefetch: [{ source: 'list', urls: [...neighbours, '/'] }],
+  prerender: [{ source: 'list', urls: neighbours, eagerness: 'moderate' }],
+});
 ---
 
-<Base title={tocLabel} description={seoDescription} ogImage={ogImage} class="min-h-dvh bg-surface-page">
-  <main id="main" class="mx-auto flex max-w-prose flex-col gap-8 px-gutter-mobile py-10 desktop:py-20">
-    <Button href={`/#${entry.id}`} leadingIcon={ArrowLeft} class="self-start">All work</Button>
+<Base title={tocLabel} description={seoDescription} ogImage={ogImage} class="bg-surface-page">
+  <Fragment slot="head">
+    <script type="speculationrules" is:inline set:html={speculation} />
+    <!-- The page transition names the cover before the first frame; wait until it's parsed. -->
+    <link rel="expect" href="#case-cover" blocking="render" />
+  </Fragment>
 
-    <div class="relative aspect-card overflow-hidden rounded-card">
-      <MotionCover
-        class="size-full"
-        poster={heroVideo.poster}
-        alt={heroVideo.alt}
-        mp4={heroVideo.mp4}
-        webm={heroVideo.webm}
-        sizes="(min-width: 48rem) 720px, calc(100vw - 40px)"
-        priority
-        active
-      />
-      <Badge status={status} class="absolute top-6 right-6" />
-    </div>
+  <div
+    class="case-page"
+    data-case-page
+    data-slug={entry.id}
+    data-prev={previous.id}
+    data-next={next.id}
+  >
+    <main id="main" class="mx-auto max-w-case px-6 pt-20 desktop:px-0">
+      <CaseHero entry={entry} />
 
-    <header class="flex flex-col gap-2">
-      <h1 class="text-h5 text-fg-primary desktop:text-h4">{subtitle}</h1>
-      {meta.length > 0 && <p class="text-label-2">{meta.join(' • ')}</p>}
-    </header>
+      {
+        sections.length > 0 ? (
+          <div data-case-body>
+            {sections.length > 1 && <CaseTabs sections={sections} />}
+            {has('overview') && overview && <OverviewSection overview={overview} />}
+            {has('solution') && <SolutionSection steps={solution} />}
+            {has('final-designs') && <FinalDesigns images={finalDesigns} />}
+            {has('outcome') && outcome && <OutcomeSection outcome={outcome} />}
+            {has('reflection') && reflection && <ReflectionSection reflection={reflection} />}
+          </div>
+        ) : (
+          <div
+            class:list={[
+              'flex flex-col items-start gap-6 desktop:mx-auto desktop:max-w-case-text',
+              // Without the Role / Timeline / Team row, keep the gap under the cover.
+              !hasFacts && 'pt-8 desktop:pt-12',
+            ]}
+          >
+            {status === 'nda' ? (
+              <>
+                <p class="text-body-3 desktop:text-body-2">
+                  This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and
+                  design decisions are available for discussion during a private portfolio walkthrough.
+                </p>
+                <Button href={contact} external={contact.startsWith('https://')} trailingIcon={ArrowUpRight}>
+                  {nav.contact}
+                </Button>
+              </>
+            ) : (
+              <p class="text-body-3 desktop:text-body-2">This case study is being written.</p>
+            )}
+          </div>
+        )
+      }
 
-    {
-      status === 'nda' ? (
-        <div class="flex flex-col items-start gap-6">
-          <p class="text-body-2">
-            This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and design
-            decisions are available for discussion during a private portfolio walkthrough.
-          </p>
-          <Button href={contact} external={contact.startsWith('https://')} trailingIcon={ArrowUpRight}>
-            {nav.contact}
-          </Button>
-        </div>
-      ) : (
-        <p class="text-body-2">This case study is being written.</p>
-      )
-    }
-  </main>
+      <MoreProjects entries={moreProjects(entries, entry.id)} />
+    </main>
+  </div>
+
+  <CaseNav previous={previous} next={next} homeHref={homeHref} />
 </Base>
+
+<style>
+  /* Vertical scroll stays the browser's; a horizontal drag is the swipe between projects (case-study/swipe.ts). */
+  .case-page {
+    touch-action: pan-y pinch-zoom;
+  }
+</style>
+
+<script>
+  import { initCaseStudy } from '../scripts/case-study';
+  initCaseStudy();
+</script>

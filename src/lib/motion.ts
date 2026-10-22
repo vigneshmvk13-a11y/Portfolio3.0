@@ -25,6 +25,12 @@ export const spring = {
    * slowest settle; a quick swipe shortens it down to sheet.flickMin. Taps use duration.slow + ease.inOut.
    */
   sheet: { type: 'spring', visualDuration: 0.5, bounce: 0 },
+  /**
+   * CSS spring: the floating case-study nav and the card ⇄ cover page transition. CSS can't run a
+   * spring, so global.css samples this one into `--ease-spring` (linear()) over `--duration-spring`
+   * (0.6s, when it settles). Change both together.
+   */
+  css: { type: 'spring', visualDuration: 0.4, bounce: 0.2 },
 } as const;
 
 /** Mobile bottom sheet (design/layout-and-motion.md → Bottom sheet). */
@@ -106,6 +112,24 @@ export const wheel = {
   follow: 0.07,
   /** Reduced motion: one short ease-out turn per step (s); no overshoot, momentum or scroll-linking. */
   reducedTurn: 0.2,
+} as const;
+
+/** Case-study page (design/layout-and-motion.md → Case study). */
+export const caseStudy = {
+  /** px scrolled in one direction before the floating nav collapses (down) or expands (up). */
+  navScrollSlop: 8,
+  /** px from the page end where the floating nav always shows in full. */
+  navEndZone: 160,
+  /** Touch swipe between case studies: px of travel before a horizontal drag is recognised. */
+  swipeSlop: 10,
+  /** A swipe can't start this close (px) to the screen edges, which belong to the browser's back/forward. */
+  swipeEdge: 24,
+  /** Release past this share of the screen width, or faster than swipeVelocity, goes to the next project. */
+  swipeCommit: 0.25,
+  /** px/ms. */
+  swipeVelocity: 0.5,
+  /** The page follows the finger at this fraction of its travel. */
+  swipeFollow: 0.6,
 } as const;
 
 /**

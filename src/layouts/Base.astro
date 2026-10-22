@@ -6,6 +6,7 @@
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import { getSiteSettings } from '../lib/content';
+import pageTransitionSource from '../scripts/page-transition.js?raw';
 import '../styles/global.css';
 
 interface Props {
@@ -30,6 +31,9 @@ const isPreview = branch !== undefined && branch !== 'main';
 const robots = noindex || isPreview ? 'noindex, nofollow' : undefined;
 
 const og = ogImage ? await getImage({ src: ogImage, width: 1200, height: 630, format: 'jpg' }) : undefined;
+
+// Inlined on every page: drop the comments (the file is plain JS with no strings containing comment markers).
+const pageTransition = pageTransitionSource.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '').replace(/\n\s*\n/g, '\n');
 const ogUrl = og ? new URL(og.src, Astro.site).href : undefined;
 ---
 
@@ -59,6 +63,18 @@ const ogUrl = og ? new URL(og.src, Astro.site).href : undefined;
     <meta name="twitter:description" content={description} />
     {ogUrl && <meta name="twitter:image" content={ogUrl} />}
 
+    <!--
+      Page transitions (src/scripts/page-transition.js). The opt-in is inline so the incoming page has it
+      before its first frame, whatever the stylesheet's timing; the script must be registered by then too.
+    -->
+    <style is:inline>
+      @media (prefers-reduced-motion: no-preference) {
+        @view-transition {
+          navigation: auto;
+        }
+      }
+    </style>
+    <script is:inline set:html={pageTransition} />
     <slot name="head" />
   </head>
   <body class={className}>

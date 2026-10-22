@@ -1,0 +1,68 @@
+---
+/**
+ * The face of a project card (Figma component set 228:4583): a link to /work/[slug] with the cover,
+ * the status badge and the caption. Used by the homepage wheel (ProjectCard) and the case-study
+ * More projects grid. design/components.md → ProjectCard.
+ */
+import MotionCover from '../media/MotionCover.astro';
+import Badge from '../ui/Badge.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entry: CaseStudy;
+  /** Small card (More projects): title only at every width, badge 16px in. */
+  compact?: boolean;
+  priority?: boolean;
+  active?: boolean;
+  sizes?: string;
+  class?: string;
+}
+
+const { entry, compact = false, priority = false, active = false, sizes, class: className } = Astro.props;
+const { subtitle, cardMeta, status, heroVideo } = entry.data;
+---
+
+<a
+  href={`/work/${entry.id}/`}
+  class:list={['group relative block size-full overflow-hidden rounded-card', className]}
+  data-focus-offset="lg"
+  data-card-link={entry.id}
+  data-vt-cover
+>
+  <!--
+    The page transition morphs this whole link (data-vt-cover above): cover, badge and caption move as
+    one card, clipped, so the caption never shows up behind the cover and the hover zoom (scale 1.03)
+    stays inside. src/scripts/page-transition.js.
+  -->
+  <MotionCover
+    class="size-full transition-[scale] duration-(--duration-slow) ease-out group-hover:scale-103"
+    poster={heroVideo.poster}
+    alt={heroVideo.alt}
+    mp4={heroVideo.mp4}
+    webm={heroVideo.webm}
+    priority={priority}
+    active={active}
+    sizes={sizes}
+  />
+  <Badge
+    status={status}
+    class:list={['absolute top-4 right-4', !compact && 'desktop:top-6 desktop:right-6']}
+    data-card-badge
+  />
+  <div
+    class:list={[
+      'absolute inset-x-0 bottom-0 flex items-start gap-4 bg-surface-caption p-4 text-fg-on-media backdrop-blur-caption',
+      !compact && 'desktop:gap-5 desktop:px-8',
+    ]}
+    data-card-caption
+  >
+    <p class:list={['line-clamp-2 min-w-0 flex-1 text-label-2 font-medium', !compact && 'desktop:line-clamp-1']}>
+      {subtitle}
+    </p>
+    {
+      cardMeta && !compact && (
+        <p class="hidden shrink-0 text-right text-label-2 whitespace-nowrap desktop:block">{cardMeta}</p>
+      )
+    }
+  </div>
+</a>

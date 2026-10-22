@@ -1,0 +1,38 @@
+---
+/** Outcome (Figma 234:23062 desktop, 234:10028 mobile): heading, intro, and one card per result. */
+import Eyebrow from './Eyebrow.astro';
+import SectionLead from './SectionLead.astro';
+import { paragraphs, type CaseStudy } from '../../lib/content';
+
+interface Props {
+  outcome: NonNullable<CaseStudy['data']['outcome']>;
+}
+
+const { heading, intro, cards } = Astro.props.outcome;
+---
+
+<section
+  id="outcome"
+  aria-labelledby="outcome-label"
+  class="mt-8 flex scroll-mt-30 flex-col gap-8 pt-8 desktop:mx-auto desktop:mt-0 desktop:max-w-case-text desktop:gap-12 desktop:py-22"
+  data-case-section
+>
+  <div class="flex flex-col gap-6">
+    <Eyebrow id="outcome-label">Outcome</Eyebrow>
+    <SectionLead heading={heading} intro={intro} />
+  </div>
+  {
+    cards.length > 0 && (
+      <ul class="grid gap-5 desktop:grid-cols-3 desktop:gap-6">
+        {cards.map((card) => (
+          <li class="flex flex-col gap-2 rounded-tile bg-surface-raised p-6 desktop:gap-10 desktop:p-5">
+            <h4 class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{card.title}</h4>
+            {paragraphs(card.body).map((p) => (
+              <p class="text-body-3 desktop:text-body-2">{p}</p>
+            ))}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>

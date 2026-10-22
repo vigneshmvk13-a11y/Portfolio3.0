@@ -1,0 +1,59 @@
+---
+/**
+ * Top of a case study (Figma 234:18764–234:18769 desktop, 234:5723 mobile): tags, title, cover, and the
+ * Role / Timeline / Team row. Tags, title and cover are the homepage card's fields; the cover is the
+ * element the card morphs into (src/scripts/page-transition.ts).
+ */
+import MotionCover from '../media/MotionCover.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  entry: CaseStudy;
+}
+
+const { entry } = Astro.props;
+const { subtitle, cardMeta, heroVideo, role, timeline, team } = entry.data;
+const facts = [
+  { label: 'Role', lines: role ? [role] : [] },
+  { label: 'Timeline', lines: timeline ? [timeline] : [] },
+  { label: 'Team', lines: team.map((m) => (m.role ? `${m.name} (${m.role})` : m.name)), wide: true },
+].filter((fact) => fact.lines.length > 0);
+---
+
+<header class="pb-6 desktop:mx-auto desktop:max-w-case-text desktop:pb-12">
+  <div class="flex flex-col gap-2 desktop:gap-3">
+    {cardMeta && <p class="text-label-2 desktop:text-label-1 desktop:font-regular">{cardMeta}</p>}
+    <h1 class="text-h5 text-fg-primary desktop:text-h4">{subtitle}</h1>
+  </div>
+</header>
+
+<div class="aspect-card desktop:aspect-cover" id="case-cover">
+  <MotionCover
+    class="size-full rounded-card"
+    poster={heroVideo.poster}
+    alt={heroVideo.alt}
+    mp4={heroVideo.mp4}
+    webm={heroVideo.webm}
+    sizes="(min-width: 75rem) 846px, min(calc(100vw - 48px), 846px)"
+    priority
+    active
+    transitionCover
+  />
+</div>
+
+{
+  facts.length > 0 && (
+    <dl class="grid grid-cols-2 gap-x-4 gap-y-6 pt-6 pb-8 desktop:flex desktop:justify-center desktop:gap-6 desktop:py-22">
+      {facts.map((fact) => (
+        <div class:list={['flex flex-col gap-2 desktop:w-meta-col', fact.wide && 'col-span-2']}>
+          <dt class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{fact.label}</dt>
+          <dd class="text-body-3 desktop:text-label-2">
+            {fact.lines.map((line) => (
+              <span class="block">{line}</span>
+            ))}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  )
+}

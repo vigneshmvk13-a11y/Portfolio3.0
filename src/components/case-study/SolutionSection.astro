@@ -1,0 +1,54 @@
+---
+/**
+ * Solution steps (Figma 234:18806 desktop, 234:5769 mobile): heading + text in the text column,
+ * then the step's media across the case column. Media is a MotionCover, so a step can become a
+ * looping video later; posters only for now.
+ */
+import Eyebrow from './Eyebrow.astro';
+import SectionLead from './SectionLead.astro';
+import MotionCover from '../media/MotionCover.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  steps: CaseStudy['data']['solution'];
+}
+
+const { steps } = Astro.props;
+---
+
+<section
+  id="solution"
+  aria-labelledby="solution-label"
+  class="mt-8 scroll-mt-30 pt-8 desktop:mt-0 desktop:pt-22"
+  data-case-section
+>
+  <Eyebrow id="solution-label" class="desktop:mx-auto desktop:max-w-case-text">Solution</Eyebrow>
+  <div class="flex flex-col gap-8 desktop:gap-15">
+    {
+      steps.map((step, i) => (
+        <div>
+          <SectionLead
+            heading={step.heading}
+            intro={step.body}
+            class:list={[
+              'pb-8 desktop:mx-auto desktop:max-w-case-text desktop:pb-12',
+              i === 0 ? 'pt-6' : 'pt-8 desktop:pt-0',
+            ]}
+          />
+          {step.media?.image && (
+            <div class="aspect-media-sm desktop:aspect-media">
+              <MotionCover
+                class="size-full rounded-card"
+                poster={step.media.image}
+                alt={step.media.alt}
+                mp4={step.media.mp4}
+                webm={step.media.webm}
+                sizes="(min-width: 75rem) 846px, min(calc(100vw - 48px), 846px)"
+              />
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>

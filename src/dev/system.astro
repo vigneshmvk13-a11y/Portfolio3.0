@@ -17,6 +17,7 @@ import X from '../components/icons/X.astro';
 import Lock from '../components/icons/Lock.astro';
 import ArrowLeft from '../components/icons/ArrowLeft.astro';
 import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
+import HouseSimple from '../components/icons/HouseSimple.astro';
 import { getAbout, getPublishedCaseStudies } from '../lib/content';
 import { duration, ease, spring, intro, wheel } from '../lib/motion';
 
@@ -36,6 +37,7 @@ const foregrounds = [
   ['fg-primary', 'text-fg-primary'],
   ['fg-strong', 'text-fg-strong'],
   ['fg-secondary', 'text-fg-secondary'],
+  ['fg-secondary-on-fill (on surface-selected)', 'text-fg-secondary-on-fill'],
   ['fg-tertiary (non-text only)', 'text-fg-tertiary'],
 ];
 const lines = [
@@ -71,6 +73,9 @@ const spacing = [
   ['12 · 48px', 'w-12'],
   ['15 · 60px', 'w-15'],
   ['20 · 80px', 'w-20'],
+  ['22 · 88px', 'w-22'],
+  ['30 · 120px', 'w-30'],
+  ['40 · 160px', 'w-40'],
   ['gutter-mobile · 20px', 'w-gutter-mobile'],
   ['gutter-inner · 40px', 'w-gutter-inner'],
   ['gutter · 80px', 'w-gutter'],
@@ -78,13 +83,16 @@ const spacing = [
 const radii = [
   ['item · 8', 'rounded-item'],
   ['button-sm · 12', 'rounded-button-sm'],
+  ['tabs · 14', 'rounded-tabs'],
   ['media-sm · 16', 'rounded-media-sm'],
   ['button-lg · 16', 'rounded-button-lg'],
+  ['tile · 20', 'rounded-tile'],
   ['card · 24', 'rounded-card'],
   ['panel · 32', 'rounded-panel'],
+  ['section · 48', 'rounded-section'],
   ['full', 'rounded-full'],
 ];
-const icons = { User, File, ChatCircleDots, X, Lock, ArrowLeft, ArrowUpRight };
+const icons = { User, File, ChatCircleDots, X, Lock, ArrowLeft, ArrowUpRight, HouseSimple };
 const sample = studies[0];
 const section = 'flex flex-col gap-6 border-t border-line-default pt-10';
 const h2 = 'text-body-1 font-medium text-fg-strong';

@@ -1,0 +1,90 @@
+---
+/**
+ * Floating project navigation (Figma 234:23100 expanded, 234:31771 collapsed; mobile 234:10068).
+ * Previous · Home · Next, wrapping round the homepage order. Collapses to Home while scrolling down,
+ * expands on scroll up, at the page end, and when any of its links has focus (src/scripts/case-study/nav.ts).
+ * Home sits above the sliding labels. The surface blurs what scrolls under it (backdrop-blur-nav, 40px)
+ * and is surface-caption, not Figma's 70% gray/600-ish fill: white text on that is 2.8:1
+ * (design/rules.md → Accessibility).
+ */
+import HouseSimple from '../icons/HouseSimple.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  previous: CaseStudy;
+  next: CaseStudy;
+  /** Home lands the wheel on this project (no hash for the first one). */
+  homeHref: string;
+}
+
+const { previous, next, homeHref } = Astro.props;
+const pill =
+  'relative flex items-center justify-center rounded-full border border-line-default text-fg-on-media transition-[border-color] duration-(--duration-fast) ease-out hover:border-surface-raised';
+const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-medium`;
+---
+
+<nav aria-label="Projects" class="case-nav pointer-events-none fixed inset-x-0 z-20 flex justify-center" data-case-nav>
+  <div class="case-nav__bar pointer-events-auto relative flex items-center gap-1 p-1">
+    <span aria-hidden="true" class="case-nav__bg absolute inset-0 rounded-full bg-surface-caption backdrop-blur-nav"></span>
+    <a href={`/work/${previous.id}/`} rel="prev" class:list={[side, 'case-nav__prev']} data-case-nav-prev>
+      Previous<span class="sr-only">: {previous.data.tocLabel}</span>
+    </a>
+    <a href={homeHref} class:list={[pill, 'z-10 p-3']} aria-label="All projects" data-case-nav-home>
+      <HouseSimple class="size-icon-lg" />
+    </a>
+    <a href={`/work/${next.id}/`} rel="next" class:list={[side, 'case-nav__next']} data-case-nav-next>
+      Next<span class="sr-only">: {next.data.tocLabel}</span>
+    </a>
+  </div>
+</nav>
+
+<style>
+  .case-nav {
+    bottom: calc(var(--spacing) * 8 + env(safe-area-inset-bottom));
+    /*
+     * No view-transition-name here: it would make the nav a backdrop root, and the blur would see nothing
+     * behind it. page-transition.js names it (case-nav) only while the page slides, so it stays put.
+     */
+  }
+
+  /*
+   * Collapse: Previous / Next fade out first (fast), then the surface clips in to Home and they slide
+   * under it, on the CSS spring (--ease-spring, ~1.5% overshoot). Expand runs it backwards: the surface
+   * opens, then the labels fade in. Each state's transition list sets the timing for entering that state.
+   * Transforms, opacity and a clip on a small element (60fps at 4× CPU, perf-motion.mjs).
+   */
+  .case-nav__bar {
+    --nav-shift: calc(var(--spacing-nav-btn) + var(--spacing));
+  }
+  .case-nav__bg {
+    clip-path: inset(0 round var(--radius-full));
+    transition: clip-path var(--duration-spring) var(--ease-spring);
+  }
+  .case-nav__side {
+    transition:
+      translate var(--duration-spring) var(--ease-spring),
+      opacity var(--duration-base) var(--ease-out) var(--duration-fast);
+  }
+  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__bg {
+    clip-path: inset(0 var(--nav-shift) round var(--radius-full));
+    transition: clip-path var(--duration-spring) var(--ease-spring) var(--duration-fast);
+  }
+  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__side {
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      translate var(--duration-spring) var(--ease-spring) var(--duration-fast),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__prev {
+    translate: var(--nav-shift) 0;
+  }
+  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__next {
+    translate: calc(-1 * var(--nav-shift)) 0;
+  }
+
+  /* Slow device (src/scripts/quality.ts): no backdrop blur. */
+  :global(html[data-quality='lite']) .case-nav__bg {
+    backdrop-filter: none;
+  }
+</style>

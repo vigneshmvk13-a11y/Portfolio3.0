@@ -18,6 +18,18 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
 ---
 
 <Base class="home h-dvh overflow-hidden bg-surface-page">
+  <!--
+    Prerender a case study as soon as its card is hovered or pressed: the page, and its cover image, are
+    ready before the tap, so the card ⇄ cover transition has nothing to wait for. Prefetch is the fallback.
+  -->
+  <script type="speculationrules" is:inline slot="head">
+    {
+      "prerender": [{ "where": { "href_matches": "/work/*" }, "eagerness": "moderate" }],
+      "prefetch": [{ "where": { "href_matches": "/work/*" }, "eagerness": "moderate" }]
+    }
+  </script>
+  <!-- The first frame waits for the wheel to be placed (ProjectWheel.astro), so a card can morph (page-transition.js). -->
+  <link rel="expect" href="#wheel-placed" blocking="render" slot="head" />
   <script is:inline slot="head" define:vars={{ deepLinkSlugs }}>
     const root = document.documentElement;
     const deepLink = deepLinkSlugs.includes(decodeURIComponent(location.hash.slice(1)));

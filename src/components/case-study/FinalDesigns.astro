@@ -1,0 +1,41 @@
+---
+/**
+ * Final designs (Figma 234:18819 + 234:18821 desktop, 234:5782 mobile). Desktop: full-width images
+ * span the case column, consecutive halves sit side by side (24px gap). Mobile: one column, 16px apart,
+ * using each image's mobile crop when it has one.
+ */
+import Eyebrow from './Eyebrow.astro';
+import CaseImage from './CaseImage.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  images: CaseStudy['data']['finalDesigns'];
+}
+
+const { images } = Astro.props;
+/** Case column 846px; a half is (846 − 24) / 2. */
+const FULL = 846;
+const HALF = 411;
+---
+
+<section
+  id="final-designs"
+  aria-labelledby="final-designs-label"
+  class="mt-8 scroll-mt-30 desktop:mt-0 desktop:pt-22"
+  data-case-section
+>
+  <Eyebrow id="final-designs-label" class="pb-6 desktop:mx-auto desktop:max-w-case-text">Final designs</Eyebrow>
+  <div class="grid gap-4 desktop:grid-cols-2 desktop:gap-6">
+    {
+      images.map((item) => (
+        <CaseImage
+          image={item.image}
+          imageMobile={item.imageMobile}
+          alt={item.alt}
+          desktopWidth={item.layout === 'half' ? HALF : FULL}
+          class={item.layout === 'full' ? 'desktop:col-span-2' : undefined}
+        />
+      ))
+    }
+  </div>
+</section>

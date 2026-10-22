@@ -1,0 +1,66 @@
+---
+/**
+ * A case-study image (Final designs). With `imageMobile`, phones and tablets get that recomposed
+ * crop and desktop gets `image` (art direction via <picture> media sources, each with its own
+ * width/height so nothing shifts); otherwise one image everywhere. AVIF/WebP via astro:assets, lazy.
+ * design/components.md → CaseImage.
+ */
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+
+interface Props {
+  image: ImageMetadata;
+  imageMobile?: ImageMetadata;
+  alt: string;
+  /** Rendered width on desktop, px (the case column, or half of it). */
+  desktopWidth: number;
+  class?: string;
+}
+
+const { image, imageMobile, alt, desktopWidth, class: className } = Astro.props;
+
+const DESKTOP = '(min-width: 75rem)';
+/** Mobile and tablet: the viewport minus the 24px gutters, capped by the case column. */
+const MOBILE_SIZES = 'min(calc(100vw - 48px), 846px)';
+
+async function sources(src: ImageMetadata, base: number) {
+  const widths = [base, base * 2].map((w) => Math.min(w, src.width));
+  return Promise.all(
+    (['avif', 'webp'] as const).map(async (format) => {
+      const { srcSet } = await getImage({ src, format, widths: [...new Set(widths)] });
+      return { type: `image/${format}`, srcset: srcSet.attribute };
+    }),
+  );
+}
+
+const mobileSrc = imageMobile ?? image;
+const desktopSources = imageMobile ? await sources(image, desktopWidth) : [];
+const mobileSources = await sources(mobileSrc, imageMobile ? 400 : desktopWidth);
+const mobileSizes = imageMobile ? MOBILE_SIZES : `${DESKTOP} ${desktopWidth}px, ${MOBILE_SIZES}`;
+const fallback = await getImage({ src: mobileSrc, format: 'jpg', width: Math.min(800, mobileSrc.width) });
+---
+
+<picture class:list={['block', className]}>
+  {
+    desktopSources.map((s) => (
+      <source
+        media={DESKTOP}
+        type={s.type}
+        srcset={s.srcset}
+        sizes={`${desktopWidth}px`}
+        width={image.width}
+        height={image.height}
+      />
+    ))
+  }
+  {mobileSources.map((s) => <source type={s.type} srcset={s.srcset} sizes={mobileSizes} />)}
+  <img
+    src={fallback.src}
+    alt={alt}
+    width={mobileSrc.width}
+    height={mobileSrc.height}
+    loading="lazy"
+    decoding="async"
+    class="block h-auto w-full rounded-card"
+  />
+</picture>
