@@ -25,6 +25,8 @@ let id = 0; const pending = new Map(); const listeners = new Set();
 ws.addEventListener('message', ({ data }) => { const m = JSON.parse(String(data)); if (m.id && pending.has(m.id)) { const p = pending.get(m.id); pending.delete(m.id); m.error ? p.fail(new Error(m.error.message)) : p.ok(m.result); } else for (const l of listeners) l(m); });
 const send = (method, params = {}, sessionId) => new Promise((ok, fail) => { const i = ++id; pending.set(i, { ok, fail }); ws.send(JSON.stringify({ id: i, method, params, sessionId })); });
 const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
+/** The browser's own first tab (see page()). */
+const INITIAL_TAB = (await send('Target.getTargets')).targetInfos.find((t) => t.type === 'page').targetId;
 
 // Records rAF timestamps from document start (so the intro is covered) until __perf.stop().
 // Each start() bumps a generation, so a restarted recording never runs two loops at once.
@@ -38,9 +40,10 @@ const RECORDER = `window.__perf = {
 document.addEventListener('wheel:start', () => { window.__perf.motionAt ??= performance.now(); });
 window.__perf.start();`;
 
-async function page(width, height, { intro = false, reduced = false } = {}) {
+/** `initial`: drive the browser's first tab. Chrome skips view transitions in tabs created over CDP. */
+async function page(width, height, { intro = false, reduced = false, initial = false } = {}) {
   const mobile = width < 768;
-  const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
+  const { targetId } = initial ? { targetId: INITIAL_TAB } : await send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
   await send('Page.enable', {}, sessionId);
   await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: mobile ? 3 : 1, mobile }, sessionId);
@@ -62,7 +65,23 @@ async function page(width, height, { intro = false, reduced = false } = {}) {
       for (let i = 1; i <= steps; i++) { await sleep(ms / steps); await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 + ((y1 - y0) * i) / steps }] }, sessionId); }
       await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, sessionId);
     },
-    close: () => send('Target.closeTarget', { targetId }),
+    /** Click `selector` (trusted mouse input) and record frames for `ms` in the page that's showing then. */
+    async click(selector) {
+      const r = await evaluate(`(() => { const r = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; })()`);
+      for (const type of ['mouseMoved', 'mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x: r.x, y: r.y, button: 'left', clickCount: 1 }, sessionId);
+    },
+    /** Navigate by `act`, then return the new page's frames from its first one (the recorder starts at document start). */
+    async transition(act, ms) {
+      const loaded = new Promise((ok) => { const l = (m) => { if (m.sessionId === sessionId && m.method === 'Page.frameNavigated') { listeners.delete(l); ok(); } }; listeners.add(l); });
+      await act(); await loaded; await sleep(ms);
+      return evaluate('window.__perf.stop()');
+    },
+    swipeX: async (x0, x1, y, ms = 200, steps = 12) => {
+      await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y }] }, sessionId);
+      for (let i = 1; i <= steps; i++) { await sleep(ms / steps); await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 + ((x1 - x0) * i) / steps, y }] }, sessionId); }
+      await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, sessionId);
+    },
+    close: () => (initial ? Promise.resolve() : send('Target.closeTarget', { targetId })),
   };
 }
 
@@ -72,6 +91,8 @@ function report(name, frames) {
   const sorted = [...intervals].sort((a, b) => a - b);
   const frameTime = sorted[Math.floor(sorted.length / 2)] ?? 0; // median ≈ display refresh
   const missed = intervals.filter((d) => d > frameTime * 1.5).length;
+  // VERBOSE=1: where the slow frames fall (frame index, ms).
+  if (process.env.VERBOSE && missed) console.log(name, intervals.flatMap((d, i) => (d > frameTime * 1.5 ? [`#${i}: ${d.toFixed(1)}ms`] : [])).join(', '));
   const duration = frames.at(-1) - frames[0];
   rows.push({
     motion: name,
@@ -129,6 +150,31 @@ try {
   await sleep(2300);
   report('mobile: intro (spin + sheet)', await mi.eval('window.__perf.sinceMotion()'));
   await mi.close();
+
+  // Case study (design/layout-and-motion.md → Case study).
+  const c = await page(1440, 1024);
+  await c.goto('/work/smart-mapping/');
+  await sleep(600);
+  report('case desktop: nav collapse (scroll down)', await c.measure(async () => { for (let i = 0; i < 6; i++) { await c.wheel(100); await sleep(40); } }, 900));
+  report('case desktop: nav expand (scroll up)', await c.measure(() => c.wheel(-120), 900));
+  report('case desktop: tab tap (pill + smooth scroll)', await c.measure(() => c.click('[data-case-tab="outcome"]'), 1200));
+  await c.close();
+
+  const cm = await page(393, 852);
+  await cm.goto('/work/smart-mapping/');
+  await sleep(600);
+  report('case mobile: swipe follow + spring back', await cm.measure(() => cm.swipeX(300, 220, 500), 600));
+  await cm.close();
+
+  // Page transitions run only in the browser's own tab (see page()).
+  const t = await page(1440, 1024, { initial: true });
+  await t.goto('/');
+  await sleep(800);
+  report('transition: card → case-study cover', await t.transition(() => t.click('[data-wheel-card][data-offset="0"] [data-card-link]'), 700));
+  await sleep(300);
+  report('transition: Next (slide)', await t.transition(() => t.click('[data-case-nav-next]'), 700));
+  await sleep(300);
+  report('transition: Home from Fyn (cover → Fyn card)', await t.transition(() => t.click('[data-case-nav-home]'), 700));
 } finally {
   ws.close(); chrome.kill(); await rm(profile, { recursive: true, force: true }).catch(() => {});
 }
