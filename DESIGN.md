@@ -64,6 +64,9 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-22 · layout-and-motion · Sheet drag release: the settle now takes as long as the release speed needs to cover the rest of the way, from 0.25s (`sheet.flickMin`, a quick swipe) to 0.5s (`spring.sheet`, a slow drag). Why: Vignesh found a quick swipe slow to finish. 60fps at 4× CPU.
+- 2026-10-22 · components · Mobile card caption (Figma 256:6791): `p-4`, `gap-4`, meta `label-2` (was `px-8 py-4`, `gap-6`, `label-3`). Desktop unchanged.
+
 - 2026-10-22 · tokens · Handle spacing matches Figma 246:2364 again: bar → intro (open) and bar → buttons (collapsed) are both **24px** (were 32), and the open gap no longer scales with viewport height. Sheet 279 open / 125 collapsed at 852 (251 open at 660). Why: on Vignesh's iPhone 16 the open gap had scaled down to ~22px while the collapsed one stayed 32, so the handle felt inconsistent between states.
 
 - 2026-10-22 · layout-and-motion · Fix: the TOC's corners jumped at the end of a collapse. The morph drew circular corners and swapped to Figma's smoothed tab corners only at rest, and the spring's undershoot could flip it twice. The corners now blend continuously from the tab's smoothed shape to the panel's circular one (same three cubics), and the outline holds at the tab during undershoot. Why: Vignesh spotted the jerk on his phone.
