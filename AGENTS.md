@@ -66,7 +66,7 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
 /
 ├── AGENTS.md · CLAUDE.md · DESIGN.md
 ├── design/                     ← design system docs (tokens, components, layout-and-motion, rules)
-├── astro.config.mjs            ← also injects dev-only routes (/_system, /_lab/*, /keystatic)
+├── astro.config.mjs            ← also injects dev-only routes (/_system, /_lab/*, /keystatic) and gives dev its own Vite cache (node_modules/.vite-dev)
 ├── keystatic.config.ts
 ├── public/
 │   ├── fonts/                  ← General Sans woff2
