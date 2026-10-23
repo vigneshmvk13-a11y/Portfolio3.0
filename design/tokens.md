@@ -162,7 +162,7 @@ Named spacing:
 | `--duration-fast` | 150ms | `0.15` | Hover, focus |
 | `--duration-base` | 300ms | `0.3` | TOC, sheet |
 | `--duration-slow` | 500ms | `0.5` | Drawer |
-| `--ease-spring` + `--duration-spring` | `linear(…)` over 600ms | `spring.css = { visualDuration: 0.4, bounce: 0.2 }` | CSS transitions that should move like a spring: the floating nav, the card ⇄ cover transition. Motion's spring sampled into 33 `linear()` stops; 1.5% overshoot. Regenerate both together |
+| `--ease-spring` + `--duration-spring` | `linear(…)` over 600ms | `spring.css = { visualDuration: 0.4, bounce: 0.2 }` | CSS transitions that should move like a spring: the card ⇄ cover transition (the floating nav dropped it on 2026-10-23: no bounce). Motion's spring sampled into 33 `linear()` stops; 1.5% overshoot. Regenerate both together |
 
 Motion takes seconds and arrays, CSS takes ms and `cubic-bezier()`; keep both in sync by hand and test both.
 
@@ -207,7 +207,7 @@ Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Eac
 
 ### Case study (built; tune by eye)
 
-JS only (`motion.ts → caseStudy`); behaviour in `layout-and-motion.md → Case study`. In CSS: the nav collapse runs on `ease-spring` (labels fade on `duration-fast` first); the tab pill `duration-base` + `ease-out`; the card ⇄ cover morph `ease-spring`; the slide `duration-slow` + `ease-in-out`.
+JS only (`motion.ts → caseStudy`); behaviour in `layout-and-motion.md → Case study`. In CSS: the nav collapse runs on `duration-slow` + `ease-in-out`, no overshoot (labels fade on `duration-fast` first); the tab pill `duration-base` + `ease-out`; the card ⇄ cover morph `ease-spring`; the slide `duration-slow` + `ease-in-out`.
 
 | `motion.ts` | Value | Meaning |
 |---|---|---|

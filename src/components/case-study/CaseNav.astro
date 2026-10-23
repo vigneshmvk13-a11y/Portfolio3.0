@@ -25,7 +25,7 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
 
 <nav aria-label="Projects" class="case-nav pointer-events-none fixed inset-x-0 z-20 flex justify-center" data-case-nav>
   <div class="case-nav__bar pointer-events-auto relative flex items-center gap-1 p-1">
-    <span aria-hidden="true" class="case-nav__bg absolute inset-0 rounded-full bg-surface-caption backdrop-blur-nav"></span>
+    <span aria-hidden="true" class="case-nav__bg absolute inset-y-0 rounded-full bg-surface-caption backdrop-blur-nav"></span>
     <a href={`/work/${previous.id}/`} rel="prev" class:list={[side, 'case-nav__prev']} data-case-nav-prev>
       Previous<span class="sr-only">: {previous.data.tocLabel}</span>
     </a>
@@ -48,32 +48,47 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
   }
 
   /*
-   * Collapse: Previous / Next fade out first (fast), then the surface clips in to Home and they slide
-   * under it, on the CSS spring (--ease-spring, ~1.5% overshoot). Expand runs it backwards: the surface
-   * opens, then the labels fade in. Each state's transition list sets the timing for entering that state.
-   * Transforms, opacity and a clip on a small element (60fps at 4× CPU, perf-motion.mjs).
+   * Collapse: Previous / Next fade out first (fast), then the surface narrows to Home and they slide
+   * under it (duration-slow, ease-in-out: starts and ends at rest, no overshoot). Expand runs it
+   * backwards: the surface opens, then the labels fade in. Each state's transition list sets the timing
+   * for entering that state.
+   *
+   * The surface moves its own edges (left / right on an absolutely positioned span, so nothing else lays
+   * out) and keeps its real rounded corners.
+   * - Not an animated clip-path: iOS Safari draws it badly on a backdrop-filter layer.
+   * - Not ease-out: it starts at ~4.5× its average speed, so after the labels' pause the edges jumped
+   *   ~15px in the first frame (a jerk on an iPhone). ease-in-out starts from rest.
+   * - Not two translated halves (compositor-only): with a 40px blur each half sees its own end, so the
+   *   halves blurred differently and showed a seam down the middle.
+   * 60fps at 4× CPU (perf-motion.mjs).
    */
   .case-nav__bar {
     --nav-shift: calc(var(--spacing-nav-btn) + var(--spacing));
   }
   .case-nav__bg {
-    clip-path: inset(0 round var(--radius-full));
-    transition: clip-path var(--duration-spring) var(--ease-spring);
+    left: 0;
+    right: 0;
+    transition:
+      left var(--duration-slow) var(--ease-in-out),
+      right var(--duration-slow) var(--ease-in-out);
   }
   .case-nav__side {
     transition:
-      translate var(--duration-spring) var(--ease-spring),
+      translate var(--duration-slow) var(--ease-in-out),
       opacity var(--duration-base) var(--ease-out) var(--duration-fast);
   }
   [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__bg {
-    clip-path: inset(0 var(--nav-shift) round var(--radius-full));
-    transition: clip-path var(--duration-spring) var(--ease-spring) var(--duration-fast);
+    left: var(--nav-shift);
+    right: var(--nav-shift);
+    transition:
+      left var(--duration-slow) var(--ease-in-out) var(--duration-fast),
+      right var(--duration-slow) var(--ease-in-out) var(--duration-fast);
   }
   [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__side {
     opacity: 0;
     pointer-events: none;
     transition:
-      translate var(--duration-spring) var(--ease-spring) var(--duration-fast),
+      translate var(--duration-slow) var(--ease-in-out) var(--duration-fast),
       opacity var(--duration-fast) var(--ease-out);
   }
   [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__prev {
