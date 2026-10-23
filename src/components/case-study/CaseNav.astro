@@ -50,8 +50,8 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
   /*
    * Collapse: Previous / Next fade out first (fast), then the surface narrows to Home and they slide
    * under it (duration-slow, ease-in-out: starts and ends at rest, no overshoot). Expand runs it
-   * backwards: the surface opens, then the labels fade in. Each state's transition list sets the timing
-   * for entering that state.
+   * backwards: the surface opens and they slide out, and only then (after duration-slow) do they fade in,
+   * so they never show over Home. Each state's transition list sets the timing for entering that state.
    *
    * The surface moves its own edges (left / right on an absolutely positioned span, so nothing else lays
    * out) and keeps its real rounded corners.
@@ -75,7 +75,7 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
   .case-nav__side {
     transition:
       translate var(--duration-slow) var(--ease-in-out),
-      opacity var(--duration-base) var(--ease-out) var(--duration-fast);
+      opacity var(--duration-fast) var(--ease-out) var(--duration-slow);
   }
   [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__bg {
     left: var(--nav-shift);

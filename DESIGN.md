@@ -68,6 +68,7 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-23 · components · Floating nav expand: Previous / Next fade in only after the surface has opened and they've slid out from under Home (delay `duration-slow`, fade `duration-fast`). They used to start fading in 150ms into the 500ms slide, so they showed over Home. Why: Vignesh.
 - 2026-10-23 · layout-and-motion · Case-study updates from Vignesh:
   - **Spacing:** 40px to the tags (was 80); tabs stick 20px from the top (was 40); sections scroll to 100px (new spacing step 25, keeping ~30px clear of the tabs).
   - **Floating nav:** no bounce (`duration-slow` + `ease-in-out` instead of `ease-spring`). The surface now moves its own edges instead of an animated `clip-path` on the blurred layer, the likely source of the collapse artefact on his iPhone 16. `ease-in-out`, not `ease-out`: the edges start from rest (ease-out jumped ~15px in its first frame, the jerk he saw next).
