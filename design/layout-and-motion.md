@@ -255,7 +255,7 @@ Figma section `234:33903` (Data mapping): desktop `234:18762` (1440), mobile `23
 | | Mobile (base) | Desktop (`desktop:`) |
 |---|---|---|
 | Column | full width, `px-6` | `max-w-case` 846, centred; text in `max-w-case-text` 668 |
-| Top | `pt-20` (80) to the tags | `pt-20` (80) to the tags (Vignesh, 2026-10-23) |
+| Top | `pt-10` (40) to the tags | `pt-10` (40) to the tags (Vignesh, 2026-10-23; was 80) |
 | Cover | `aspect-card` | `aspect-cover` (846×556) |
 | Facts | `pt-6 pb-8`, 2 + 1 | `py-22`, three 176 columns |
 | Tabs → first section | `pb-10` (40) | `pb-10` (40) |
@@ -268,9 +268,9 @@ Tablet (768–1199, not designed): the mobile layout in the 846 column.
 ### Tabs
 
 - Built from the sections that have content; no tabs with fewer than two. Order = page order: Overview, Solution, Final designs, Outcome, Reflection.
-- Sticky 40px from the top (`top-10`, Figma `234:27448`) from where they sit until the end of Reflection; then they scroll away with it, before More projects.
+- Sticky 20px from the top (`top-5`; Vignesh, 2026-10-23, Figma `234:27448` draws 40) from where they sit until the end of Reflection; then they scroll away with it, before More projects.
 - **Active follows the scroll:** the last section whose top has passed 35% of the viewport height.
-- **Tap:** smooth-scrolls the section to 120px below the top (`scroll-mt-30`, clear of the tabs), holds that tab active until the scroll ends (`scrollend`, 1.2s fallback), and puts `#section` in the URL (`replaceState`). Reduced motion: instant scroll.
+- **Tap:** smooth-scrolls the section to 100px below the top (`scroll-mt-25`, ~30px clear of the stuck tabs), holds that tab active until the scroll ends (`scrollend`, 1.2s fallback), and puts `#section` in the URL (`replaceState`). Reduced motion: instant scroll.
 - The pill slides to the active tab (`translate` + `width`, `duration-base`, `ease-out`). Mobile: the row scrolls sideways to keep the active tab in view.
 
 ### Floating nav

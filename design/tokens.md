@@ -87,7 +87,7 @@ Case study (Figma `234:33903`), mobile → desktop: title (`<h1>`) `h5` → `h4`
 
 ## Spacing
 
-Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 22, 30, 40** (= 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80, 88, 120, 160px). 22 is the case study's section padding (Figma 89); 30 and 40 are its bottom padding above the floating nav (mobile, desktop). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
+Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 22, 25, 30, 40** (= 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80, 88, 100, 120, 160px). 22 is the case study's section padding (Figma 89); 25 is the case-study sections' scroll margin (tabs stuck at 20 + their ~50 height + ~30 clear); 30 and 40 are its bottom padding above the floating nav (mobile, desktop). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
 
 Named spacing:
 

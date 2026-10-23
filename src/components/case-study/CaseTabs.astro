@@ -2,7 +2,7 @@
 /**
  * Section tabs (Figma 234:18780 desktop, 234:5742 mobile). In-page links, not ARIA tabs: each one
  * scrolls to its section, and the active one follows the scroll (aria-current="location").
- * Sticks 40px from the top until More projects; the white pill slides between tabs.
+ * Sticks 20px from the top until More projects; the white pill slides between tabs.
  * Behaviour: src/scripts/case-study/tabs.ts, design/layout-and-motion.md → Case study.
  */
 import type { CaseSection } from '../../lib/content';
@@ -16,7 +16,7 @@ const { sections } = Astro.props;
 
 <nav
   aria-label="Sections"
-  class="case-tabs sticky top-10 z-10 flex justify-center pb-10"
+  class="case-tabs sticky top-5 z-10 flex justify-center pb-10"
   data-case-tabs
   data-no-swipe
 >

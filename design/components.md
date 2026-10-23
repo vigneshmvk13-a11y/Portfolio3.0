@@ -174,12 +174,12 @@ Figma section `234:33903` (Data mapping): desktop `234:18762`, mobile `234:5721`
 3. Cover: MotionCover, `rounded-card`, `aspect-card` on mobile (Figma 354×256, the card's ratio) and `aspect-cover` on desktop (846×556). Eager, high priority (the LCP image). Same poster as the homepage card, so the page transition morphs one image. `id="case-cover"`.
 4. Facts `<dl>`: Role, Timeline, Team ("Name (Role)" per line). Label `text-label-2 font-medium fg-primary` (desktop `text-label-1`); value `text-body-3` (desktop `text-label-2`). Mobile: Role and Timeline side by side (`gap-x-4`), Team below, `pt-6 pb-8`. Desktop: three `w-meta-col` (176) columns centred, `gap-6`, `py-22`. Empty facts are left out.
 
-Tags start 80px from the top at every width (`pt-20`; Vignesh, 2026-10-23). Desktop text sits in `max-w-case-text` (668) inside the 846 column; Figma's 89px insets are 88 (`22`).
+Tags start 40px from the top at every width (`pt-10`; Vignesh, 2026-10-23, was 80). Desktop text sits in `max-w-case-text` (668) inside the 846 column; Figma's 89px insets are 88 (`22`).
 
 ### CaseTabs
 **Figma:** `234:18780`, mobile `234:5742` · **Status:** built
 
-In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-selected rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary-on-fill` (Figma's gray/500 is 3.0:1 on the track); active `fg-primary` on a white pill with a `line-subtle` border. 40px below the tabs (`pb-10`) to the first section at every width (Vignesh, 2026-10-23). Sticky at `top-10` from the tabs to the end of Reflection. Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
+In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-selected rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary-on-fill` (Figma's gray/500 is 3.0:1 on the track); active `fg-primary` on a white pill with a `line-subtle` border. 40px below the tabs (`pb-10`) to the first section at every width (Vignesh, 2026-10-23). Sticky at `top-5` (20px; Vignesh, 2026-10-23) from the tabs to the end of Reflection; sections scroll to 100px (`scroll-mt-25`). Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
 
 States: active (`aria-current="location"`) · hover → `fg-primary` · focus ring. Without JS the active tab draws its own pill; with JS one pill slides between tabs (`translate` + `width`, `duration-base`, `ease-out`).
 

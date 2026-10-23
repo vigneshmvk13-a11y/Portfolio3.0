@@ -68,6 +68,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-23 · layout-and-motion · Case-study updates from Vignesh:
+  - **Spacing:** 40px to the tags (was 80); tabs stick 20px from the top (was 40); sections scroll to 100px (new spacing step 25, keeping ~30px clear of the tabs).
 - 2026-10-23 · layout-and-motion · Fix: opening a project, a blurred box flashed in the middle of the growing cover. It was the card's caption: captured on its own to fade out in place, it stayed where the card had been while the cover grew past it. The caption and badge are now hidden before the old page is captured. Why: Vignesh spotted it.
 - 2026-10-23 · layout-and-motion · Case-study fixes from Vignesh's review:
   - **Card ⇄ cover zoom:** no jump at the start. It had captured the card's hover zoom unclipped, and a cover still loading as an empty box. It now moves on a CSS spring, with the old image opaque under the new. Home from *any* project shrinks into that project's card: the wheel places itself from `/#slug` before the first frame. Case studies prerender on hover.

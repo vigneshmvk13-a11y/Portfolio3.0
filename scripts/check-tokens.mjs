@@ -15,7 +15,7 @@ const SRC = join(process.cwd(), 'src');
 const EXTENSIONS = new Set(['.astro', '.ts', '.tsx', '.css', '.mdx', '.md']);
 /** Token definition files may contain raw values. */
 const TOKEN_FILES = new Set(['src/styles/global.css', 'src/styles/fonts.css']);
-const ALLOWED_STEPS = new Set(['0', '0.5', '1', '2', '2.5', '3', '4', '5', '6', '8', '10', '12', '15', '20', '22', '30', '40']);
+const ALLOWED_STEPS = new Set(['0', '0.5', '1', '2', '2.5', '3', '4', '5', '6', '8', '10', '12', '15', '20', '22', '25', '30', '40']);
 
 const SPACING_PREFIX =
   '(?:-?(?:p|px|py|pt|pr|pb|pl|ps|pe|m|mx|my|mt|mr|mb|ml|ms|me|gap|gap-x|gap-y|space-x|space-y|inset|inset-x|inset-y|top|right|bottom|left|start|end|w|h|size|min-w|min-h|max-w|max-h|translate-x|translate-y|scroll-m|scroll-p|basis))';

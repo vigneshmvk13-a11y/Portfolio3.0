@@ -99,7 +99,7 @@ try {
   await d.click('[data-case-tab="outcome"]');
   await sleep(1500);
   const outcome = await d.eval(`({ top: Math.round(document.getElementById('outcome').getBoundingClientRect().top), current: document.querySelector('[aria-current="location"]').dataset.caseTab })`);
-  check('tab tap scrolls to its section', Math.abs(outcome.top - 120) <= 2, `section top ${outcome.top}px (scroll-margin 120)`);
+  check('tab tap scrolls to its section', Math.abs(outcome.top - 100) <= 2, `section top ${outcome.top}px (scroll-margin 100)`);
   check('tapped tab is current', outcome.current === 'outcome', outcome.current);
 
   await d.eval(`document.getElementById('solution').scrollIntoView()`);
