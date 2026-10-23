@@ -225,7 +225,7 @@ node scripts/screenshot.mjs <url> <outDir> [393x852 412x915 1440x1024]
 node scripts/test-wheel.mjs [baseUrl]
                 # homepage wheel interaction test (trusted input via DevTools Protocol)
 node scripts/test-case-study.mjs [baseUrl]
-                # case-study tabs, floating nav, swipe and page transitions (expand, collapse, slide)
+                # case-study tabs, floating nav, swipe and page transitions (expand, collapse, fade, slide)
 node scripts/perf-motion.mjs [baseUrl]
                 # fps + missed frames for every homepage motion; env THROTTLE=4 (CPU), HEADFUL=1 (real vsync)
                 # run against `pnpm preview`, not dev

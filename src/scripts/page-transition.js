@@ -6,7 +6,11 @@
  *
  * Types, decided by the page being left (pageswap) and handed over in sessionStorage:
  * - expand:   a project card (homepage wheel or More projects) grows into the case-study cover; the rest dissolves.
- * - collapse: the cover shrinks back into the homepage card (Home, or browser back to the homepage).
+ * - collapse: the cover shrinks back into the homepage card (Home, or browser back to the homepage), when
+ *   the cover is on screen.
+ * - fade: the same navigation from further down the page. The pages crossfade and the homepage card
+ *   settles in place (card-settle). Morphing from a cover scrolled off the top made the card fall in from
+ *   above the screen.
  * - next / prev: the page slides to the neighbouring project (Previous / Next, swipe, back/forward).
  * Only the two elements that morph get `view-transition-name: case-cover`, and only for that navigation.
  */
@@ -14,6 +18,9 @@
   if (!('onpagereveal' in window)) return;
   const KEY = 'vt-type';
   const NAME = 'case-cover';
+  const SETTLE = 'card-settle';
+  /** Share of the cover's height that must be on screen for Home to zoom back into the card. */
+  const COVER_VISIBLE = 0.5;
   const root = document.documentElement;
   const TRIGGERS = '[data-card-link], [data-case-nav-prev], [data-case-nav-next], [data-case-nav-home]';
   let clicked = null;
@@ -26,9 +33,19 @@
   // A project card is morphed whole (its link carries data-vt-cover): cover, badge and caption together.
   const cardCover = (slug) => document.querySelector(`[data-card-link="${CSS.escape(slug)}"][data-vt-cover]`);
   const pageCover = () => document.querySelector('#case-cover [data-vt-cover]');
-  const name = (el) => {
-    if (el) el.style.viewTransitionName = NAME;
+  const name = (el, value = NAME) => {
+    if (el) el.style.viewTransitionName = value;
     return el;
+  };
+  // Back to the homepage: zoom into the card only from a cover the visitor can see.
+  const homeType = () => {
+    const cover = pageCover();
+    if (!cover) return null;
+    const rect = cover.getBoundingClientRect();
+    const onScreen = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
+    if (onScreen < rect.height * COVER_VISIBLE) return 'fade';
+    name(cover);
+    return 'collapse';
   };
   // The floating nav holds still while the page slides. Named only now: a permanent name would make it
   // a backdrop root and break its blur.
@@ -76,11 +93,11 @@
     }
     else if (trigger?.matches('[data-case-nav-next]')) type = 'next';
     else if (trigger?.matches('[data-case-nav-prev]')) type = 'prev';
-    else if (trigger?.matches('[data-case-nav-home]')) type = name(pageCover()) ? 'collapse' : null;
+    else if (trigger?.matches('[data-case-nav-home]')) type = homeType();
     else if (page && target) {
       // Browser back / forward.
       const slug = slugOf(target);
-      if (pathOf(target) === '/') type = name(pageCover()) ? 'collapse' : null;
+      if (pathOf(target) === '/') type = homeType();
       else if (slug === page.dataset.next) type = 'next';
       else if (slug === page.dataset.prev) type = 'prev';
     }
@@ -98,13 +115,19 @@
     let cover = null;
     if (type === 'expand') {
       cover = name(pageCover());
-    } else if (type === 'collapse') {
+    } else if (type === 'collapse' || type === 'fade') {
       // The card the wheel rests on: ProjectWheel.astro has already placed it from the hash.
       const slug = decodeURIComponent(location.hash.slice(1));
       const card = document.querySelector(
         slug ? `[data-wheel-card][data-slug="${CSS.escape(slug)}"]` : '[data-wheel-card]',
       );
-      if (card?.getAttribute('data-offset') === '0') cover = name(cardCover(card.getAttribute('data-slug')));
+      const face = card?.getAttribute('data-offset') === '0' ? cardCover(card.getAttribute('data-slug')) : null;
+      if (type === 'collapse') cover = name(face);
+      else {
+        // Settle only a card that can show its image now; otherwise it just fades in with the page.
+        const img = face?.querySelector('img');
+        if (img?.complete && img.naturalWidth > 0) name(face, SETTLE);
+      }
     } else {
       pinNav();
     }

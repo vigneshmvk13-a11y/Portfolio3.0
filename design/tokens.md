@@ -162,6 +162,7 @@ Named spacing:
 | `--duration-fast` | 150ms | `0.15` | Hover, focus |
 | `--duration-base` | 300ms | `0.3` | TOC, sheet |
 | `--duration-slow` | 500ms | `0.5` | Drawer |
+| `--scale-settle` | 0.96 | (CSS only) | The homepage card settling in after a fade back from a case study (`layout-and-motion.md → Page transitions`) |
 | `--ease-spring` + `--duration-spring` | `linear(…)` over 600ms | `spring.css = { visualDuration: 0.4, bounce: 0.2 }` | CSS transitions that should move like a spring: the card ⇄ cover transition (the floating nav dropped it on 2026-10-23: no bounce). Motion's spring sampled into 33 `linear()` stops; 1.5% overshoot. Regenerate both together |
 
 Motion takes seconds and arrays, CSS takes ms and `cubic-bezier()`; keep both in sync by hand and test both.

@@ -175,6 +175,12 @@ try {
   report('transition: Next (slide)', await t.transition(() => t.click('[data-case-nav-next]'), 700));
   await sleep(300);
   report('transition: Home from Fyn (cover → Fyn card)', await t.transition(() => t.click('[data-case-nav-home]'), 700));
+  await sleep(300);
+  await t.goto('/work/smart-mapping/');
+  await sleep(600);
+  await t.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
+  await sleep(600);
+  report('transition: Home from the page end (fade + card settle)', await t.transition(() => t.click('[data-case-nav-home]'), 700));
 } finally {
   ws.close(); chrome.kill(); await rm(profile, { recursive: true, force: true }).catch(() => {});
 }

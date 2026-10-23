@@ -4,7 +4,7 @@
  * Drives the system Chrome over the DevTools Protocol with trusted input. No dependency.
  * Usage:  node scripts/test-case-study.mjs [baseUrl]     (run against `pnpm preview` or `pnpm dev`)
  * Checks: tabs (tap scrolls, active follows scroll), floating nav collapse/expand, swipe to the next
- * project, and which page transition each navigation gets (expand, collapse, next, prev).
+ * project, and which page transition each navigation gets (expand, collapse, fade, next, prev).
  */
 import { spawn } from 'node:child_process';
 import { mkdtemp, rm } from 'node:fs/promises';
@@ -30,6 +30,7 @@ const RECORDER = `addEventListener('pageswap', (e) => sessionStorage.setItem('__
 addEventListener('pagereveal', (e) => requestAnimationFrame(() => {
   window.__vt = { transition: Boolean(e.viewTransition), type: document.documentElement.dataset.vt ?? null,
     named: [...document.querySelectorAll('[data-vt-cover]')].filter((el) => el.style.viewTransitionName).length,
+    names: [...document.querySelectorAll('[data-vt-cover]')].map((el) => el.style.viewTransitionName).filter(Boolean).join(','),
     swap: sessionStorage.getItem('__swap') };
 }));
 sessionStorage.setItem('intro-seen', '1');`;
@@ -165,6 +166,18 @@ try {
   check('Home from Fyn → /#fyn', (await d.eval(path())) === '/#fyn', await d.eval(path()));
   check('Home from Fyn: collapse into the Fyn card', vt?.transition && vt.type === 'collapse' && vt.named === 1, JSON.stringify(vt));
   check('wheel rests on Fyn', (await d.eval(`document.querySelector('[data-wheel-card][data-offset="0"]').dataset.slug`)) === 'fyn');
+
+  // Home from the end of a case study (cover off screen) crossfades and the card settles in place:
+  // morphing from the off-screen cover made the card fall in from above the screen.
+  await d.goto('/work/smart-mapping/'); // a full case study: Fyn (NDA) is short enough to keep its cover on screen
+  await d.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
+  await sleep(600);
+  arrived = d.loaded();
+  await d.click('[data-case-nav-home]');
+  await arrived; await sleep(800);
+  vt = await d.eval('window.__vt');
+  check('Home from the page end → homepage', (await d.eval(path())) === '/', await d.eval(path()));
+  check('Home from the page end: fade, the card settles (no morph)', vt?.transition && vt.type === 'fade' && vt.names === 'card-settle', JSON.stringify(vt));
 
   // Floating nav at rest: blurred backdrop (a view-transition-name would make it a backdrop root).
   await d.goto('/work/smart-mapping/');

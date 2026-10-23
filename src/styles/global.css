@@ -29,6 +29,7 @@
   --duration-slow: 500ms;
   --duration-spring: 600ms;
   --intro-failsafe: 3s;
+  --scale-settle: 0.96; /* the homepage card settling in after a fade back from a case study */
 
   /* Wheel geometry (mirrored in src/lib/motion.ts; derivation in layout-and-motion.md) */
   --wheel-step: 38.1deg;
@@ -334,11 +335,25 @@ html[data-vt-cover-wait]::view-transition-new(case-cover) {
   animation: none;
   opacity: 0;
 }
-html:is([data-vt='expand'], [data-vt='collapse'])::view-transition-old(root) {
+html:is([data-vt='expand'], [data-vt='collapse'], [data-vt='fade'])::view-transition-old(root) {
   animation: var(--duration-base) var(--ease-out) both vt-fade-out;
 }
-html:is([data-vt='expand'], [data-vt='collapse'])::view-transition-new(root) {
+html:is([data-vt='expand'], [data-vt='collapse'], [data-vt='fade'])::view-transition-new(root) {
   animation: var(--duration-base) var(--ease-out) var(--duration-fast) both vt-fade-in;
+}
+/*
+ * fade (Home from further down a case study, where the cover is off screen): the pages crossfade and the
+ * card the wheel rests on settles in place, scaling up from --scale-settle in step with the new page. It
+ * has no old counterpart, so its group stays put: nothing flies in from where the cover was.
+ */
+html[data-vt='fade']::view-transition-new(card-settle) {
+  animation: var(--duration-base) var(--ease-out) var(--duration-fast) both vt-settle-in;
+}
+@keyframes vt-settle-in {
+  from {
+    opacity: 0;
+    scale: var(--scale-settle);
+  }
 }
 @keyframes vt-cover-in {
   0%,
