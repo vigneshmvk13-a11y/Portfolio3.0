@@ -179,6 +179,18 @@ try {
   check('Home from the page end → homepage', (await d.eval(path())) === '/', await d.eval(path()));
   check('Home from the page end: fade, the card settles (no morph)', vt?.transition && vt.type === 'fade' && vt.names === 'card-settle', JSON.stringify(vt));
 
+  // Prime compass's System image links to Nova: a fade, not the slide to the previous project it would
+  // otherwise get (Nova is Prime compass's neighbour), and nothing morphs (it isn't Nova's cover).
+  await d.goto('/work/prime-compass/');
+  await d.eval(`document.querySelector('[data-system-link]').scrollIntoView({ block: 'center' })`);
+  await sleep(600);
+  arrived = d.loaded();
+  await d.click('[data-system-link]');
+  await arrived; await sleep(800);
+  vt = await d.eval('window.__vt');
+  check('System image → Nova case study', (await d.eval(path())) === '/work/nova/', await d.eval(path()));
+  check('System image: fade, nothing morphs', vt?.transition && vt.type === 'fade' && vt.named === 0, JSON.stringify(vt));
+
   // Floating nav at rest: blurred backdrop (a view-transition-name would make it a backdrop root).
   await d.goto('/work/smart-mapping/');
   const navStyle = await d.eval(`(() => { const nav = document.querySelector('[data-case-nav]'); return { name: getComputedStyle(nav).viewTransitionName, blur: getComputedStyle(nav.querySelector('.case-nav__bg')).backdropFilter }; })()`);

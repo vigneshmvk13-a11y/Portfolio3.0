@@ -10,3 +10,27 @@ seoDescription: >-
 heroVideo:
   poster: ../../assets/covers/fyn/heroVideo/poster.png
   alt: Soft pastel gradient fading from grey-blue to peach
+context:
+  blocks:
+    - heading: One platform. Every business banking need.
+      body: >-
+        Kotak FYN is a unified digital enterprise banking platform that enables businesses to manage trade, payments,
+        account services, collections, and other banking needs through a seamless, paperless experience.
+
+
+        With over 1 million users across India, FYN supports critical business-banking journeys at scale.
+    - heading: Leading the mobile banking experience
+      body: >-
+        I lead the mobile experience and product design, working across key banking journeys to make complex financial
+        workflows intuitive, efficient, and accessible.
+    - heading: Across core business banking journeys
+      items:
+        - Trade
+        - Payments
+        - Accounts
+        - Loans
+        - Deposits
+    - heading: Confidentiality
+      body: >-
+        This project is protected under a non-disclosure agreement (NDA). Detailed screens, workflows, and design
+        decisions are available for discussion during a private portfolio walkthrough.

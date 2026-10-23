@@ -2,7 +2,7 @@ title: Nova Design system
 subtitle: Building an Enterprise Design System for Design-to-Code
 tocLabel: Nova Design system
 cardMeta: Design system • B2B
-status: placeholder
+status: live
 order: 3
 draft: false
 seoDescription: >-
@@ -10,3 +10,90 @@ seoDescription: >-
 heroVideo:
   poster: ../../assets/covers/nova/heroVideo/poster.png
   alt: Nova design system file showing colour primitives and semantic colour tokens, over a blurred sunset sea
+role: Founding Product Designer
+timeline: 1 month
+team:
+  - name: Arun Antony
+    role: Co-founder & COO
+  - name: Shine Xavier
+    role: Co-founder & CEO
+  - name: Sivakumar OK
+    role: Architect & Engineering head
+  - name: Jacob Nelson
+    role: Engineer
+overview:
+  heading: A growing platform needed a shared visual language
+  intro: >-
+    As Prime Compass expanded across discovery, drift analysis, comparison, and configuration, inconsistent patterns
+    made the product harder to maintain and extend.
+
+
+    I built Nova, a token-driven design system that aligned brand expression with behavioral intelligence and created
+    a consistent foundation for design and engineering.
+  challengeLabel: The challenge
+  challenge:
+    - Reduce visual inconsistencies across product modules.
+    - Create reusable foundations for new features and products.
+    - Keep semantic meaning consistent across complex states and data visualizations.
+    - Make design decisions easier to translate into implementation.
+solution:
+  - heading: Creating a three-tier token architecture
+    body: >-
+      I separated raw visual values from semantic roles and component-specific tokens, so teams could update the
+      system at the right layer without rebuilding every interface.
+    media:
+      image: ../../assets/case-studies/nova/solution/0/media/image.png
+      alt: >-
+        Figma variables panel for Nova: primitive, semantic and component collections, open on the grey colour scale
+  - heading: Making the system usable by AI-assisted coding workflows
+    body: >-
+      I structured the design system into modular Markdown files, separating components, design tokens, rules,
+      screens, and references. Files like product.md and data.md provided additional context, giving Cursor/Claude a
+      structured source of truth to reference when generating and modifying UI directly in code.
+    media:
+      image: ../../assets/case-studies/nova/solution/1/media/image.png
+      alt: >-
+        Code editor with the design system as Markdown files, open on the AI insight card's component spec
+  - heading: Connecting design decisions to implementation
+    body: >-
+      I exported design tokens from Figma, versioned them through GitHub, and structured the outputs for platform use.
+      This helped keep design and engineering aligned across environments.
+    media:
+      image: ../../assets/case-studies/nova/solution/2/media/image.png
+      alt: >-
+        The Nova design system file in Figma, open on the Buttons page with every size and state
+finalDesigns:
+  - image: ../../assets/case-studies/nova/finalDesigns/0/image.png
+    alt: >-
+      Nova components together: a button group, metric cards, a baseline picker, an alert card, a tooltip and a Label
+      your application dialog
+    layout: full
+  - image: ../../assets/case-studies/nova/finalDesigns/1/image.png
+    alt: A large primary button and a toggle in Nova's burnt orange
+    layout: half
+  - image: ../../assets/case-studies/nova/finalDesigns/2/image.png
+    alt: Radio buttons and checkboxes in their default, hover, focus and disabled states
+    layout: half
+  - image: ../../assets/case-studies/nova/finalDesigns/3/image.png
+    alt: >-
+      A discovery runs table with status badges, Compare and Run Discovery buttons, a Modules metric card and status
+      tags
+    layout: full
+outcome:
+  heading: A system designed to scale across products and workflows
+  cards:
+    - title: More consistent interfaces
+      body: Shared foundations and semantic rules reduced one-off styling decisions.
+    - title: Cross-platform readiness
+      body: Token outputs were organized to support platform-specific implementation.
+    - title: AI-ready design context
+      body: Structured documentation gave Cursor a clearer reference for applying design decisions in code.
+reflection:
+  heading: A design system should be usable by more than designers
+  body: >-
+    Nova extended beyond visual consistency. By structuring tokens and documenting how they should be used, I made the
+    system easier to maintain, implement, and reference in AI-assisted coding workflows.
+
+
+    The next step would be to strengthen the feedback loop between token changes, generated code, and implemented UI,
+    so the system remains reliable as the product and its tooling evolve.

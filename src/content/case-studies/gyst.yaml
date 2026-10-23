@@ -10,3 +10,16 @@ seoDescription: >-
 heroVideo:
   poster: ../../assets/covers/gyst/heroVideo/poster.png
   alt: "GYST reminder card reading Dentist, arrive by 9:00am, Indiranagar, 10:00 AM, over a blurred green hill and blue sky"
+context:
+  blocks:
+    - heading: Turning personal time patterns into smarter, more trustworthy planning.
+      body: >-
+        A productivity app that learns how long things actually take you and tells you when to start. GYST turns the
+        gap between estimated and actual time into more reliable planning, with transparent predictions that never
+        pretend to know more than they do.
+  facts:
+    - label: Role
+      value: Sole Designer & Developer
+    - label: Status
+      value: Work in progress
+  note: Exploring how personal data and honest predictions can make everyday planning more reliable.
