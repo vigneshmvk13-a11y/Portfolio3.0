@@ -305,7 +305,7 @@
  * expand / collapse: the whole project card (cover, badge, caption) and the case-study cover are one
  * image at two sizes and ratios. It moves on the CSS spring. The old snapshot stays opaque throughout (no
  * see-through midpoint) and the new one fades in over it:
- * - expand: early (within duration-base), so the card's caption and badge dissolve before they grow;
+ * - expand: early (within duration-base); the card's caption and badge are left out of its snapshot;
  * - collapse: in the second half, so the caption and badge arrive in place as the card lands, on top.
  * If the new image isn't loaded yet (data-vt-cover-wait), the old snapshot carries the whole morph.
  * The rest of the page dissolves quickly underneath.
@@ -329,11 +329,6 @@
 }
 html[data-vt='expand']::view-transition-new(case-cover) {
   animation: var(--duration-base) var(--ease-out) both vt-fade-in;
-}
-/* expand: the card's caption and badge are captured on their own and fade out where they are. */
-::view-transition-old(card-caption),
-::view-transition-old(card-badge) {
-  animation: var(--duration-fast) var(--ease-out) both vt-fade-out;
 }
 html[data-vt-cover-wait]::view-transition-new(case-cover) {
   animation: none;

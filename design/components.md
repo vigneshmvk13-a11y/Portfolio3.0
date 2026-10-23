@@ -75,7 +75,7 @@ Gaps: name↔subline `gap-1` mobile / `gap-2` desktop; text↔affiliations `gap-
 ### ProjectCard
 **Figma:** component set `228:4583` (desktop variants 553×400, mobile 362×262), e.g. `228:4582` · **Status:** built
 
-A link to `/work/[slug]` for every status (`rules.md → Content states`). `rounded-card overflow-hidden aspect-card`. The face (link, cover, badge, caption) is `ProjectCardLink`, shared with the case-study More projects grid; its `compact` variant is title-only at every width with the badge 16px in. The page transition morphs the whole link (`data-vt-cover`): cover, badge and caption as one clipped card, so the hover zoom (1.03) stays inside and the caption never shows up behind the cover on the way back. Opening a project, the caption (`data-card-caption`) and badge (`data-card-badge`) are captured on their own and fade out in place instead of growing with the card.
+A link to `/work/[slug]` for every status (`rules.md → Content states`). `rounded-card overflow-hidden aspect-card`. The face (link, cover, badge, caption) is `ProjectCardLink`, shared with the case-study More projects grid; its `compact` variant is title-only at every width with the badge 16px in. The page transition morphs the whole link (`data-vt-cover`): cover, badge and caption as one clipped card, so the hover zoom (1.03) stays inside and the caption never shows up behind the cover on the way back. Opening a project, the caption (`data-card-caption`) and badge (`data-card-badge`) are hidden before the old page is captured, so they neither grow with the card nor float over the growing cover.
 
 1. **MotionCover** fills the card (`object-cover`). The small white square in the Smart Mapping cover is part of the cover image, not UI.
 2. **Badge** (by `status`) top-right.

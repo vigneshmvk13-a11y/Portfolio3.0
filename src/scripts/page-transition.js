@@ -32,15 +32,17 @@
   };
   // The floating nav holds still while the page slides. Named only now: a permanent name would make it
   // a backdrop root and break its blur.
-  // Opening a project: the card's caption and badge leave the card's snapshot (their own names) and fade
-  // out in place, so they don't grow with the card or ride on it when the morph has to carry the old image.
-  const detachLabels = (card) => {
-    card.querySelector('[data-card-caption]')?.style.setProperty('view-transition-name', 'card-caption');
-    card.querySelector('[data-card-badge]')?.style.setProperty('view-transition-name', 'card-badge');
+  // Opening a project: the card's caption and badge are hidden before the old page is captured, so only the
+  // image grows. Captured on their own, they stayed where the card was (nothing on the new page matches
+  // them) and their frosted bar floated over the growing cover; inside the card snapshot they'd grow with it.
+  const LABELS = '[data-card-caption], [data-card-badge]';
+  const hideLabels = (card) => {
+    for (const el of card.querySelectorAll(LABELS)) el.style.visibility = 'hidden';
   };
-  const NAMED = '[data-vt-cover], [data-case-nav], [data-card-caption], [data-card-badge]';
+  const NAMED = '[data-vt-cover], [data-case-nav]';
   const clearNames = () => {
     for (const el of document.querySelectorAll(NAMED)) el.style.viewTransitionName = '';
+    for (const el of document.querySelectorAll(LABELS)) el.style.visibility = '';
   };
   const pinNav = () => {
     const nav = document.querySelector('[data-case-nav]');
@@ -70,7 +72,7 @@
     if (intent === 'next' || intent === 'prev') type = intent;
     else if (trigger?.matches('[data-card-link]')) {
       type = name(trigger) ? 'expand' : null;
-      detachLabels(trigger);
+      hideLabels(trigger);
     }
     else if (trigger?.matches('[data-case-nav-next]')) type = 'next';
     else if (trigger?.matches('[data-case-nav-prev]')) type = 'prev';
