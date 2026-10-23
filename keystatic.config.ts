@@ -100,6 +100,37 @@ export default config({
         }),
 
         // Sections, in page order. Each one (and its tab) appears only when it has content.
+        context: fields.object(
+          {
+            blocks: fields.array(
+              fields.object({
+                heading: fields.text({ label: 'Heading' }),
+                body: fields.text({ label: 'Text', multiline: true, description: 'A blank line starts a new paragraph' }),
+                items: fields.array(fields.text({ label: 'Item' }), {
+                  label: 'Bullet list (optional)',
+                  itemLabel: (props) => props.value,
+                }),
+              }),
+              { label: 'Blocks', itemLabel: (props) => props.fields.heading.value || 'Block' },
+            ),
+            facts: fields.array(
+              fields.object({
+                label: fields.text({ label: 'Label', validation: { isRequired: true } }),
+                value: fields.text({ label: 'Value', validation: { isRequired: true } }),
+              }),
+              {
+                label: 'Facts',
+                description: 'Lines after the text, shown as "Label: value", e.g. Role: Sole Designer & Developer',
+                itemLabel: (props) => props.fields.label.value,
+              },
+            ),
+            note: fields.text({ label: 'Note', description: 'Small text at the end' }),
+          },
+          {
+            label: 'Context',
+            description: 'For case studies without the full sections (NDA, personal projects): heading and text blocks',
+          },
+        ),
         overview: fields.object(
           {
             heading: fields.text({ label: 'Heading' }),
@@ -133,6 +164,34 @@ export default config({
             ),
           }),
           { label: 'Solution', description: 'One step per decision', itemLabel: (props) => props.fields.heading.value },
+        ),
+        system: fields.object(
+          {
+            heading: fields.text({ label: 'Heading' }),
+            intro: fields.text({ label: 'Intro', multiline: true }),
+            image: fields.image({
+              label: 'Image',
+              directory: 'src/assets/case-studies',
+              publicPath: '../../assets/case-studies/',
+            }),
+            alt: fields.text({
+              label: 'Alt text',
+              description: 'Describe the content, not the file. Used when the image has no link.',
+            }),
+            link: fields.relationship({
+              label: 'Links to',
+              description: 'The case study the image opens, e.g. the design system case study',
+              collection: 'caseStudies',
+            }),
+            cards: fields.array(
+              fields.object({
+                title: fields.text({ label: 'Title', validation: { isRequired: true } }),
+                body: fields.text({ label: 'Text', multiline: true }),
+              }),
+              { label: 'Cards', itemLabel: (props) => props.fields.title.value },
+            ),
+          },
+          { label: 'System', description: 'Design system: image (optionally a link to another case study) and cards' },
         ),
         finalDesigns: fields.array(
           fields.object({

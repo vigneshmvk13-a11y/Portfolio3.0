@@ -1,0 +1,78 @@
+---
+/**
+ * System (Figma 279:6704, Prime compass): heading + intro in the text column, then the image and the cards
+ * across the case column (image 521 wide, cards stacked beside it; stacked under it below desktop, which
+ * Figma doesn't draw). On desktop the cards share the image's height, as drawn, whatever their text wraps to.
+ * With a `link`, the whole image opens that case study: the arrow button is its cue,
+ * the hover zoom matches the project cards, and the page fades across (page-transition.js, data-system-link).
+ */
+import Eyebrow from './Eyebrow.astro';
+import SectionLead from './SectionLead.astro';
+import CaseImage from './CaseImage.astro';
+import ArrowUpRight from '../icons/ArrowUpRight.astro';
+import { paragraphs, type CaseStudy } from '../../lib/content';
+
+interface Props {
+  system: NonNullable<CaseStudy['data']['system']>;
+  /** The published case study the image links to, if any. */
+  target?: CaseStudy;
+}
+
+const { system, target } = Astro.props;
+const { heading, intro, image, alt, cards } = system;
+---
+
+<section
+  id="system"
+  aria-labelledby="system-label"
+  class="mt-8 flex scroll-mt-25 flex-col gap-8 pt-8 desktop:mt-0 desktop:gap-12 desktop:py-22"
+  data-case-section
+>
+  <div class="flex flex-col gap-6 desktop:mx-auto desktop:w-full desktop:max-w-case-text">
+    <Eyebrow id="system-label">System</Eyebrow>
+    <SectionLead heading={heading} intro={intro} />
+  </div>
+  {
+    (image || cards.length > 0) && (
+      <div class="flex flex-col gap-5 desktop:flex-row">
+        {image &&
+          (target ? (
+            <a
+              href={`/work/${target.id}/`}
+              class="group relative block overflow-hidden rounded-card desktop:w-system-media desktop:shrink-0"
+              data-focus-offset="lg"
+              data-system-link
+            >
+              <CaseImage
+                image={image}
+                alt=""
+                desktopWidth={521}
+                class="transition-[scale] duration-(--duration-slow) ease-out group-hover:scale-103"
+              />
+              <span
+                aria-hidden="true"
+                class="absolute top-4 right-4 flex items-center justify-center rounded-full border border-line-default p-3 text-fg-on-media transition-[border-color] duration-(--duration-fast) ease-out group-hover:border-surface-raised"
+              >
+                <ArrowUpRight class="size-icon-lg" />
+              </span>
+              <span class="sr-only">{target.data.tocLabel} case study</span>
+            </a>
+          ) : (
+            <CaseImage image={image} alt={alt} desktopWidth={521} class="desktop:w-system-media desktop:shrink-0" />
+          ))}
+        {cards.length > 0 && (
+          <ul class="flex flex-col gap-5 desktop:flex-1">
+            {cards.map((card) => (
+              <li class="flex flex-col gap-2 rounded-tile bg-surface-raised p-6 desktop:flex-1 desktop:gap-10 desktop:p-5">
+                <h4 class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{card.title}</h4>
+                {paragraphs(card.body).map((p) => (
+                  <p class="text-body-3 desktop:text-body-2">{p}</p>
+                ))}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    )
+  }
+</section>

@@ -112,6 +112,7 @@ Named spacing:
 | `--aspect-media` / `--aspect-media-sm` | 846 / 476 · 354 / 219 | Solution step media, desktop / mobile |
 | `--spacing-meta-col` | 176px | Desktop Role / Timeline / Team columns |
 | `--spacing-nav-btn` | 97px | Previous / Next in the floating case-study nav |
+| `--spacing-system-media` | 521px | The System section image on desktop (Figma 279:6711); the cards take the rest of the 846 column |
 | `--spacing-icon-lg` | 22px | Home icon in the floating nav |
 | `--spacing-card-w` / `--spacing-card-h` | 553px / 400px | Active desktop card (Figma size) |
 | `--aspect-card` | 553 / 400 | Every card. Mobile Figma (352×254.4) is the same ratio, so one token |

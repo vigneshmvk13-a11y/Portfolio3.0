@@ -159,12 +159,12 @@ Role (`text-label-3 font-medium text-fg-strong`, flex 1) · years (`text-label-2
 
 ## Case study
 
-Figma section `234:33903` (Data mapping): desktop `234:18762`, mobile `234:5721`, on-scroll frames `234:27448` / `234:14425`. Page layout and behaviour: `layout-and-motion.md → Case study`. Every component reads the `caseStudies` entry (`AGENTS.md → Content model`); nothing is hardcoded but the section names.
+Figma section `234:33903` (Data mapping): desktop `234:18762`, mobile `234:5721`, on-scroll frames `234:27448` / `234:14425`. The other four case studies (section `279:8667`, desktop only) use the same components, plus Context (Fyn, Gyst) and System (Prime compass). Page layout and behaviour: `layout-and-motion.md → Case study`. Every component reads the `caseStudies` entry (`AGENTS.md → Content model`); nothing is hardcoded but the section names.
 
 ### CaseStudy (layout)
 **Figma:** `234:18762`, `234:5721` · **Status:** built
 
-`src/layouts/CaseStudy.astro`. CaseHero → CaseTabs (two or more sections) → the filled sections in page order → MoreProjects, with CaseNav fixed on top. Column `max-w-case` (846) centred; mobile `px-6` (24px, Figma's mobile gutter). Without sections (NDA, placeholder, coming soon) a status line replaces the tabs: `nda` gets Figma's NDA copy (`206:18486`) and the Contact button; the others "This case study is being written." Browser tab title is `tocLabel`.
+`src/layouts/CaseStudy.astro`. CaseHero → CaseTabs (two or more sections) → the filled sections in page order → MoreProjects, with CaseNav fixed on top. Column `max-w-case` (846) centred; mobile `px-6` (24px, Figma's mobile gutter). Without sections a status line replaces the tabs: `nda` gets Figma's NDA copy (`206:18486`) and the Contact button; the others "This case study is being written." Fyn (NDA) and Gyst now have a Context section, so neither shows a status line (and Fyn has no Contact button, as drawn in `279:7507`). Browser tab title is `tocLabel`.
 
 ### CaseHero
 **Figma:** `234:18764`–`234:18769`, mobile `234:5723` · **Status:** built
@@ -193,6 +193,11 @@ The section name ("OVERVIEW") as the section's `<h2>`, so the outline is Section
 
 Heading (`<h3>`, `text-h6`, desktop `text-h5`, `fg-primary`) and intro paragraphs (`text-body-3`, desktop `text-body-2`), `gap-4` (desktop `gap-3`). Used by Overview, Outcome and each Solution step.
 
+### ContextSection
+**Figma:** `279:7530` (Fyn), `279:7574` (Gyst) · **Status:** built
+
+For case studies without the full sections. No card: the text column (`max-w-case-text`), `pt-8` (desktop `pt-22`, Figma's 89 under the cover). Eyebrow, then blocks `gap-8` (desktop `gap-10`, Figma's 40): each a SectionLead plus an optional bullet list (Overview's `list-disc` style). `facts` render right under the last block as "**Label:** value" lines (`<dl>`, label `font-medium fg-primary`); `note` closes it in `text-body-4`. Heading → text uses SectionLead's gap (12 on desktop; Figma draws 20 here, as in other sections the template already sets at 12).
+
 ### OverviewSection
 **Figma:** `234:18793`, mobile `234:5756` · **Status:** built
 
@@ -202,6 +207,13 @@ White card: `bg-surface-raised rounded-panel px-6 py-8`, desktop `rounded-sectio
 **Figma:** `234:18806`, mobile `234:5769` · **Status:** built
 
 Eyebrow, then one step per entry: SectionLead in the text column, then the step's media full width in a MotionCover (`rounded-card`, `aspect-media-sm` on mobile, `aspect-media` 846×476 on desktop). Steps `gap-8` (desktop `gap-15`). A step can carry MP4/WebM later; the most-visible-cover rule keeps one video playing.
+
+### SystemSection
+**Figma:** `279:6704` (Prime compass) · **Status:** built
+
+Eyebrow + SectionLead in the text column, then the image and cards across the case column, `gap-8` (desktop `gap-12`, as Outcome). Desktop: image `w-system-media` (521) with the cards stacked beside it (`gap-5`), sharing the image's height (`flex-1`) as drawn. Below desktop (not designed): the image full width, cards stacked under it. Cards are Outcome's (`rounded-tile bg-surface-raised`, `p-6 gap-2`, desktop `p-5 gap-10`, `<h4>` titles). The image is a CaseImage (`rounded-card`, natural ratio 521×566).
+
+With `link` (a published case study), the whole image is one link to it (`data-system-link`): accessible name "{tocLabel} case study" (the image's alt is empty inside the link; `alt` is used when there's no link). Its cue is Figma's arrow button, rebuilt as the floating nav's Home pill (`border-line-default`, `p-3`, `icon-lg` ArrowUpRight, white), 16px in from the top right (Figma's 14 / 18 on our grid). Hover: the image zooms to 1.03 like the project cards and the pill's border turns white. The page fades across to the linked case study (`layout-and-motion.md → Page transitions`). The exported image has Figma's baked arrow painted out.
 
 ### FinalDesigns · CaseImage
 **Figma:** `234:18819` + `234:18821`, mobile `234:5782` · **Status:** built

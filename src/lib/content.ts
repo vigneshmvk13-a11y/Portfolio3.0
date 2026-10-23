@@ -35,8 +35,10 @@ export type CaseSection = { id: string; label: string };
 /** Case-study sections that have content, in page order. They drive the tabs and the section anchors. */
 export function sectionsOf({ data }: CaseStudy): CaseSection[] {
   const sections: (CaseSection & { filled: boolean })[] = [
+    { id: 'context', label: 'Context', filled: Boolean(data.context?.blocks.length) },
     { id: 'overview', label: 'Overview', filled: Boolean(data.overview?.heading || data.overview?.intro) },
     { id: 'solution', label: 'Solution', filled: data.solution.length > 0 },
+    { id: 'system', label: 'System', filled: Boolean(data.system?.heading || data.system?.image) },
     { id: 'final-designs', label: 'Final designs', filled: data.finalDesigns.length > 0 },
     { id: 'outcome', label: 'Outcome', filled: Boolean(data.outcome?.heading || data.outcome?.cards.length) },
     { id: 'reflection', label: 'Reflection', filled: Boolean(data.reflection?.heading || data.reflection?.body) },

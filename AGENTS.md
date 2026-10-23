@@ -101,7 +101,7 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
     │   ├── about/              ← AboutDrawer, TimelineRow, Gallery
     │   ├── media/              ← MotionCover (video + poster + reduced motion)
     │   ├── summary/            ← LensSummary (recruiter / designer / curious)
-    │   └── case-study/         ← CaseHero, CaseTabs, Eyebrow, SectionLead, Overview/Solution/Outcome/ReflectionSection,
+    │   └── case-study/         ← CaseHero, CaseTabs, Eyebrow, SectionLead, Context/Overview/Solution/System/Outcome/ReflectionSection,
     │                             FinalDesigns, CaseImage, MoreProjects, CaseNav
     ├── dev/                    ← system.astro, lab-*.astro (routes injected in dev only)
     ├── layouts/
@@ -140,8 +140,10 @@ Astro ignores page files that start with `_`, so dev-only pages live in `src/dev
 | `role`, `timeline` | text | Case-study facts row |
 | `team` | array of `{ name, role? }` | Facts row, "Name (Role)" |
 | `tools` | array of text | Not shown yet |
+| `context` | object | `blocks` (`{ heading, body, items[] }`, items a bullet list), `facts` (`{ label, value }`, "Role: …"), `note` (small closing text). For case studies without the full sections (Fyn, Gyst) |
 | `overview` | object | `heading`, `intro`, `challengeLabel` ("The challenge"), `challenge` (bullets), `insightLabel` ("The key insight"), `insight` |
 | `solution` | array of steps | `heading`, `body`, `media { image, alt, mp4?, webm? }` |
+| `system` | object | `heading`, `intro`, `image`, `alt`, `link` (relationship to another case study; the whole image links to it), `cards` (`{ title, body }`). Prime compass |
 | `finalDesigns` | array | `image`, `imageMobile?` (recomposed phone crop), `alt`, `layout` (`full` · `half`) |
 | `outcome` | object | `heading`, `intro`, `cards` (`{ title, body }`). Title and text only, no metrics (Vignesh, 2026-10-22) |
 | `reflection` | object | `heading`, `body` |

@@ -1,0 +1,52 @@
+---
+/**
+ * Context (Figma 279:7530 Fyn, 279:7574 Gyst): for case studies without the full sections. Heading + text
+ * blocks (a block can carry a bullet list), then "Label: value" facts right under the last block, then a
+ * small note. No mobile frames: the text column at full width, as the other sections.
+ */
+import Eyebrow from './Eyebrow.astro';
+import SectionLead from './SectionLead.astro';
+import type { CaseStudy } from '../../lib/content';
+
+interface Props {
+  context: NonNullable<CaseStudy['data']['context']>;
+}
+
+const { blocks, facts, note } = Astro.props.context;
+const body = 'text-body-3 desktop:text-body-2';
+---
+
+<section
+  id="context"
+  aria-labelledby="context-label"
+  class="flex scroll-mt-25 flex-col gap-6 pt-8 desktop:mx-auto desktop:max-w-case-text desktop:pt-22"
+  data-case-section
+>
+  <Eyebrow id="context-label">Context</Eyebrow>
+  <div class="flex flex-col gap-8 desktop:gap-10">
+    {
+      blocks.map((block, i) => (
+        <div class="flex flex-col gap-4 desktop:gap-3">
+          <SectionLead heading={block.heading} intro={block.body} />
+          {block.items.length > 0 && (
+            <ul class:list={['list-disc pl-5 desktop:pl-6', body]}>
+              {block.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          )}
+          {i === blocks.length - 1 && facts.length > 0 && (
+            <dl class={body}>
+              {facts.map((fact) => (
+                <div>
+                  <dt class="inline font-medium text-fg-primary">{fact.label}:</dt> <dd class="inline">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      ))
+    }
+    {note && <p class="text-body-4">{note}</p>}
+  </div>
+</section>

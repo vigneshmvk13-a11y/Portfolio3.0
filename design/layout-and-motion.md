@@ -248,7 +248,7 @@ History: it used to follow direction (2026-10-20), then re-expand 0.25s after ev
 
 ## Case study (`/work/[slug]`)
 
-Figma section `234:33903` (Data mapping): desktop `234:18762` (1440), mobile `234:5721` (402; built at 393 and checked at 360 and 412). Components: `components.md → Case study`.
+Figma section `234:33903` (Data mapping): desktop `234:18762` (1440), mobile `234:5721` (402; built at 393 and checked at 360 and 412). The other four (section `279:8667`) are desktop only and follow the same layout; their two new sections, Context and System, use the template's mobile rules. Components: `components.md → Case study`.
 
 ### Layout
 
@@ -301,6 +301,8 @@ The page being left picks the type (`pageswap`) from what was tapped (Safari doe
 | `next` / `prev` | Previous / Next, swipe, back/forward between neighbours | The pages slide like a carousel (old out, new in, full width); the nav (`case-nav`) stays put |
 
 **Card ⇄ cover** (expand, collapse) moves on the CSS spring (`ease-spring`, 0.6s). The outgoing image stays fully opaque for the whole morph (no see-through midpoint); the incoming one fades in over it in the second half. If its image hasn't loaded yet (`html[data-vt-cover-wait]`), it never does: the outgoing image carries the whole morph and the page takes over at the end. The rest of each page fades (`duration-base`; the new page starts `duration-fast` later). On the homepage the whole card link morphs (cover, badge, caption, clipped; the hover zoom stays inside). Going back, the card snapshot (with its caption and badge) fades in over the shrinking cover in the second half, so they arrive in place on top. Opening a project, the caption and badge are hidden in `pageswap`, before the old page is captured, so only the image grows, even when the new cover isn't loaded and the old snapshot carries the morph. (Captured on their own names they stayed where the card was, since nothing on the new page matches them, and the frosted caption bar floated over the growing cover.) Every `pagereveal` first clears names and hidden labels left from leaving the page (bfcache).
+
+**The System image's link** (Prime compass → Nova) is a `fade` too: plain page dissolve, nothing morphs (the image isn't Nova's cover). Without its own trigger it would have slid, since Nova is Prime compass's previous project.
 
 **Home from further down a case study** (Home or browser back, with less than half the cover on screen) doesn't morph: the cover is off screen, and morphing from there made the card fall in from above (Vignesh, 2026-10-24). It's a `fade`: the pages dissolve as in expand / collapse, and the card the wheel rests on settles in place (`card-settle`, no old counterpart, so it doesn't travel), from `--scale-settle` (0.96) and transparent to full, `duration-base` + `ease-out`, in step with the new page. If the card's image isn't ready it just fades in with the page. A short page (Fyn, NDA) keeps its cover on screen at the end and still zooms.
 

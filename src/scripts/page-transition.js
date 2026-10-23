@@ -10,7 +10,8 @@
  *   the cover is on screen.
  * - fade: the same navigation from further down the page. The pages crossfade and the homepage card
  *   settles in place (card-settle). Morphing from a cover scrolled off the top made the card fall in from
- *   above the screen.
+ *   above the screen. Also the System image's link to another case study: it isn't that project's cover,
+ *   so nothing morphs.
  * - next / prev: the page slides to the neighbouring project (Previous / Next, swipe, back/forward).
  * Only the two elements that morph get `view-transition-name: case-cover`, and only for that navigation.
  */
@@ -22,7 +23,7 @@
   /** Share of the cover's height that must be on screen for Home to zoom back into the card. */
   const COVER_VISIBLE = 0.5;
   const root = document.documentElement;
-  const TRIGGERS = '[data-card-link], [data-case-nav-prev], [data-case-nav-next], [data-case-nav-home]';
+  const TRIGGERS = '[data-card-link], [data-case-nav-prev], [data-case-nav-next], [data-case-nav-home], [data-system-link]';
   let clicked = null;
 
   const pathOf = (url) => new URL(url, location.href).pathname;
@@ -94,6 +95,7 @@
     else if (trigger?.matches('[data-case-nav-next]')) type = 'next';
     else if (trigger?.matches('[data-case-nav-prev]')) type = 'prev';
     else if (trigger?.matches('[data-case-nav-home]')) type = homeType();
+    else if (trigger?.matches('[data-system-link]')) type = 'fade';
     else if (page && target) {
       // Browser back / forward.
       const slug = slugOf(target);

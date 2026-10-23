@@ -1,8 +1,8 @@
 ---
 /**
  * Case-study page (Figma section 234:33903: desktop 234:18762, mobile 234:5721).
- * Hero (tags, title, cover, meta) → sticky section tabs → Overview, Solution, Final designs, Outcome,
- * Reflection (each only when filled) → More projects, with the floating Previous / Home / Next nav.
+ * Hero (tags, title, cover, meta) → sticky section tabs → Context, Overview, Solution, System, Final designs,
+ * Outcome, Reflection (each only when filled) → More projects, with the floating Previous / Home / Next nav.
  * A case study without sections (NDA, placeholder, coming soon) shows a status line instead of tabs.
  * Layout and behaviour: design/layout-and-motion.md → Case study.
  */
@@ -11,8 +11,10 @@ import Button from '../components/ui/Button.astro';
 import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
 import CaseHero from '../components/case-study/CaseHero.astro';
 import CaseTabs from '../components/case-study/CaseTabs.astro';
+import ContextSection from '../components/case-study/ContextSection.astro';
 import OverviewSection from '../components/case-study/OverviewSection.astro';
 import SolutionSection from '../components/case-study/SolutionSection.astro';
+import SystemSection from '../components/case-study/SystemSection.astro';
 import FinalDesigns from '../components/case-study/FinalDesigns.astro';
 import OutcomeSection from '../components/case-study/OutcomeSection.astro';
 import ReflectionSection from '../components/case-study/ReflectionSection.astro';
@@ -33,12 +35,15 @@ interface Props {
 }
 
 const { entry, entries } = Astro.props;
-const { tocLabel, status, seoDescription, ogImage, overview, solution, finalDesigns, outcome, reflection } = entry.data;
+const { tocLabel, status, seoDescription, ogImage, context, overview, solution, system, finalDesigns, outcome, reflection } =
+  entry.data;
 const { contact, nav } = await getSiteSettings();
 
 const sections = sectionsOf(entry);
 const hasFacts = Boolean(entry.data.role || entry.data.timeline || entry.data.team.length);
 const has = (id: string) => sections.some((s) => s.id === id);
+// The System image links to another case study only if that one is published.
+const systemTarget = system?.link ? entries.find((e) => e.id === system.link) : undefined;
 const { previous, next } = neighboursOf(entries, entry.id);
 const isFirst = entries[0]?.id === entry.id;
 const homeHref = isFirst ? '/' : `/#${entry.id}`;
@@ -74,8 +79,10 @@ const speculation = JSON.stringify({
         sections.length > 0 ? (
           <div data-case-body>
             {sections.length > 1 && <CaseTabs sections={sections} />}
+            {has('context') && context && <ContextSection context={context} />}
             {has('overview') && overview && <OverviewSection overview={overview} />}
             {has('solution') && <SolutionSection steps={solution} />}
+            {has('system') && system && <SystemSection system={system} target={systemTarget} />}
             {has('final-designs') && <FinalDesigns images={finalDesigns} />}
             {has('outcome') && outcome && <OutcomeSection outcome={outcome} />}
             {has('reflection') && reflection && <ReflectionSection reflection={reflection} />}

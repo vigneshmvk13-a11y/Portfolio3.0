@@ -29,7 +29,7 @@ Figma names map to primitives: `gray/700` → `--gray-700`; `Heading/H4` → `te
 |---|---|
 | Tokens | v0.5: case-study tokens (column, radii, eyebrow tracking, nav blur, `fg-secondary-on-fill`, spacing 22/30/40) |
 | Components | Foundation, homepage, About and case study built |
-| Case study pages | Built from Figma `234:33903` (Data mapping); other four have hero, More projects and nav only until their content exists |
+| Case study pages | All five built: Data mapping (`234:33903`), Prime compass and Nova (template + System), Fyn and Gyst (Context), section `279:8667` |
 | Tablet (768–1199) | Not designed; interim rule in `layout-and-motion.md` |
 | Dark mode | Not designed. Don't build |
 
@@ -45,8 +45,11 @@ Agents: add to this list; don't resolve on your own.
 15. **Mobile TOC labels:** Figma's mobile TOC panel uses a shorter "Fyn- Wholesale Banking". There's one `tocLabel`, so the panel widens to fit "Fyn- Wholesale Banking app". Shorten the label everywhere, or keep it?
 17. **Case-study colours that fail contrast** (Figma `234:33903`): eyebrows gray/500 → built `fg-secondary`; inactive tabs gray/500 → `fg-secondary-on-fill` (gray/700); floating nav 70% grey → `surface-caption`. Update the Figma variables, or choose other values?
 18. **Mobile Reflection card:** Figma draws it edge to edge (`234:10044`) while Overview is inset 24px. Built inset like Overview. Intended?
-19. **Case-study cover frame:** Figma's case-study cover shows the "Contract / Sales order / Deal / Asset register" frame; the homepage card shows the text-cursor frame. One field (the cover poster) feeds both, so the page uses the card's frame (the morph needs the same image). When the cover video exists, both play the same loop.
 20. **Mobile frame width:** the case-study mobile frames are 402 wide; the homepage's are 393. Built with Figma's 24px gutters, so it holds at 360–412.
+
+### Resolved (2026-10-24)
+
+19. **Case-study covers and tags:** keep everything consistent with the project cards. Every case study uses its card's cover image (Figma's case-study covers for Data mapping, Prime compass, Fyn and Gyst differ) and the card's tags (Figma's pages say "B2B • SaaS" for Nova and Prime compass, "Banking • NDA protected" for Fyn). Body copy spells the product "Prime Compass". Vignesh.
 
 ### Resolved (2026-10-21)
 
@@ -68,6 +71,11 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-24 · all · **Prime compass, Nova, Fyn and Gyst built** from Figma section `279:8667`:
+  - **Content:** two new optional sections. `context` (heading/text blocks with optional bullets, "Label: value" facts, a note) for Fyn and Gyst; `system` (heading, intro, image, a link to another case study, cards) for Prime compass, whose image opens Nova. Prime compass and Nova are `live`.
+  - **Consistent with the cards** (Vignesh): card covers and card tags on every case-study page; "Prime Compass" in body copy; "walkthroug" fixed.
+  - **Decisions Figma didn't cover:** System and Context on mobile follow the template; System cards share the image height; the arrow pill sits 16px in (Figma 14 / 18); the System link fades instead of sliding; Nova's half images keep our 24px gap (Figma 20); spacing follows the built template where Figma varies (heading → text 12, eyebrow → heading 24).
+  - **Tokens:** `--spacing-system-media` (521px).
 - 2026-10-24 · layout-and-motion · Home from further down a case study (less than half the cover on screen) no longer zooms: the pages crossfade and the homepage card settles in place (0.96 → 1 with a fade, `duration-base` + `ease-out`). Morphing from a cover scrolled off the top made the card fall in from above the screen. New token `--scale-settle`. Why: Vignesh's report; the settle (rather than a plain fade) keeps a pointer to the project you came from.
 - 2026-10-23 · components · Floating nav expand: Previous / Next fade in only after the surface has opened and they've slid out from under Home (delay `duration-slow`, fade `duration-fast`). They used to start fading in 150ms into the 500ms slide, so they showed over Home. Why: Vignesh.
 - 2026-10-23 · layout-and-motion · Case-study updates from Vignesh:

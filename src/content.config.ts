@@ -38,6 +38,15 @@ const caseStudies = defineCollection({
       team: z.array(z.object({ name: z.string(), role: text() })).default([]),
       tools: z.array(z.string()).default([]),
 
+      context: z
+        .object({
+          blocks: z
+            .array(z.object({ heading: text(), body: text(), items: z.array(z.string()).default([]) }))
+            .default([]),
+          facts: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+          note: text(),
+        })
+        .optional(),
       overview: z
         .object({
           heading: text(),
@@ -59,6 +68,17 @@ const caseStudies = defineCollection({
           }),
         )
         .default([]),
+      system: z
+        .object({
+          heading: text(),
+          intro: text(),
+          image: image().nullish().transform((value) => value ?? undefined),
+          alt: z.string().default(''),
+          /** Slug of the case study the image links to. */
+          link: text(),
+          cards: z.array(z.object({ title: z.string(), body: text() })).default([]),
+        })
+        .optional(),
       finalDesigns: z
         .array(
           z.object({
