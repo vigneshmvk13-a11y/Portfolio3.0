@@ -21,6 +21,8 @@
   --gray-black: #000000;
   --lime-200: #cae6a0;
   --overlay-84: rgb(84 84 84 / 0.8);
+  /* gray/500 at 40%: the gallery's glass buttons (Figma 280:9431). */
+  --glass-40: rgb(134 134 134 / 0.4);
   --scrim-24: rgb(0 0 0 / 0.24);
 
   /* Motion (mirrored in src/lib/motion.ts) */
@@ -86,6 +88,19 @@
   syntax: '<length>';
   inherits: true;
   initial-value: 16px;
+}
+/* The sheet opened into About stops this far below the top of the screen (Vignesh, 2026-10-24). */
+@property --about-top {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 40px;
+}
+/* Overlay scrollbar for panels (src/scripts/scrollbar.ts): a thin thumb inside the rounded corners, no gutter. */
+:root {
+  --scrollbar-w: 4px;
+  --scrollbar-inset: 6px;
+  --scrollbar-hit: 16px;
+  --scrollbar-min: 40px;
 }
 :root {
   --sheet-handle-h: 6px;
@@ -194,7 +209,6 @@
   --spacing-logo-w-sm: 64px;
   --spacing-logo-h-sm: 24px;
   --spacing-avatar: 140px;
-  --spacing-avatar-sm: 52px;
   --spacing-avatar-overlap: 73px;
   --spacing-banner: 200px;
   --spacing-gallery-w: 170px;
@@ -225,6 +239,7 @@
 
   --blur-caption: 12.5px;
   --blur-nav: 40px;
+  --blur-glass: 20px;
   --shadow-panel: 0 24px 64px rgb(0 0 0 / 0.12);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -245,6 +260,7 @@
   --color-surface-caption: var(--overlay-84);
   --color-surface-scrim: var(--scrim-24);
   --color-surface-badge: var(--lime-200);
+  --color-surface-glass: var(--glass-40);
   --color-fg-primary: var(--gray-900);
   --color-fg-strong: var(--gray-900);
   --color-fg-secondary: var(--gray-600);

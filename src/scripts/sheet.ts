@@ -10,20 +10,34 @@
  *   Each frame it sets how far the surface, handle and intro have slid (--shift) and the intro's
  *   opacity and blur: fully visible when open, gone by halfway (`sheet.introGoneAt`), blurring as
  *   it fades, and back only past halfway when opening.
+ * - About (Vignesh, 2026-10-24): the same sheet grows into the About sheet. A second value, `about`
+ *   (0 = footer, 1 = About), lifts the surface to --about-top, blurs the intro and buttons out by
+ *   halfway (`sheet.aboutSwap`) and fades a scrim in behind. drawer.ts drives it through
+ *   getSheetSurface() and draws About's content over the surface.
  * Desktop (the same element is the static left column) ignores all of this.
  */
 import { animateValue, type AnimationPlaybackControlsWithThen as Controls } from 'motion';
-import { duration, ease, sheet as look, spring } from '../lib/motion';
+import { sheet as look } from '../lib/motion';
 import { prefersReducedMotion } from '../lib/reduced-motion';
+import { clamp01, DragSamples, DRAG_SLOP_PX, FLING_S, settleMotion } from './drag';
 import type { WheelController, WheelDetail } from './wheel/controller';
 
 const MOBILE = '(width < 75rem)';
-/** Pointer travel before a press on the sheet counts as a drag. */
-const DRAG_SLOP_PX = 6;
-/** How far release speed carries the decision: projected = openness + velocity × this (seconds). */
-const FLING_S = 0.15;
 
-const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+/** What drawer.ts needs to grow About out of the sheet. */
+export interface SheetSurface {
+  /** px from where the surface's top edge rests now up to --about-top. */
+  travel(): number;
+  /** 0 = the footer, 1 = grown into About. */
+  setAbout(progress: number): void;
+}
+
+let surface: SheetSurface | null = null;
+
+/** The bound sheet, or null before bindSheet() (or on pages without one). */
+export const getSheetSurface = (): SheetSurface | null => surface;
+
+const blur = (amount: number) => (amount <= 0 ? '' : `blur(${(amount * look.introBlur).toFixed(2)}px)`);
 
 export function bindSheet(controller: WheelController): void {
   const sheet = document.querySelector<HTMLElement>('[data-bottom-sheet]');
@@ -31,25 +45,38 @@ export function bindSheet(controller: WheelController): void {
   const grabber = sheet?.querySelector<HTMLButtonElement>('[data-sheet-grabber]');
   const intro = sheet?.querySelector<HTMLElement>('[data-sheet-intro]');
   const actions = sheet?.querySelector<HTMLElement>('[data-sheet-actions]');
-  if (!sheet || !bg || !grabber || !intro || !actions) return;
+  const scrim = sheet?.querySelector<HTMLElement>('[data-sheet-scrim]');
+  if (!sheet || !bg || !grabber || !intro || !actions || !scrim) return;
   const bar = grabber.firstElementChild as HTMLElement | null;
   const mobile = window.matchMedia(MOBILE);
 
   let openness = 1;
+  let about = 0;
   let animation: Controls | null = null;
   /** Distance the surface slides to collapse, px (measured). */
   let collapseShift = 0;
   /** How far the handle rises relative to the surface when collapsed (16px → 12px below the edge). */
   let handleLift = 0;
+  /** The sheet's top edge in the viewport before any slide, and --about-top, px (measured). */
+  let restTop = 0;
+  let aboutTop = 0;
 
   const render = () => {
     const shift = (1 - openness) * collapseShift;
-    sheet.style.setProperty('--shift', `${shift.toFixed(2)}px`);
+    const lift = about * Math.max(0, restTop + shift - aboutTop);
+    sheet.style.setProperty('--shift', `${(shift - lift).toFixed(2)}px`);
     sheet.style.setProperty('--handle-lift', `${((1 - openness) * handleLift).toFixed(2)}px`);
-    intro.style.transform = `translateY(${(shift * look.introFollow).toFixed(2)}px)`;
-    const shown = clamp01((openness - look.introGoneAt) / (1 - look.introGoneAt));
+    // Growing into About, the intro and buttons blur out by halfway, rising at the intro's usual fraction.
+    const footer = clamp01(1 - about / look.aboutSwap);
+    const shown = clamp01((openness - look.introGoneAt) / (1 - look.introGoneAt)) * footer;
+    intro.style.transform = `translateY(${((shift - lift) * look.introFollow).toFixed(2)}px)`;
     intro.style.opacity = String(shown);
-    intro.style.filter = shown >= 1 ? '' : `blur(${((1 - shown) * look.introBlur).toFixed(2)}px)`;
+    intro.style.filter = blur(1 - shown);
+    sheet.toggleAttribute('data-about', about > 0);
+    actions.style.transform = about > 0 ? `translateY(${(-lift * look.introFollow).toFixed(2)}px)` : '';
+    actions.style.opacity = about > 0 ? String(footer) : '';
+    actions.style.filter = blur(1 - footer);
+    scrim.style.opacity = about > 0 ? String(about) : '';
   };
 
   /**
@@ -62,17 +89,14 @@ export function bindSheet(controller: WheelController): void {
     handleLift = px('--sheet-handle-top') - px('--sheet-handle-top-collapsed');
     const barEnd = bar ? bar.offsetTop + bar.offsetHeight - handleLift : 0; // collapsed position
     collapseShift = Math.max(0, actions.offsetTop - barEnd - px('--sheet-handle-gap'));
+    restTop = sheet.getBoundingClientRect().top;
+    aboutTop = px('--about-top');
     render();
   };
 
   const collapsed = () => sheet.hasAttribute('data-collapsed');
 
-  /**
-   * Settle open or collapsed. After a drag, a spring carries the release speed (openness per second),
-   * taking as long as that speed needs to cover the rest of the way (sheet.flickMin to spring.sheet's
-   * visualDuration), so a quick swipe finishes quickly and a slow drag eases in. Otherwise (tap,
-   * handle, scroll) an even ease-in-out over duration.slow, so the intro's fade is slow.
-   */
+  /** Settle open or collapsed: a spring carrying the release speed after a drag, else duration.slow. */
   const settle = (collapse: boolean, velocity?: number) => {
     sheet.toggleAttribute('data-collapsed', collapse);
     grabber.setAttribute('aria-expanded', String(!collapse));
@@ -85,17 +109,9 @@ export function bindSheet(controller: WheelController): void {
       render();
       return;
     }
-    let motion;
-    if (velocity === undefined) motion = { duration: duration.slow * 1000, ease: ease.inOut };
-    else {
-      const toward = (target - openness) * velocity > 0 ? Math.abs(velocity) : 0;
-      const needed = toward > 0 ? Math.abs(target - openness) / toward : Infinity;
-      const visualDuration = Math.min(spring.sheet.visualDuration, Math.max(look.flickMin, needed));
-      motion = { ...spring.sheet, visualDuration, velocity };
-    }
     animation = animateValue<number>({
       keyframes: [openness, target],
-      ...motion,
+      ...settleMotion(openness, target, velocity),
       onUpdate: (value) => {
         openness = clamp01(value); // a fast flick can carry a stiff spring past the end
         render();
@@ -118,15 +134,14 @@ export function bindSheet(controller: WheelController): void {
   let startOpenness = 1;
   let dragging = false;
   let suppressClick = false;
-  const samples: { t: number; y: number }[] = [];
+  const samples = new DragSamples();
 
   const press = (event: PointerEvent) => {
     if (!mobile.matches || pointerId !== null || event.button > 0) return;
     pointerId = event.pointerId;
     startY = event.clientY;
     dragging = false;
-    samples.length = 0;
-    samples.push({ t: event.timeStamp, y: event.clientY });
+    samples.reset(event);
   };
 
   const move = (event: PointerEvent) => {
@@ -141,8 +156,7 @@ export function bindSheet(controller: WheelController): void {
       startOpenness = openness;
       startY = event.clientY;
     }
-    samples.push({ t: event.timeStamp, y: event.clientY });
-    if (samples.length > 6) samples.shift();
+    samples.add(event);
     openness = clamp01(startOpenness - (event.clientY - startY) / collapseShift);
     render();
   };
@@ -158,10 +172,7 @@ export function bindSheet(controller: WheelController): void {
     dragging = false;
     suppressClick = true;
     window.setTimeout(() => (suppressClick = false), 0);
-    const last = samples[samples.length - 1];
-    const first = samples.find((s) => last.t - s.t <= 100) ?? samples[0];
-    const pxPerS = (last.y - first.y) / (Math.max(1, last.t - first.t) / 1000); // down positive
-    const velocity = -pxPerS / collapseShift; // openness per second
+    const velocity = -samples.velocity() / collapseShift; // openness per second
     // Settle to the nearer state, counting where the release speed would carry it.
     settle(openness + velocity * FLING_S < 0.5, velocity);
   };
@@ -184,11 +195,28 @@ export function bindSheet(controller: WheelController): void {
     animation?.stop();
     sheet.style.removeProperty('--shift');
     sheet.style.removeProperty('--handle-lift');
-    intro.style.opacity = '';
-    intro.style.filter = '';
-    intro.style.transform = '';
+    sheet.removeAttribute('data-about');
+    for (const el of [intro, actions]) {
+      el.style.opacity = '';
+      el.style.filter = '';
+      el.style.transform = '';
+    }
+    scrim.style.opacity = '';
   };
   mobile.addEventListener('change', syncBreakpoint);
   new ResizeObserver(() => mobile.matches && measure()).observe(sheet);
+  // The sheet's top moves with the viewport height (browser bars) without the sheet resizing.
+  window.addEventListener('resize', () => mobile.matches && measure());
   syncBreakpoint();
+
+  surface = {
+    travel: () => {
+      measure();
+      return Math.max(0, restTop + (1 - openness) * collapseShift - aboutTop);
+    },
+    setAbout: (progress) => {
+      about = clamp01(progress);
+      if (mobile.matches) render();
+    },
+  };
 }

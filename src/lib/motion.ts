@@ -49,6 +49,11 @@ export const sheet = {
    * the rest of the way, between this and spring.sheet's visualDuration, so a quick swipe finishes fast.
    */
   flickMin: 0.25,
+  /**
+   * The sheet growing into About (0 = footer, 1 = About): the footer's intro and buttons are gone by this
+   * point and About's content appears only past it, so the two never overlap. Both blur by introBlur.
+   */
+  aboutSwap: 0.5,
 } as const;
 
 /** Mobile TOC (design/layout-and-motion.md → TOC handle). */

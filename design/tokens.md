@@ -31,6 +31,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `--gray-black` | `gray/black` | `#000000` |
 | `--lime-200` | `lime/200` | `#CAE6A0` |
 | `--overlay-84` | (not a variable) | `rgb(84 84 84 / 0.8)` |
+| `--glass-40` | (not a variable; `gray/500` at 40%) | `rgb(134 134 134 / 0.4)` |
 | `--scrim-24` | (not a variable) | `rgb(0 0 0 / 0.24)` **(proposed)** |
 
 ### Semantic
@@ -42,8 +43,9 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-selected` | `--gray-100` | Active TOC item |
 | `surface-hover` | `--gray-100` **(proposed)** | Hover on TOC items and text buttons |
 | `surface-caption` | `--overlay-84` | Card caption bar; floating case-study nav (white text 4.5–4.7:1, where Figma's 70% grey fill gives 2.8:1) |
-| `surface-scrim` | `--scrim-24` **(proposed)** | Behind the drawer |
+| `surface-scrim` | `--scrim-24` **(proposed)** | Behind About: the mobile sheet (fades in as the bottom sheet grows into it) and the desktop drawer |
 | `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |
+| `surface-glass` | `--glass-40` | Gallery Previous / Next buttons over photos (Figma 280:9431), with `backdrop-blur-glass`; white caret `fg-on-media` |
 | `fg-primary` | `--gray-900` | Primary text: name, headings, active TOC, hovered TOC rows (Figma 233:4518, 2026-10-22) |
 | `fg-strong` | `--gray-900` | Emphasis in About, timeline roles. Same value as `fg-primary` since 2026-10-22 |
 | `fg-secondary` | `--gray-600` | Secondary text, icons: 4.53:1 on `surface-page`, 5.02:1 on white. Fails on `surface-hover` (4.10:1), so hovered rows switch to `fg-primary` |
@@ -121,11 +123,12 @@ Named spacing:
 | `--spacing-avatar` | 140px | About avatar |
 | `--spacing-icon-xs` / `--spacing-icon-sm` / `--spacing-icon-md` | 16px / 18px / 20px | Icon glyphs (xs: mobile sheet buttons) |
 | `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
-| `--spacing-avatar-sm` | 52px | Avatar in the mobile drawer's compact header |
 | `--spacing-avatar-overlap` | 73px | How far the avatar overlaps the banner (140 − 67) |
 | `--spacing-banner` | 200px | About banner height |
 | `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
 | `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
+| `--scrollbar-w` / `--scrollbar-inset` / `--scrollbar-hit` / `--scrollbar-min` | 4px / 6px / 16px / 40px | Overlay scrollbar thumb in the About panel: width, gap from the edge, pointer hit width, shortest thumb (`components.md → AboutDrawer`) |
+| `--about-top` | 40px | Mobile/tablet: the bottom sheet grown into About stops this far below the top (Vignesh, 2026-10-24). Registered with `@property` so JS reads it in px |
 | `--sheet-h` | 237–265px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
 | `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 
@@ -151,6 +154,7 @@ Named spacing:
 |---|---|---|
 | `--blur-caption` | 12.5px | `backdrop-blur-caption` on the card caption |
 | `--blur-nav` | 40px | `backdrop-blur-nav` on the floating case-study nav (Vignesh, 2026-10-23; Figma drew 20) |
+| `--blur-glass` | 20px | `backdrop-blur-glass` on the gallery buttons (Figma 280:9431) |
 | `--wheel-fade` | 0.2 | Neighbour card opacity (see Wheel) |
 | `--shadow-panel` | `0 24px 64px rgb(0 0 0 / 0.12)` **(proposed)** | Drawer on the grey page |
 
@@ -190,6 +194,7 @@ JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Botto
 | `sheet.introGoneAt` | `0.5` | Sheet openness (1 open, 0 collapsed) where the intro is fully faded; it blurs as it fades |
 | `sheet.introBlur` | `10` px | Intro blur at that point |
 | `sheet.introFollow` | `0.5` | The intro slides at half the sheet's speed, sinking into it as it fades |
+| `sheet.aboutSwap` | `0.5` | Sheet → About (0 footer, 1 About): the footer's intro and buttons are gone by here, About's content appears only past it. Both blur by `sheet.introBlur` |
 
 ### Mobile sheet spacing (CSS, `global.css`)
 

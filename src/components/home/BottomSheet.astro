@@ -36,7 +36,12 @@ const resumeTodo = resume ? undefined : 'todo-content';
   data-bottom-sheet
   data-intro-reveal="sheet"
 >
-  <!-- Mobile: the sheet's surface. It slides down to collapse; the buttons stay put (src/scripts/sheet.ts). -->
+  <!-- Mobile: dims the page while the sheet is grown into About (src/scripts/sheet.ts). -->
+  <div class="bottom-sheet__scrim bg-surface-scrim desktop:hidden" aria-hidden="true" data-sheet-scrim></div>
+  <!--
+    Mobile: the sheet's surface. It slides down to collapse (the buttons stay put) and rises to become
+    the About sheet's surface (src/scripts/sheet.ts, drawer.ts).
+  -->
   <div class="bottom-sheet__bg rounded-t-panel border border-b-0 border-line-default bg-surface-raised desktop:hidden" data-sheet-bg></div>
   <button
     type="button"
@@ -101,12 +106,33 @@ const resumeTodo = resume ? undefined : 'todo-content';
       transform: translateY(calc(var(--shift) - var(--handle-lift, 0px)));
     }
 
+    /*
+     * Tall enough to reach the bottom of the screen once it has risen to --about-top; the extra length
+     * hangs below the screen until then.
+     */
     .bottom-sheet__bg {
       position: absolute;
-      inset: 0;
+      inset: 0 0 auto;
+      height: max(100%, 100dvh - var(--about-top));
       z-index: -1;
       pointer-events: auto;
       touch-action: none;
+    }
+
+    .bottom-sheet__scrim {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      opacity: 0;
+    }
+
+    /* Grown into About: above the TOC handle, which would otherwise show through the About dialog. */
+    .bottom-sheet[data-about] {
+      z-index: 40;
+    }
+    /* About's own handle (AboutDrawer.astro) takes over in the same spot. */
+    .bottom-sheet[data-about] .bottom-sheet__grabber {
+      opacity: 0;
     }
 
     /* Handle (Figma 251:6710): a 40×6 bar below the 1px top border; the hit area is 96×32 and reaches above the edge. */

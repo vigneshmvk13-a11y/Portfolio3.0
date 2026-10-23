@@ -147,6 +147,18 @@ try {
   await sleep(400);
   await d.wheel(100); await sleep(900);
   s = await d.state(); check('wheel ignored while About drawer is open', s.index === '0', s.index);
+
+  // Overlay scrollbar: no native gutter; the thumb drags and passes the wheel on.
+  const bar = `(() => { const s = document.querySelector('[data-about-scroll]'); const t = document.querySelector('[data-about-scrollbar] > span').getBoundingClientRect(); return { gutter: s.offsetWidth - s.clientWidth, top: Math.round(s.scrollTop), max: s.scrollHeight - s.clientHeight, x: Math.round(t.x + t.width / 2), y: Math.round(t.y + t.height / 2), h: Math.round(t.height), visible: getComputedStyle(document.querySelector('[data-about-scrollbar]')).display !== 'none' }; })()`;
+  let sb = await d.eval(bar);
+  check('about scrollbar: no native gutter, overlay thumb shown', sb.gutter === 0 && sb.visible && sb.h >= 40 && sb.max > 0, JSON.stringify(sb));
+  for (const [type, dy] of [['mousePressed', 0], ['mouseMoved', 40], ['mouseMoved', 80], ['mouseReleased', 80]]) await send('Input.dispatchMouseEvent', { type, x: sb.x, y: sb.y + dy, button: 'left', buttons: type === 'mouseReleased' ? 0 : 1, clickCount: 1 }, d.sessionId);
+  await sleep(100);
+  const thumbDragged = await d.eval(bar);
+  check('about scrollbar: dragging the thumb scrolls the panel', thumbDragged.top > 80 && Math.abs(thumbDragged.y - (sb.y + 80)) <= 2, `${JSON.stringify(sb)} → ${JSON.stringify(thumbDragged)}`);
+  await d.wheel(120, thumbDragged.x, thumbDragged.y); await sleep(400);
+  sb = await d.eval(bar);
+  check('about scrollbar: the wheel over the thumb still scrolls', sb.top > thumbDragged.top, `${thumbDragged.top} → ${sb.top}`);
   await d.key('Escape', 'Escape', 27); await sleep(400);
   check('no JS errors (desktop)', d.errors.length === 0, d.errors.join(' | '));
   await d.close();
@@ -299,6 +311,127 @@ try {
   const geo = await sp.eval(`(() => { const c = document.querySelector('[data-wheel-card]:not([inert])'); const sh = document.querySelector('[data-bottom-sheet]').getBoundingClientRect(); const r = c.getBoundingClientRect(); return { w: c.offsetWidth, h: c.offsetHeight, bottom: Math.round(r.bottom), sheetTop: Math.round(sh.top) }; })()`);
   check('short phone: card at full design size, clear of the expanded sheet', geo.w === 289 && geo.bottom <= geo.sheetTop - 51, JSON.stringify(geo));
   await sp.close();
+
+  // ---------- Mobile About: the sheet grows into it (layout-and-motion.md → About) ----------
+  const aboutState = `(() => {
+    const sh = document.querySelector('[data-bottom-sheet]'); const bg = sh.querySelector('[data-sheet-bg]').getBoundingClientRect();
+    const d = document.querySelector('dialog[data-about]'); const dr = d.getBoundingClientRect();
+    const n = (el) => Number(getComputedStyle(el).opacity);
+    return { open: d.open, bgTop: Math.round(bg.top), bgBottom: Math.round(bg.bottom), bgLeft: Math.round(bg.left), bgW: Math.round(bg.width),
+      dTop: Math.round(dr.top), dLeft: Math.round(dr.left), dW: Math.round(dr.width),
+      content: n(d.querySelector('[data-about-scroll]')), intro: n(sh.querySelector('[data-sheet-intro]')), actions: n(sh.querySelector('[data-sheet-actions]')),
+      light: n(d.querySelector('[data-about-grabber-light]')) * n(d.querySelector('[data-about-grabber-light] > span')),
+      fade: n(d.querySelector('.about-drawer__fade')), onWhite: d.hasAttribute('data-on-white'), lifted: sh.hasAttribute('data-about'),
+      collapsed: sh.hasAttribute('data-collapsed') }; })()`;
+  const center = (sel) => `(() => { const r = document.querySelector('${sel}').getBoundingClientRect(); return { x: Math.round(r.x + r.width / 2), y: Math.round(r.y + r.height / 2) }; })()`;
+  const ab = await page(393, 852);
+  await ab.goto('/');
+  const tap = async (p, { x, y }) => { await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] }, p.sessionId); await sleep(40); await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, p.sessionId); };
+  const aboutBtn = '[data-sheet-actions] [data-about-open]';
+  const rest = await ab.eval(aboutState);
+  await tap(ab, await ab.eval(center(aboutBtn)));
+  await sleep(140);
+  let a = await ab.eval(aboutState);
+  check('about: mid-open, the sheet surface and the dialog edge rise together; footer content fading, About not yet in', a.open && a.bgTop < rest.bgTop && a.bgTop > 40 && Math.abs(a.dTop - a.bgTop) <= 1 && a.intro < 1 && a.content === 0, JSON.stringify(a));
+  await sleep(220);
+  a = await ab.eval(aboutState);
+  check('about: past halfway, footer content gone, About content fading in', a.intro === 0 && a.actions === 0 && a.content > 0 && a.content < 1, JSON.stringify(a));
+  await sleep(600);
+  a = await ab.eval(aboutState);
+  check('about: open, the sheet fills to 40px from the top, one surface', a.bgTop === 40 && a.dTop === 40 && a.bgBottom >= 852 && a.content === 1 && a.lifted, JSON.stringify(a));
+  check('about: handle light over the banner, no fade strip', a.light === 1 && !a.onWhite && a.fade === 0, JSON.stringify(a));
+  await ab.shot('about-open-393.png');
+  await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop = 400`); await sleep(300);
+  a = await ab.eval(aboutState);
+  check('about: scrolled, the handle turns grey with the white fade', a.onWhite && a.light === 0 && a.fade === 1, JSON.stringify(a));
+  await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop = 0`); await sleep(300);
+  check('about: back at the top, light handle again', !(await ab.eval(aboutState)).onWhite);
+
+  // Gallery buttons.
+  const gal = `(() => { const t = document.querySelector('[data-gallery-track]'); return { left: Math.round(t.scrollLeft), max: t.scrollWidth - t.clientWidth, prev: !document.querySelector('[data-gallery-prev]').hasAttribute('data-hidden'), next: !document.querySelector('[data-gallery-next]').hasAttribute('data-hidden') }; })()`;
+  let g = await ab.eval(gal);
+  check('gallery: at the start only Next shows', !g.prev && g.next && g.left === 0, JSON.stringify(g));
+  await ab.eval(`document.querySelector('[data-gallery-next]').click()`); await sleep(800);
+  g = await ab.eval(gal);
+  check('gallery: Next scrolls by whole photos; Previous appears', g.left > 0 && g.prev, JSON.stringify(g));
+  for (let i = 0; i < 4 && g.next; i++) { await ab.eval(`document.querySelector('[data-gallery-next]').click()`); await sleep(800); g = await ab.eval(gal); }
+  check('gallery: at the end only Previous shows', g.prev && !g.next && Math.abs(g.left - g.max) <= 2, JSON.stringify(g));
+  await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop = 0`);
+
+  // Close button: plays the morph back, then closes.
+  await tap(ab, await ab.eval(center('[data-about-close]')));
+  await sleep(140);
+  a = await ab.eval(aboutState);
+  check('about: closing plays back (still open, content fading out)', a.open && a.content < 1 && a.bgTop > 40, JSON.stringify(a));
+  await sleep(800);
+  a = await ab.eval(aboutState);
+  check('about: closed, the sheet is back where it was with its content', !a.open && a.bgTop === rest.bgTop && a.intro === 1 && a.actions === 1 && !a.lifted, `${JSON.stringify(a)} rest=${rest.bgTop}`);
+
+  // Drag the handle down: follows the finger, closes.
+  await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900);
+  const handle = await ab.eval(center('[data-about-grabber]'));
+  await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [handle] }, ab.sessionId);
+  for (let dy = 10; dy <= 200; dy += 10) { await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: handle.x, y: handle.y + dy }] }, ab.sessionId); await sleep(16); }
+  a = await ab.eval(aboutState);
+  check('about: dragging the handle moves the sheet with the finger', a.open && Math.abs(a.bgTop - 240) <= 12, JSON.stringify(a));
+  for (let dy = 220; dy <= 420; dy += 25) { await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: handle.x, y: handle.y + dy }] }, ab.sessionId); await sleep(12); }
+  await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, ab.sessionId); await sleep(900);
+  a = await ab.eval(aboutState);
+  check('about: released past halfway it closes', !a.open && a.bgTop === rest.bgTop && a.intro === 1, JSON.stringify(a));
+
+  // A short slow drag springs back open.
+  await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900);
+  await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [handle] }, ab.sessionId);
+  for (let dy = 10; dy <= 80; dy += 5) { await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: handle.x, y: handle.y + dy }] }, ab.sessionId); await sleep(30); }
+  await sleep(150);
+  await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, ab.sessionId); await sleep(900);
+  a = await ab.eval(aboutState);
+  check('about: a short slow drag springs back open', a.open && a.bgTop === 40 && a.content === 1, JSON.stringify(a));
+
+  // Tap the handle, Esc, and a tap above the sheet all close it.
+  await tap(ab, handle); await sleep(900);
+  check('about: a tap on the handle closes it', !(await ab.eval(aboutState)).open);
+  await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900);
+  await ab.key('Escape', 'Escape', 27); await sleep(100);
+  a = await ab.eval(aboutState);
+  check('about: Esc plays the morph back before closing', a.open && a.bgTop > 40, JSON.stringify(a));
+  await sleep(800);
+  check('about: …then closes', !(await ab.eval(aboutState)).open);
+  await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900);
+  await tap(ab, { x: 196, y: 20 }); await sleep(900);
+  check('about: a tap above the sheet closes it', !(await ab.eval(aboutState)).open);
+
+  // From the collapsed sheet: grows from there, and goes back to collapsed.
+  await ab.drag(196, 300, 150); await sleep(900);
+  const collapsedRest = await ab.eval(aboutState);
+  await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900);
+  a = await ab.eval(aboutState);
+  check('about: opens from the collapsed sheet too', collapsedRest.collapsed && a.open && a.bgTop === 40, `${JSON.stringify(collapsedRest)} ${JSON.stringify(a)}`);
+  await tap(ab, await ab.eval(center('[data-about-close]'))); await sleep(900);
+  a = await ab.eval(aboutState);
+  check('about: closes back to the collapsed sheet', !a.open && a.collapsed && a.bgTop === collapsedRest.bgTop && a.intro === 0, JSON.stringify(a));
+  check('no JS errors (about)', ab.errors.length === 0, ab.errors.join(' | '));
+  await ab.close();
+
+  const ar = await page(393, 852, { reduced: true });
+  await ar.goto('/');
+  await tap(ar, await ar.eval(center(aboutBtn))); await sleep(60);
+  a = await ar.eval(aboutState);
+  check('about (reduced motion): opens instantly', a.open && a.bgTop === 40 && a.content === 1, JSON.stringify(a));
+  await ar.close();
+
+  const al = await page(393, 852);
+  await al.goto('/?about');
+  a = await al.eval(aboutState);
+  check('about: /?about opens it on load, already grown', a.open && a.bgTop === 40 && a.content === 1, JSON.stringify(a));
+  await al.close();
+
+  const at = await page(900, 1100);
+  await at.goto('/');
+  await at.eval(`document.querySelector('${aboutBtn}').click()`); await sleep(900);
+  a = await at.eval(aboutState);
+  check('about (tablet): the sheet’s width, lined up with its surface', a.open && a.dW === a.bgW && a.dLeft === a.bgLeft && a.bgTop === 40, JSON.stringify(a));
+  await at.close();
 
   // ---------- Intro ----------
   const chrome = `(() => { const v = (sel) => { const el = document.querySelector(sel); const cs = getComputedStyle(el); return cs.visibility === 'visible' ? Number(cs.opacity) : 0; }; return { intro: document.documentElement.dataset.intro, sheet: v('[data-bottom-sheet]'), toc: v('[data-intro-reveal="rise"]'), footer: v('[data-intro-reveal="fade"]') }; })()`;

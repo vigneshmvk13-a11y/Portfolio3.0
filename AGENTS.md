@@ -23,10 +23,11 @@ Vignesh wants to be challenged, not agreed with. If an instruction here is a bad
 |---|---|
 | Desktop home (1440) | `233:4518` |
 | Desktop + About drawer | `234:4968` (drawer `234:5386`) |
+| About section (current) | `280:9512`: desktop `280:9404` / scrolled `280:9452`, mobile `280:9285` / scrolled `280:9344` |
 | Mobile home (393) | `233:4581` |
 | Mobile TOC open | `233:4686` |
 | Mobile on downscroll | `233:4621` |
-| Mobile About / on scroll | `234:5489` / `234:5601` |
+| Mobile About / on scroll (superseded by `280:9512`) | `234:5489` / `234:5601` |
 | Project card | `228:4582` (desktop), `230:4671` (mobile) |
 | Icon button | `178:1441` |
 | Case study (Data mapping) section | `234:33903` |
@@ -93,7 +94,7 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
     │   ├── intro/              ← load choreography, lazy-loaded
     │   ├── case-study/         ← tabs, floating nav, swipe
     │   ├── page-transition.js  ← plain JS, inlined in every <head> (cross-document view transitions)
-    │   └── toc.ts · sheet.ts · drawer.ts · hash.ts · media.ts
+    │   └── toc.ts · sheet.ts · drawer.ts · drag.ts · gallery.ts · scrollbar.ts · hash.ts · media.ts
     ├── components/
     │   ├── icons/
     │   ├── ui/                 ← IconButton, Button, Link, LogoPill, Badge

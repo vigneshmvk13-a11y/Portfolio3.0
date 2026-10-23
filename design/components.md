@@ -21,8 +21,9 @@ Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`Cha
 | `lg` | 50 | `p-4` | `rounded-button-lg` | `icon-xs` | `border-line-default` (hover `line-strong`) | Mobile sheet (border added in Figma 246:2317, 2026-10-21) |
 | `lg-outlined` | 60 | `p-5` | `rounded-button-lg` | `icon-sm` | `border-line-default` | About drawer |
 | `close` | 52 | `p-4` | `rounded-media-sm` | `icon-sm` | `border-line-default` | Drawer close |
+| `glass` | 48 | `p-3` | `rounded-full` | `icon-lg` | `border-line-default` | Gallery Previous / Next over photos (Figma 280:9431): `bg-surface-glass backdrop-blur-glass`, icon `text-fg-on-media` |
 
-`bg-surface-raised`, icon `text-fg-secondary`.
+`bg-surface-raised`, icon `text-fg-secondary` (all but `glass`).
 
 States (proposed): hover → `border-line-strong`, icon `text-fg-primary` (`--duration-fast`); active → `scale-96`; focus-visible → focus ring (`rules.md`); disabled → not used.
 
@@ -120,7 +121,7 @@ Behaviour (press, scrub, release, tap, keyboard) and the morph spec: `layout-and
 ### BottomSheet (mobile) / left column (desktop)
 **Figma:** `233:4586` expanded, `233:4626` collapsed, desktop `233:4520` · **Status:** built
 
-One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding `--wheel-inset` (52px, Figma 260:6906), lining the text up with the card. Mobile type: name `text-h6`, subline `text-body-4` (desktop `text-h4` / `text-body-3`). Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Affiliations: "@ DNEG" 4px apart, "& Kotak" 8px on mobile (Figma 246:2310), 4px on desktop. Mobile surface: an absolute `[data-sheet-bg]` (`bg-surface-raised`, `rounded-t-panel`, `border-line-default`) plus a handle button (40×6 `line-strong` bar, Figma 251:6710). Spacing scales with viewport height (`--sheet-pt/gap/pb/intro-gap`); the buttons are Figma's 50×50 (`lg`, radius 16px). It collapses when the wheel moves and opens only by tap, handle or drag (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
+One element, so the page has one Intro and one `<h1>`. Mobile: fixed bottom, `bg-surface-raised`, `rounded-t-panel`, `border-line-default` top/left/right, `pt-12 gap-8`; bottom padding `8 + env(safe-area-inset-bottom)`; side padding `--wheel-inset` (52px, Figma 260:6906), lining the text up with the card. Mobile type: name `text-h6`, subline `text-body-4` (desktop `text-h4` / `text-body-3`). Tablet: max `card-w`, centred. Desktop: static left column, `gap-12`, `sm` buttons. Two button rows (`lg` mobile, `sm` desktop) swap by breakpoint. Affiliations: "@ DNEG" 4px apart, "& Kotak" 8px on mobile (Figma 246:2310), 4px on desktop. Mobile surface: an absolute `[data-sheet-bg]` (`bg-surface-raised`, `rounded-t-panel`, `border-line-default`) plus a handle button (40×6 `line-strong` bar, Figma 251:6710). Spacing scales with viewport height (`--sheet-pt/gap/pb/intro-gap`); the buttons are Figma's 50×50 (`lg`, radius 16px). It collapses when the wheel moves and opens only by tap, handle or drag (`sheet.ts`; `layout-and-motion.md → Bottom sheet`). The surface is tall enough (`100dvh − --about-top`) to rise into the About sheet; a `surface-scrim` layer behind it fades in as it does, and the sheet lifts above the TOC handle (`z-40`) while About is open (`layout-and-motion.md → About`). Resume is left out of production until `siteSettings.resume` exists (dev shows a dashed TODO outline).
 
 ### FooterBar (desktop)
 **Figma:** `233:4558` · **Status:** built
@@ -132,23 +133,29 @@ Fixed bottom, `px-gutter py-10`, `text-label-3 font-medium`, three-column grid. 
 ## About
 
 ### AboutDrawer
-**Figma:** `234:5386`, mobile `234:5545` / `234:34225` · **Status:** built
+**Figma:** section `280:9512`: desktop `280:9404` (scrolled `280:9452`), mobile `280:9285` (scrolled `280:9344`) · **Status:** built (2026-10-24)
 
-Modal `<dialog closedby="any">` (JS light-dismiss fallback). Desktop: `w-drawer`, inset 40px top/left/bottom, `rounded-panel bg-surface-raised`, **no scrim, no shadow** (as drawn in `234:4968`). Mobile: bottom sheet 32px from the top, `rounded-t-panel`, `border-line-default`, `p-1` inset, `surface-scrim` backdrop (proposed: the page behind would otherwise compete). Tablet: same sheet, centred, `max-w-drawer`.
+Modal `<dialog closedby="any">` (JS light-dismiss fallback), in a scroller (`[data-about-scroll]`) so the mobile handle can sit above the content. Desktop: `w-drawer`, inset 40px top/left/bottom, `rounded-panel bg-surface-raised`, no shadow, over a `surface-scrim` backdrop (Vignesh, 2026-10-24; Figma `234:4968` draws none); the whole panel scrolls, banner included. Mobile: **the bottom sheet grows into it** (`layout-and-motion.md → About`). The dialog sits at `--about-top` (40px) with **no surface of its own**: a transparent 1px border, `rounded-t-panel` clip and `p-1` inset over the sheet's risen surface, which draws the white, border and corners. The scrim is the sheet's (`surface-scrim`), behind its surface. Tablet: the same, at the sheet's width (`card-w`, centred), since it grows out of it.
 
-1. Header: `h-banner` (200px) image, `close` IconButton top-right (`p-5`). Mobile: banner `rounded-b-media-sm` inside a `rounded-t-panel-inner` (28px) clip.
-2. Avatar `size-avatar rounded-full`, overlapping the banner by `avatar-overlap` (73px). Centred on mobile, left (`px-5`) on desktop.
-3. Bio from `about.bio` (inline Markdown: `**…**` → `font-medium text-fg-strong`). Desktop `text-body-2` both paragraphs, `px-5 py-8 gap-5`. Mobile: para 1 `text-label-1` regular, others `text-body-3`, `px-4`.
-4. Actions: Resume + Contact (`lg-outlined`), `gap-2`.
+1. Header: `h-banner` (200px) image, `close` IconButton top-right (`p-4` mobile, `p-6` desktop). Mobile: square-bottomed banner inside a `rounded-t-panel-inner` (28px) clip.
+2. Avatar `size-avatar rounded-full`, overlapping the banner by `avatar-overlap` (73px). Centred on mobile, left (`px-5`) on desktop with a 2px `surface-raised` ring.
+3. Bio from `about.bio` (inline Markdown: `**…**` → `font-medium text-fg-strong`). Desktop `text-body-2` both paragraphs, `px-6 py-8 gap-5`. Mobile: para 1 `text-label-1` regular, others `text-body-3`, `px-4`.
+4. Actions: Resume + Contact (`lg-outlined`), `gap-2` mobile / `gap-3` desktop.
 5. Gallery: see Gallery.
-6. Journey: heading "Journey so far", `text-body-1` desktop / `text-label-1` mobile, `font-medium text-fg-strong`; TimelineRow list `gap-3 px-5`.
+6. Journey: heading "Journey so far", `text-body-1` desktop / `text-label-1` mobile, `font-medium text-fg-strong`, `px-4` / `px-6`; desktop 64px above it (gallery `pb-8` + heading `pt-8`). TimelineRow list `gap-3`, `px-5 pb-5` mobile / `px-6 pb-10` desktop.
 
-Mobile compact header (`234:34225`): an 84px sticky bar (banner strip, `avatar-sm` 52px avatar left, close right) fades in when the banner block leaves the drawer's scrollport (IntersectionObserver). It's a state switch rather than scroll-linked, so reduced motion only loses the fade. Opening: `@starting-style` transitions (no JS animation). `/?about` opens without the entrance. Fires `drawer:open` / `drawer:close`. All content from the `about` singleton.
+**Mobile handle** (`280:9342` at rest, `280:9401` scrolled): a 40×6 bar 16px below the top border, in the sheet handle's exact spot, as a 96×40 `<button>` ("Close", out of the tab order: the close button is the keyboard path). Over the banner it's `surface-page` (gray/50); once white content scrolls under it, it turns `line-strong` (gray/300) and a 40px white fade (50% → 0) appears behind it, a `--duration-fast` crossfade. Drag it down or tap it to close. The compact sticky header of `234:34225` is gone: the new scrolled frames don't have one.
+
+**Scrollbar** (Vignesh, 2026-10-24: the native one didn't match): the panel's own scrollbar is hidden, so there's no gutter, and scrolling stays native (wheel, touch, keys). An overlay thumb draws over the right edge (`scrollbar.ts`): 4px wide (`--scrollbar-w`), `line-strong`, `rounded-full`, 6px from the edge (`--scrollbar-inset`), kept `--radius-panel` clear of the top and bottom so it never meets the rounded corners. Its height follows the visible share of the content (at least 40px, `--scrollbar-min`), and it moves by transform. Only the thumb takes the pointer (16px-wide hit area): drag it to scroll, and it darkens to `fg-tertiary` while hovered or dragged. A wheel over it still scrolls the panel. With a mouse it shows whenever there's more to scroll; on touch screens only while scrolling, fading out 0.8s after (`--duration-base`). It fades in with About's content during the mobile morph. Hidden from assistive tech: native scrolling is the accessible path.
+
+Desktop opening: `@starting-style` transitions. `/?about` opens without the entrance (already grown on mobile). Fires `drawer:open` / `drawer:close`. Scripts: `drawer.ts` (with `sheet.ts`, `drag.ts`). All content from the `about` singleton.
 
 ### Gallery
-**Figma:** `234:5312` (desktop 170×200), `234:34033` (mobile 150×176) · **Status:** built
+**Figma:** `280:9424` (desktop 170×200, `gap-3`, `px-6`), `280:9306` (mobile 150×176, `gap-2`, `px-4`); buttons `280:9431` / `280:9479` · **Status:** built
 
-Horizontal scroll-snap row, `gap-2`, `rounded-media-sm` images (`object-cover`, 2×/3× sources). Labelled region, `tabindex="0"` for keyboard scrolling, hidden scrollbar, `overscroll-behavior-x: contain`.
+Horizontal scroll-snap row, `rounded-media-sm` images (`object-cover`, 2×/3× sources). Labelled region, `tabindex="0"` for keyboard scrolling, hidden scrollbar, `overscroll-behavior-x: contain`.
+
+Previous / Next: `glass` IconButtons (CaretLeft / CaretRight), 48px, inset by the row's side padding and centred on the photos (mobile Figma puts them 12px low, copied from desktop; centred instead). Next shows until the row reaches its end; Previous once it has left the start; each fades (`--duration-fast`). A press scrolls by the photos that fully fit and lands on a snap point; near an end it goes all the way. Smooth, instant under reduced motion. A focused button that disappears hands focus to the other one or the row. Both render hidden, so without JS there are no dead buttons. Script: `gallery.ts`.
 
 ### TimelineRow
 **Figma:** `234:5322` · **Status:** built

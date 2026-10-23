@@ -28,7 +28,7 @@ Figma names map to primitives: `gray/700` → `--gray-700`; `Heading/H4` → `te
 | Area | State |
 |---|---|
 | Tokens | v0.5: case-study tokens (column, radii, eyebrow tracking, nav blur, `fg-secondary-on-fill`, spacing 22/30/40) |
-| Components | Foundation, homepage, About and case study built |
+| Components | Foundation, homepage, About (rebuilt from `280:9512`, 2026-10-24) and case study built |
 | Case study pages | All five built: Data mapping (`234:33903`), Prime compass and Nova (template + System), Fyn and Gyst (Context), section `279:8667` |
 | Tablet (768–1199) | Not designed; interim rule in `layout-and-motion.md` |
 | Dark mode | Not designed. Don't build |
@@ -46,6 +46,10 @@ Agents: add to this list; don't resolve on your own.
 17. **Case-study colours that fail contrast** (Figma `234:33903`): eyebrows gray/500 → built `fg-secondary`; inactive tabs gray/500 → `fg-secondary-on-fill` (gray/700); floating nav 70% grey → `surface-caption`. Update the Figma variables, or choose other values?
 18. **Mobile Reflection card:** Figma draws it edge to edge (`234:10044`) while Overview is inset 24px. Built inset like Overview. Intended?
 20. **Mobile frame width:** the case-study mobile frames are 402 wide; the homepage's are 393. Built with Figma's 24px gutters, so it holds at 360–412.
+21. **About sheet, where Figma is silent** (`280:9512`, built as proposed on 2026-10-24; confirm or change):
+    - the 40px above the mobile sheet is dimmed with the 24% scrim;
+    - on tablet the sheet keeps the footer's width (553), not the drawer's 576;
+    - the mobile gallery buttons are centred on the photos (Figma has them 12px low).
 
 ### Resolved (2026-10-24)
 
@@ -70,6 +74,17 @@ Agents: add to this list; don't resolve on your own.
 ## Changelog
 
 Newest first. Date · branch · change · why.
+
+- 2026-10-24 · all · **About rebuilt** from Figma section `280:9512` (desktop drawer and mobile sheet, each with a scrolled state):
+  - **Mobile: the footer becomes About.** Tapping About grows the bottom sheet's own surface up to 40px from the top (`--about-top`). The About dialog has no surface of its own and rides on that edge, so it's one sheet. The footer's intro and buttons blur out by halfway; About's content blurs in past halfway; closing plays it back. Close by the close button, by dragging the handle down or tapping it, by Esc, or by tapping above the sheet. Why: Vignesh ("one seamless morph from footer to about sheet").
+  - **Handle:** light over the banner, grey with a white fade once white content is under it (Figma `280:9401`). The old compact sticky header (`234:34225`) is removed: the new scrolled frame has none.
+  - **Gallery buttons:** glass Previous / Next (`280:9431`). Next shows until the end, Previous after the start; a press pages by whole photos. White caret on the glass measured 3.0–9.8:1 at every resting scroll position (WCAG 1.4.11 needs 3:1).
+  - **Layout from the new frames:** desktop 24px side padding, 12px gaps for the buttons and photos, close button inset 24 (mobile 16), 2px white ring on the desktop avatar, a square-bottomed mobile banner. New banner image (sky through trees), from Figma.
+  - **Decisions Figma didn't cover:** a tap on the handle closes it (WCAG 2.5.7; the close button scrolls away); the scrim, tablet width and button centring (open question 21); instant under reduced motion, but a drag still follows the finger.
+  - **Tokens:** `--glass-40` → `surface-glass`, `--blur-glass` (20px), `--about-top` (40px), `sheet.aboutSwap`; IconButton `glass` variant; `--spacing-avatar-sm` removed. **Scripts:** `drag.ts` (shared by both sheets), `gallery.ts`.
+  - **Overlay scrollbar:** the native scrollbar (a gutter cutting into the rounded corners on Windows) is replaced by a 4px `line-strong` thumb inside the corners, draggable, darker on hover, shown with a mouse and only while scrolling on touch. Scrolling itself stays native. Why: Vignesh ("matches our design system and blends into the container").
+  - **Desktop scrim:** the drawer now dims the page with `surface-scrim`, fading with the drawer, like mobile. Figma draws none. Why: Vignesh.
+  - **60fps:** 0 missed frames at 4× CPU for open (desktop and mobile), close, the handle drag and the gallery scroll.
 
 - 2026-10-24 · all · **Prime compass, Nova, Fyn and Gyst built** from Figma section `279:8667`:
   - **Content:** two new optional sections. `context` (heading/text blocks with optional bullets, "Label: value" facts, a note) for Fyn and Gyst; `system` (heading, intro, image, a link to another case study, cards) for Prime compass, whose image opens Nova. Prime compass and Nova are `live`.

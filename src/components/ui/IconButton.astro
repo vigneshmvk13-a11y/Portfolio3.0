@@ -6,7 +6,7 @@
  */
 import type { HTMLAttributes } from 'astro/types';
 
-type Variant = 'sm' | 'lg' | 'lg-outlined' | 'close';
+type Variant = 'sm' | 'lg' | 'lg-outlined' | 'close' | 'glass';
 
 interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
   icon: (props: { class?: string }) => unknown;
@@ -20,17 +20,23 @@ interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
 
 const { icon: Icon, label, variant = 'sm', href, external = false, class: className, ...rest } = Astro.props;
 
+const raised = 'bg-surface-raised text-fg-secondary hover:text-fg-primary';
 const variants: Record<Variant, { box: string; icon: string }> = {
-  sm: { box: 'p-4 rounded-button-sm border border-line-subtle hover:border-line-strong', icon: 'size-icon-sm' },
-  lg: { box: 'p-4 rounded-button-lg border border-line-default hover:border-line-strong', icon: 'size-icon-xs' },
-  'lg-outlined': { box: 'p-5 rounded-button-lg border border-line-default hover:border-line-strong', icon: 'size-icon-sm' },
-  close: { box: 'p-4 rounded-media-sm border border-line-default hover:border-line-strong', icon: 'size-icon-sm' },
+  sm: { box: `${raised} p-4 rounded-button-sm border border-line-subtle hover:border-line-strong`, icon: 'size-icon-sm' },
+  lg: { box: `${raised} p-4 rounded-button-lg border border-line-default hover:border-line-strong`, icon: 'size-icon-xs' },
+  'lg-outlined': { box: `${raised} p-5 rounded-button-lg border border-line-default hover:border-line-strong`, icon: 'size-icon-sm' },
+  close: { box: `${raised} p-4 rounded-media-sm border border-line-default hover:border-line-strong`, icon: 'size-icon-sm' },
+  // Over photos (Figma 280:9431): frosted grey circle, white caret.
+  glass: {
+    box: 'p-3 rounded-full border border-line-default bg-surface-glass text-fg-on-media backdrop-blur-glass',
+    icon: 'size-icon-lg',
+  },
 };
 
 const classes = [
-  'inline-flex shrink-0 items-center justify-center bg-surface-raised text-fg-secondary',
+  'inline-flex shrink-0 items-center justify-center',
   'transition-[border-color,color,scale] duration-(--duration-fast) ease-out',
-  'hover:text-fg-primary active:scale-96',
+  'active:scale-96',
   variants[variant].box,
   className,
 ];

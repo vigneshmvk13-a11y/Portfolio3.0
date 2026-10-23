@@ -173,13 +173,30 @@ The earlier proposal's "grow out" phase (gooey cards emerging from the first one
 - The landing isn't announced in the live region and doesn't set a hash.
 - Reduced motion: no intro; the resting state renders directly. Repeat visits in the session also go straight to rest. `scripts/screenshot.mjs` skips it unless `INTRO=1`; `test-wheel.mjs` skips it except in the intro tests.
 
-## About drawer
+## About
 
-- Open: panel from `translateX(-24px)` (desktop) or `translateY(24px)` (mobile/tablet), opacity 0 → rest over `--duration-slow`, `--ease-in-out`, via CSS `@starting-style` (no JS animation). Mobile scrim fades in over `--duration-base`; desktop has no scrim (Figma `234:4968`).
-- Close: reverse over `--duration-base`. Esc, outside click (`closedby="any"` plus a JS fallback) and the close button all close it; focus returns to the trigger.
-- Background is inert (`<dialog>.showModal()`); the wheel controller disables input while it's open (`drawer:open` / `drawer:close`).
-- Mobile compact header (`234:34225`): once the banner block scrolls out of the drawer, an 84px sticky bar (banner strip, 52px avatar left, close right) fades in. It's a **state switch**, not scroll-linked, so reduced motion only loses the fade. The earlier scroll-linked shrink (200 → 64) is dropped: it's more motion for the same information.
-- Deep link: `/?about` opens it on load (no entrance animation).
+Figma section `280:9512`. A side drawer on desktop; on mobile and tablet the bottom sheet grows into it.
+
+**Both:**
+- Background is inert (`<dialog>.showModal()`); the wheel controller disables input while it's open (`drawer:open` / `drawer:close`). Focus moves to the close button and returns to the trigger.
+- Esc, a click outside (`closedby="any"` plus a JS fallback) and the close button close it.
+- Deep link: `/?about` opens it on load (no entrance; already grown on mobile).
+
+**Desktop drawer:** from `translateX(-24px)`, opacity 0 → rest over `--duration-slow`, `--ease-in-out`, via CSS `@starting-style`; closes in reverse over `--duration-base`. The `surface-scrim` backdrop fades with it, as on mobile (Vignesh, 2026-10-24; Figma `234:4968` has none). The whole panel scrolls, banner included (`280:9452`).
+
+**Mobile and tablet: the footer becomes About** (Vignesh, 2026-10-24: "the same footer expands to fill the screen with a top spacing of 40px … one seamless morph"):
+- **One surface.** The bottom sheet's own surface (`[data-sheet-bg]`, already tall enough) rises until its top edge is `--about-top` (40px) below the screen's top. The About `<dialog>` has no surface of its own: it rides exactly on that edge (transform), so the white, the border and the rounded top are always the sheet's. Its handle sits in the sheet handle's spot and takes over from it.
+- **One value**, `progress` (0 = footer, 1 = About), drives every frame (`drawer.ts` → `sheet.ts`): the surface's lift, the dialog's position, the scrim (`surface-scrim`, behind the surface, 0 → 24% black), and both sets of content.
+- **Content swap at halfway** (`sheet.aboutSwap`): the footer's intro and buttons blur (to 10px) and fade out by halfway, rising at half the surface's speed. About's content appears only past halfway, sharpening as the sheet settles. Closing plays this back: About blurs out by halfway closed, then the footer's content returns.
+- It starts wherever the footer is (expanded or collapsed) and goes back there.
+- **Timing:** open, the close button, Esc and taps use `duration.slow` + `ease.inOut` (0.5s). Drag release uses the bottom sheet's rule: a spring carrying the release speed, `sheet.flickMin`–0.5s (`drag.ts`, shared with `sheet.ts`).
+- **Closing:** the close button; dragging the handle down (it follows the finger and settles to the nearer state, counting a 0.15s projection of the release speed); a tap on the handle (WCAG 2.5.7: dragging has a single-tap alternative, and the close button scrolls away with the banner); Esc and a tap in the 40px above the sheet (their `cancel` is intercepted, so they play the morph back too). A browser that won't let Esc be cancelled closes the dialog at once, and the sheet still glides back.
+- **Handle colour:** light (`surface-page`) over the banner, `line-strong` with a 40px white fade (50% → 0) once white content is under it (`280:9401`). A state switch with a `--duration-fast` crossfade, from scroll position. While the sheet grows, the light bar fades in with the banner, so the handle starts the footer's grey.
+- **Stacking:** while it's open the sheet lifts to `z-40`, above the TOC handle, which would otherwise show through the transparent dialog.
+- **Tablet:** the sheet's width (`card-w`, centred), not `w-drawer`, so it's still one surface. Tablet isn't designed.
+- **Reduced motion:** opening and closing are instant. A drag still follows the finger (direct manipulation).
+- **60fps:** transforms, opacity and a blur that is only on during the morph. 0 missed frames at 4× CPU for open, close, the handle drag and the gallery scroll (`perf-motion.mjs`, 2026-10-24).
+- The compact sticky header (`234:34225`) is gone: the new scrolled frame (`280:9344`) has none.
 
 ## TOC handle (mobile)
 

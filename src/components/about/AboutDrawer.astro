@@ -1,9 +1,11 @@
 ---
 /**
- * About drawer (Figma 234:5386 desktop, 234:5545 mobile, 234:34225 mobile compact header).
+ * About (Figma section 280:9512: desktop 280:9404, scrolled 280:9452; mobile 280:9285, scrolled 280:9344).
  * Native modal <dialog>: background inert, Esc closes, focus returns to the trigger.
- * Desktop: left panel inset 40px, no scrim (as drawn). Mobile: bottom sheet with a compact
- * sticky header once the banner scrolls away (a state switch, so reduced motion only drops the fade).
+ * Desktop: left drawer inset 40px over the scrim, sliding in with CSS.
+ * Mobile and tablet: the homepage's bottom sheet grows into it (src/scripts/drawer.ts, sheet.ts). The
+ * dialog has no surface of its own: the sheet's surface rises behind it to --about-top, so the two read
+ * as one sheet. Its handle closes it (drag or tap) and turns grey once white content scrolls under it.
  * Content: the `about` singleton.
  */
 import { Image } from 'astro:assets';
@@ -24,199 +26,312 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
 ---
 
 <dialog id="about" class="about-drawer" aria-labelledby="about-title" closedby="any" data-about>
-  <h2 id="about-title" class="sr-only">About {about.name}</h2>
+  <!-- Mobile handle (Figma 280:9342 at rest, 280:9401 scrolled): light on the banner, grey with a white fade on white. -->
+  <div class="about-drawer__fade" aria-hidden="true"></div>
+  <button type="button" class="about-drawer__grabber" aria-label="Close" tabindex="-1" data-about-grabber>
+    <span class="about-drawer__bar" aria-hidden="true">
+      <span class="about-drawer__bar-light" data-about-grabber-light><span></span></span>
+    </span>
+  </button>
 
-  <!-- Mobile compact header (234:34225): appears once the banner has scrolled away. -->
-  <div class="about-compact sticky top-0 z-10 desktop:hidden" aria-hidden="true">
-    <div class="relative flex items-start justify-between overflow-hidden rounded-t-panel-inner rounded-b-media-sm p-4">
-      {about.banner && <Image src={about.banner} alt="" width={393} height={84} densities={[2]} fit="cover" class="absolute inset-0 size-full object-cover" />}
-      {about.avatar && <Image src={about.avatar} alt="" width={52} height={52} densities={[2, 3]} fit="cover" class="relative size-avatar-sm rounded-full object-cover" />}
-      <IconButton icon={X} label="Close" variant="close" class="relative" data-about-close tabindex="-1" />
-    </div>
-  </div>
+  <div class="about-drawer__scroll" data-about-scroll>
+    <h2 id="about-title" class="sr-only">About {about.name}</h2>
 
-  <div class="flex flex-col gap-8 desktop:gap-0">
-    <div class="flex flex-col gap-6 desktop:gap-0">
-      <div class="overflow-hidden rounded-t-panel-inner desktop:rounded-none" data-about-banner>
-        <div class="relative flex h-banner items-start justify-end overflow-hidden rounded-b-media-sm p-5 desktop:rounded-none">
+    <div class="flex flex-col gap-8 desktop:gap-0">
+      <div class="flex flex-col gap-6 desktop:gap-0">
+        <div class="overflow-hidden rounded-t-panel-inner desktop:rounded-none">
+          <div class="relative flex h-banner items-start justify-end overflow-hidden p-4 desktop:p-6" data-about-banner>
+            {
+              about.banner && (
+                <Image src={about.banner} alt={about.bannerAlt} width={576} height={200} densities={[2]} fit="cover" class="absolute inset-0 size-full object-cover" />
+              )
+            }
+            <IconButton icon={X} label="Close" variant="close" class="relative" data-about-close autofocus />
+          </div>
           {
-            about.banner && (
-              <Image src={about.banner} alt={about.bannerAlt} width={576} height={200} densities={[2]} fit="cover" class="absolute inset-0 size-full object-cover" />
+            about.avatar && (
+              <div class="flex justify-center px-5 desktop:justify-start">
+                <Image
+                  src={about.avatar}
+                  alt={about.avatarAlt}
+                  width={140}
+                  height={140}
+                  densities={[2, 3]}
+                  fit="cover"
+                  class="relative -mt-avatar-overlap size-avatar rounded-full object-cover desktop:border-2 desktop:border-surface-raised"
+                />
+              </div>
             )
           }
-          <IconButton icon={X} label="Close" variant="close" class="relative" data-about-close autofocus />
         </div>
-        {
-          about.avatar && (
-            <div class="flex justify-center px-5 desktop:justify-start">
-              <Image
-                src={about.avatar}
-                alt={about.avatarAlt}
-                width={140}
-                height={140}
-                densities={[2, 3]}
-                fit="cover"
-                class="relative -mt-avatar-overlap size-avatar rounded-full object-cover"
-              />
-            </div>
-          )
-        }
+
+        <div class="flex flex-col gap-6 desktop:gap-0">
+          <div class="flex flex-col gap-5 px-4 desktop:px-6 desktop:py-8">
+            {firstParagraph && <p class="text-label-1 font-regular desktop:text-body-2" set:html={renderInline(firstParagraph)} />}
+            {otherParagraphs.map((paragraph) => <p class="text-body-3 desktop:text-body-2" set:html={renderInline(paragraph)} />)}
+          </div>
+          <div class="flex gap-2 px-4 desktop:gap-3 desktop:px-6 desktop:pb-8">
+            {resume ? (
+              <IconButton icon={File} label={nav.resume} variant="lg-outlined" href={resume} external />
+            ) : (
+              <Todo class="self-center">resume PDF</Todo>
+            )}
+            <IconButton icon={ChatCircleDots} label={nav.contact} variant="lg-outlined" href={contact} external={contactIsExternal} />
+          </div>
+        </div>
       </div>
 
-      <div class="flex flex-col gap-6 desktop:gap-0">
-        <div class="flex flex-col gap-5 px-4 desktop:px-5 desktop:py-8">
-          {firstParagraph && <p class="text-label-1 font-regular desktop:text-body-2" set:html={renderInline(firstParagraph)} />}
-          {otherParagraphs.map((paragraph) => <p class="text-body-3 desktop:text-body-2" set:html={renderInline(paragraph)} />)}
-        </div>
-        <div class="flex gap-2 px-4 desktop:px-5 desktop:pb-8">
-          {resume ? (
-            <IconButton icon={File} label={nav.resume} variant="lg-outlined" href={resume} external />
-          ) : (
-            <Todo class="self-center">resume PDF</Todo>
-          )}
-          <IconButton icon={ChatCircleDots} label={nav.contact} variant="lg-outlined" href={contact} external={contactIsExternal} />
-        </div>
-      </div>
+      <!-- Desktop: 32px under the photos + 32px above the heading = Figma's 64px heading padding. -->
+      <Gallery images={about.gallery} id="about-gallery" class="desktop:pb-8" />
+
+      {
+        about.journey.length > 0 && (
+          <section aria-labelledby="journey-title" class="flex flex-col gap-8 desktop:gap-0">
+            <h3 id="journey-title" class="px-4 text-label-1 font-medium text-fg-strong desktop:px-6 desktop:py-8 desktop:text-body-1">
+              Journey so far
+            </h3>
+            <ol class="flex flex-col gap-3 px-5 pb-5 desktop:px-6 desktop:pb-10">
+              {about.journey.map((row, i) => (
+                <TimelineRow {...row} last={i === about.journey.length - 1} />
+              ))}
+            </ol>
+          </section>
+        )
+      }
     </div>
-
-    <Gallery images={about.gallery} class="scroll-px-4 px-4 desktop:scroll-px-5 desktop:px-5 desktop:pb-8" />
-
-    {
-      about.journey.length > 0 && (
-        <section aria-labelledby="journey-title" class="flex flex-col gap-8 desktop:gap-0">
-          <h3 id="journey-title" class="px-4 text-label-1 font-medium text-fg-strong desktop:px-5 desktop:py-8 desktop:text-body-1">
-            Journey so far
-          </h3>
-          <ol class="flex flex-col gap-3 px-5 pb-5 desktop:pb-10">
-            {about.journey.map((row, i) => (
-              <TimelineRow {...row} last={i === about.journey.length - 1} />
-            ))}
-          </ol>
-        </section>
-      )
-    }
   </div>
+
+  <!-- Overlay scrollbar (src/scripts/scrollbar.ts): the native one is hidden; scrolling stays native. -->
+  <div class="about-drawer__scrollbar" aria-hidden="true" data-about-scrollbar data-hidden><span></span></div>
 </dialog>
 
 <style>
-  /* ---------- Shell ---------- */
+  /*
+   * ---------- Mobile and tablet ----------
+   * Transparent: the bottom sheet's surface (BottomSheet.astro) sits right behind it, risen to
+   * --about-top, and draws the border, the rounded top and the white. drawer.ts moves the dialog with
+   * that surface (transform) and fades the content in; the transparent 1px border keeps the content
+   * where the surface's border puts it. No backdrop here: the sheet's scrim sits behind its surface.
+   */
   .about-drawer {
     position: fixed;
-    inset: calc(var(--spacing) * 8) 0 0;
+    inset: var(--about-top) 0 0;
     width: 100%;
     max-width: none;
     height: auto;
     max-height: none;
     margin: 0;
-    padding: var(--spacing);
-    border: 1px solid var(--color-line-default);
+    padding: 0;
+    border: 1px solid var(--color-transparent);
     border-bottom: 0;
     border-radius: var(--radius-panel) var(--radius-panel) 0 0;
-    background: var(--color-surface-raised);
+    background: var(--color-transparent);
     color: var(--color-fg-secondary);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-
-    /* Close: reverse over --duration-base. */
-    opacity: 0;
-    translate: 0 calc(var(--spacing) * 6);
-    transition:
-      opacity var(--duration-base) var(--ease-in-out),
-      translate var(--duration-base) var(--ease-in-out),
-      display var(--duration-base) allow-discrete,
-      overlay var(--duration-base) allow-discrete;
-  }
-
-  .about-drawer[open] {
-    opacity: 1;
-    translate: 0 0;
-    transition-duration: var(--duration-slow);
-  }
-
-  @starting-style {
-    .about-drawer[open] {
-      opacity: 0;
-      translate: 0 calc(var(--spacing) * 6);
-    }
-  }
-
-  .about-drawer.no-entrance {
-    transition: none;
+    overflow: hidden;
   }
 
   .about-drawer::backdrop {
-    background: var(--color-surface-scrim);
-    opacity: 0;
-    transition:
-      opacity var(--duration-base) var(--ease-out),
-      display var(--duration-base) allow-discrete,
-      overlay var(--duration-base) allow-discrete;
+    background: var(--color-transparent);
   }
-  .about-drawer[open]::backdrop {
-    opacity: 1;
+
+  .about-drawer__scroll {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--spacing) var(--spacing) calc(var(--spacing) + env(safe-area-inset-bottom));
+    scrollbar-width: none;
   }
-  @starting-style {
-    .about-drawer[open]::backdrop {
+  .about-drawer__scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+   * Overlay scrollbar: a 4px line-strong thumb, 6px from the edge, kept clear of the rounded corners
+   * (--radius-panel top and bottom). Only the thumb takes the pointer (a 16px-wide hit area); it darkens
+   * to fg-tertiary while hovered or dragged. With a mouse it shows whenever there's more to scroll; on
+   * touch screens only while scrolling, like the platform's own.
+   */
+  .about-drawer__scrollbar {
+    position: absolute;
+    inset: var(--radius-panel) 0 var(--radius-panel) auto;
+    z-index: 1;
+    width: var(--scrollbar-hit);
+    pointer-events: none;
+    /* Fades in with About's content while the mobile sheet grows (drawer.ts). */
+    opacity: var(--about-in, 1);
+  }
+  .about-drawer__scrollbar[data-hidden] {
+    display: none;
+  }
+  .about-drawer__scrollbar > span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--scrollbar-hit);
+    pointer-events: auto;
+    touch-action: none;
+  }
+  .about-drawer__scrollbar > span::before {
+    content: '';
+    position: absolute;
+    inset: 0 var(--scrollbar-inset) 0 auto;
+    width: var(--scrollbar-w);
+    border-radius: var(--radius-full);
+    background: var(--color-line-strong);
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .about-drawer__scrollbar > span:hover::before,
+  .about-drawer__scrollbar[data-dragging] > span::before {
+    background: var(--color-fg-tertiary);
+  }
+  @media (hover: none) {
+    .about-drawer__scrollbar {
+      transition: opacity var(--duration-base) var(--ease-out);
+    }
+    .about-drawer__scrollbar:not([data-scrolling]) {
       opacity: 0;
     }
   }
 
-  @media (min-width: 48rem) {
-    .about-drawer {
+  .about-drawer__fade,
+  .about-drawer__grabber {
+    display: none;
+  }
+
+  @media (width < 75rem) {
+    /* White fade behind the handle once content scrolls under it (Figma 280:9401). */
+    .about-drawer__fade {
+      display: block;
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: 1;
+      height: calc(var(--spacing) * 10);
+      background: linear-gradient(color-mix(in srgb, var(--color-surface-raised) 50%, transparent), transparent);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duration-fast) var(--ease-out);
+    }
+
+    /* Same spot and size as the sheet's handle (BottomSheet.astro): 40×6 bar, 96×40 hit area. */
+    .about-drawer__grabber {
+      position: absolute;
+      top: 0;
       left: 50%;
-      width: min(var(--container-drawer), 100%);
-      translate: -50% calc(var(--spacing) * 6);
-    }
-    .about-drawer[open] {
+      z-index: 1;
+      width: calc(var(--spacing) * 24);
+      height: calc(var(--spacing) * 10);
       translate: -50% 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
+      border: 0;
+      background: var(--color-transparent);
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    @starting-style {
-      .about-drawer[open] {
-        translate: -50% calc(var(--spacing) * 6);
-      }
+
+    .about-drawer__bar,
+    .about-drawer__bar-light,
+    .about-drawer__bar-light > span {
+      border-radius: var(--radius-full);
+    }
+    .about-drawer__bar {
+      position: relative;
+      width: calc(var(--spacing) * 10);
+      height: var(--sheet-handle-h);
+      margin-top: var(--sheet-handle-top);
+      background: var(--color-line-strong);
+    }
+    /* The light bar fades in with the banner (drawer.ts sets this layer's opacity) … */
+    .about-drawer__bar-light {
+      position: absolute;
+      inset: 0;
+    }
+    /* … and out once white content is under the handle. */
+    .about-drawer__bar-light > span {
+      position: absolute;
+      inset: 0;
+      background: var(--color-surface-page);
+      transition: opacity var(--duration-fast) var(--ease-out);
+    }
+
+    .about-drawer[data-on-white] .about-drawer__fade {
+      opacity: 1;
+    }
+    .about-drawer[data-on-white] .about-drawer__bar-light > span {
+      opacity: 0;
     }
   }
 
-  /* Desktop: left panel, inset 40px, rounded, no scrim (Figma 234:4968). */
+  /* Tablet: the sheet's width (Figma card width), since it grows out of the sheet. */
+  @media (min-width: 48rem) {
+    .about-drawer {
+      margin-inline: auto;
+      width: min(100%, var(--spacing-card-w));
+    }
+  }
+
+  /* ---------- Desktop: left drawer, inset 40px, rounded, over a scrim (Figma 234:4968 has none) ---------- */
   @media (min-width: 75rem) {
     .about-drawer {
       inset: var(--spacing-gutter-inner) auto var(--spacing-gutter-inner) var(--spacing-gutter-inner);
       width: var(--container-drawer);
-      padding: 0;
+      margin: 0;
       border: 0;
       border-radius: var(--radius-panel);
+      background: var(--color-surface-raised);
+
+      /* Close: reverse over --duration-base. */
+      opacity: 0;
       translate: calc(var(--spacing) * -6) 0;
+      transition:
+        opacity var(--duration-base) var(--ease-in-out),
+        translate var(--duration-base) var(--ease-in-out),
+        display var(--duration-base) allow-discrete,
+        overlay var(--duration-base) allow-discrete;
     }
+
     .about-drawer[open] {
+      opacity: 1;
       translate: 0 0;
+      transition-duration: var(--duration-slow);
     }
+
     @starting-style {
       .about-drawer[open] {
+        opacity: 0;
         translate: calc(var(--spacing) * -6) 0;
       }
     }
+
+    .about-drawer.no-entrance,
+    .about-drawer.no-entrance::backdrop {
+      transition: none;
+    }
+
+    /* Scrim like the mobile sheet's (Vignesh, 2026-10-24; Figma draws none), fading with the drawer. */
     .about-drawer::backdrop {
-      background: var(--color-transparent);
+      background: var(--color-surface-scrim);
+      opacity: 0;
+      transition:
+        opacity var(--duration-base) var(--ease-in-out),
+        display var(--duration-base) allow-discrete,
+        overlay var(--duration-base) allow-discrete;
+    }
+    .about-drawer[open]::backdrop {
+      opacity: 1;
+      transition-duration: var(--duration-slow);
+    }
+    @starting-style {
+      .about-drawer[open]::backdrop {
+        opacity: 0;
+      }
+    }
+
+    .about-drawer__scroll {
+      padding: 0;
     }
   }
-
-  /* ---------- Mobile compact header ---------- */
-  .about-compact {
-    height: 0;
-    overflow: visible;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity var(--duration-fast) var(--ease-out),
-      visibility var(--duration-fast) allow-discrete;
-  }
-  .about-drawer[data-compact] .about-compact {
-    opacity: 1;
-    visibility: visible;
-  }
 </style>
-
-<script>
-  import { initAboutDrawer } from '../../scripts/drawer';
-  initAboutDrawer();
-</script>

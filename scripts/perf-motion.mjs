@@ -143,6 +143,15 @@ try {
   report('mobile: TOC press → open', await m.measure(() => m.touch('touchStart', tab.x, tab.y), 500));
   report('mobile: TOC scrub (wheel spins)', await m.measure(async () => { for (let dy = 0; dy <= 80; dy += 4) { await m.touch('touchMove', tab.x, tab.y + dy); await sleep(16); } }, 700));
   report('mobile: TOC release → close', await m.measure(() => m.touch('touchEnd'), 600));
+  // About: the sheet grows into it and plays back (design/layout-and-motion.md → About).
+  await sleep(400);
+  report('mobile: About open (sheet grows)', await m.measure(() => m.eval(`document.querySelector('[data-sheet-actions] [data-about-open]').click()`), 800));
+  report('mobile: About gallery Next', await m.measure(() => m.eval(`document.querySelector('[data-gallery-next]').click()`), 700));
+  report('mobile: About close (plays back)', await m.measure(() => m.eval(`document.querySelector('[data-about-close]').click()`), 800));
+  await m.eval(`document.querySelector('[data-sheet-actions] [data-about-open]').click()`);
+  await sleep(900);
+  const grip = await m.eval(`(() => { const r = document.querySelector('[data-about-grabber]').getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; })()`);
+  report('mobile: About handle drag down + close', await m.measure(async () => { await m.touch('touchStart', grip.x, grip.y); for (let dy = 12; dy <= 360; dy += 12) { await m.touch('touchMove', grip.x, grip.y + dy); await sleep(16); } await m.touch('touchEnd'); }, 800));
   await m.close();
 
   const mi = await page(393, 852, { intro: true });

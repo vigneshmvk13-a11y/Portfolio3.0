@@ -8,6 +8,7 @@ import { bindToc } from './toc';
 import { bindTocMorph } from './toc-morph';
 import { bindHash, indexFromHash } from './hash';
 import { bindSheet } from './sheet';
+import { initAboutDrawer } from './drawer';
 import { initMotionCovers, setActiveCover } from './media';
 import { watchQuality } from './quality';
 
@@ -33,6 +34,8 @@ export function initHome(): WheelController | null {
   bindTocMorph(wheel);
   bindHash(wheel);
   bindSheet(wheel);
+  // After the sheet: on mobile, About grows out of it (including the /?about deep link).
+  initAboutDrawer();
 
   const activeCard = () => stage.querySelector<HTMLElement>('[data-wheel-card]:not([inert])');
   const status = stage.querySelector<HTMLElement>('[data-wheel-status]');
