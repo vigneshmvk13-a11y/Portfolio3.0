@@ -7,9 +7,9 @@ import { bindTabs } from './case-study/tabs';
 import { bindNav } from './case-study/nav';
 import { bindSwipe } from './case-study/swipe';
 
-/** At most one video plays: the cover most in view (at least half visible), or none. */
+/** Of the page's own covers, only the one most in view (at least half visible) plays, or none. The More projects row plays on its own (data-autoplay). */
 function playMostVisibleCover(): void {
-  const covers = [...document.querySelectorAll<HTMLElement>('[data-case-page] [data-motion-cover]')].filter((cover) =>
+  const covers = [...document.querySelectorAll<HTMLElement>('[data-case-page] [data-motion-cover]:not([data-autoplay])')].filter((cover) =>
     cover.querySelector('video'),
   );
   if (covers.length === 0) return;

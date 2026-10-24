@@ -242,7 +242,7 @@ White card like Overview. Eyebrow, heading, paragraphs (no gap between them, as 
 ### MoreProjects
 **Figma:** `234:23083`, mobile `234:10050` · **Status:** built
 
-`<h2>` "More projects" (`text-h5`) and "See all" (→ `/`, `text-label-1 font-medium fg-secondary`, hover `fg-primary`): beside the heading on desktop, under the cards on mobile. The next three projects in homepage order, wrapping, never the current one, as compact ProjectCardLinks (posters only, badge 16px in, title only). Desktop 3 columns `gap-5` in the text column; mobile one column `gap-5`. `pb-30` (desktop `pb-40`) leaves room for CaseNav.
+`<h2>` "More projects" (`text-h5`) and "See all" (→ `/`, `text-label-1 font-medium fg-secondary`, hover `fg-primary`): beside the heading on desktop, under the cards on mobile. The next three projects in homepage order, wrapping, never the current one, as compact ProjectCardLinks (posters only, badge 16px in, title only). Desktop (Figma `307:67837`, 2026-10-24): 3 columns `gap-6` (24) in the text column, each **200px tall** (`h-50`, ~207 wide), `pt-22` above the heading, `pb-12` (48) below; mobile one column `gap-4`, `aspect-card`, `pb-30`. **All three covers autoplay together** (`autoplay` → `data-autoplay`; the one-at-a-time rule is lifted for this row, AGENTS.md → Media rules); the page's own covers keep one at a time. At the very end of the page CaseNav (always shown there) overlaps the last 40px of the cards, as in the Figma frame.
 
 ### CaseNav
 **Figma:** `234:23100`, mobile `234:10068` (the collapsed `234:31771` is retired, 2026-10-24) · **Status:** built. Hides on scroll down, returns on scroll up (`layout-and-motion.md → Floating nav`).

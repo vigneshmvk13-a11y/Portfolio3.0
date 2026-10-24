@@ -26,6 +26,7 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 
 ## Accessibility (target: Lighthouse 100)
 
+- **Cursor:** every interactive element (links, buttons, summaries, selects, labels, button-like inputs) shows the pointing hand; one base rule in `global.css`, because Tailwind v4 resets buttons to the default cursor (the About button was the one that showed an arrow).
 - **Focus ring:** `outline-2 outline-offset-2 outline-focus` on `:focus-visible` for every interactive element; offset 4px on cards. Never `outline-none` without a replacement.
 - **Contrast:** text ≥ 4.5:1, large text and UI boundaries ≥ 3:1. The Figma footer credits used `fg-tertiary` (~3.3:1); they use `fg-secondary` (4.53:1) instead. Don't use `fg-tertiary` for text. `fg-secondary` fails on `surface-hover` (4.10:1): anything grey that gets a hover background switches its text to `fg-primary`.
 - Case study (Figma `234:33903`), where the drawn colours fail 4.5:1: eyebrows use `fg-secondary` (Figma gray/500, 3.6:1 on white); inactive tabs `fg-secondary-on-fill` (gray/500 on gray/100 is 3.0:1); the floating nav's surface is `surface-caption` (Figma's 70% grey under white text is 2.8:1). The Figma variables should follow.

@@ -17,17 +17,17 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
 
 <section
   aria-labelledby="more-projects"
-  class="mt-15 pb-30 desktop:mx-auto desktop:mt-0 desktop:max-w-case-text desktop:pt-22 desktop:pb-40"
+  class="mt-15 pb-30 desktop:mx-auto desktop:mt-0 desktop:max-w-case-text desktop:pt-22 desktop:pb-12"
 >
   <div class="flex items-end justify-between pb-6">
     <h2 id="more-projects" class="text-h5 text-fg-primary">More projects</h2>
     <a href="/" class:list={['hidden desktop:block', seeAll]}>See all</a>
   </div>
-  <ul class="grid gap-4 desktop:grid-cols-3 desktop:gap-5">
+  <ul class="grid gap-4 desktop:grid-cols-3 desktop:gap-6">
     {
       entries.map((entry) => (
-        <li class="aspect-card">
-          <ProjectCardLink entry={entry} compact sizes="(min-width: 75rem) 209px, min(calc(100vw - 48px), 846px)" />
+        <li class="aspect-card desktop:aspect-auto desktop:h-50">
+          <ProjectCardLink entry={entry} compact autoplay sizes="(min-width: 75rem) 207px, min(calc(100vw - 48px), 846px)" />
         </li>
       ))
     }

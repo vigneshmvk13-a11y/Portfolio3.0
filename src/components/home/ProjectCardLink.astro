@@ -14,11 +14,13 @@ interface Props {
   compact?: boolean;
   priority?: boolean;
   active?: boolean;
+  /** Plays whenever near the viewport, alongside others (More projects). */
+  autoplay?: boolean;
   sizes?: string;
   class?: string;
 }
 
-const { entry, compact = false, priority = false, active = false, sizes, class: className } = Astro.props;
+const { entry, compact = false, priority = false, active = false, autoplay = false, sizes, class: className } = Astro.props;
 const { subtitle, cardMeta, status, heroVideo } = entry.data;
 ---
 
@@ -42,6 +44,7 @@ const { subtitle, cardMeta, status, heroVideo } = entry.data;
     webm={heroVideo.webm}
     priority={priority}
     active={active}
+    autoplay={autoplay}
     sizes={sizes}
   />
   <Badge

@@ -1,6 +1,7 @@
 /**
  * MotionCover controller. AGENTS.md → Media rules:
- * - at most one video plays, and only the active one;
+ * - one "active" video plays at a time; covers marked `data-autoplay` (the More projects row) play whenever
+ *   they are near the viewport, together, because they are the point of that row;
  * - sources attach only when the cover is near the viewport;
  * - reduced motion or Save-Data → poster only, the video never loads.
  */
@@ -44,7 +45,11 @@ function sync(): void {
   for (const video of document.querySelectorAll<HTMLVideoElement>('[data-motion-cover] video')) {
     const cover = video.closest<HTMLElement>('[data-motion-cover]');
     const shouldPlay =
-      allowed && cover === activeCover && cover !== null && nearViewport.has(cover) && !document.hidden;
+      allowed &&
+      cover !== null &&
+      (cover === activeCover || cover.hasAttribute('data-autoplay')) &&
+      nearViewport.has(cover) &&
+      !document.hidden;
     if (!shouldPlay) {
       stop(video);
       continue;

@@ -303,6 +303,14 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /*
+   * Tailwind v4 resets buttons to the default cursor. Everything you can press gets the pointing hand
+   * (Vignesh, 2026-10-24): links, buttons (the About button included), disclosure and form controls.
+   */
+  :is(a[href], button, summary, select, [role="button"], [role="tab"], label[for], input:is([type="button"], [type="submit"], [type="checkbox"], [type="radio"])):not(:disabled, [aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
   /* One focus treatment everywhere (rules.md → Accessibility). */
   :focus-visible {
     outline: 2px solid var(--color-focus);
