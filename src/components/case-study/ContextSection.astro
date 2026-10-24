@@ -1,52 +1,65 @@
 ---
 /**
- * Context (Figma 279:7530 Fyn, 279:7574 Gyst): for case studies without the full sections. Heading + text
- * blocks (a block can carry a bullet list), then "Label: value" facts right under the last block, then a
- * small note. No mobile frames: the text column at full width, as the other sections.
+ * Context (Figma 290:57503 Fyn desktop, 290:57552 Fyn mobile, 290:57591 / 290:57648 Gyst): the Overview card
+ * for case studies without the full sections. The first block is the lead (heading and text), the rest are
+ * subheads with text or a bullet list, 48px apart (mobile 32). A closing `note` is one more paragraph of the
+ * lead, as drawn for Gyst. The "Label: value" facts sit in the facts row under the cover (CaseHero).
  */
 import Eyebrow from './Eyebrow.astro';
-import SectionLead from './SectionLead.astro';
-import type { CaseStudy } from '../../lib/content';
+import { paragraphs, type CaseStudy } from '../../lib/content';
 
 interface Props {
   context: NonNullable<CaseStudy['data']['context']>;
+  /** The facts row above already gives the gap under the cover. */
+  afterFacts?: boolean;
 }
 
-const { blocks, facts, note } = Astro.props.context;
+const { context, afterFacts = false } = Astro.props;
+const { blocks, note } = context;
+const [lead, ...rest] = blocks;
+const leadText = [...paragraphs(lead?.body), ...paragraphs(note)];
 const body = 'text-body-3 desktop:text-body-2';
 ---
 
 <section
   id="context"
   aria-labelledby="context-label"
-  class="flex scroll-mt-25 flex-col gap-6 pt-8 desktop:mx-auto desktop:max-w-case-text desktop:pt-22"
+  class:list={[
+    'flex scroll-mt-25 flex-col gap-8 rounded-panel bg-surface-raised px-6 py-8 desktop:gap-12 desktop:rounded-section desktop:p-22',
+    !afterFacts && 'mt-8 desktop:mt-12',
+  ]}
   data-case-section
 >
-  <Eyebrow id="context-label">Context</Eyebrow>
-  <div class="flex flex-col gap-8 desktop:gap-10">
-    {
-      blocks.map((block, i) => (
-        <div class="flex flex-col gap-4 desktop:gap-3">
-          <SectionLead heading={block.heading} intro={block.body} />
-          {block.items.length > 0 && (
-            <ul class:list={['list-disc pl-5 desktop:pl-6', body]}>
-              {block.items.map((item) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          )}
-          {i === blocks.length - 1 && facts.length > 0 && (
-            <dl class={body}>
-              {facts.map((fact) => (
-                <div>
-                  <dt class="inline font-medium text-fg-primary">{fact.label}:</dt> <dd class="inline">{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-        </div>
-      ))
-    }
-    {note && <p class="text-body-4">{note}</p>}
+  <div class="flex flex-col gap-4 desktop:gap-6">
+    <Eyebrow id="context-label">Overview</Eyebrow>
+    <div class="flex flex-col gap-2 desktop:gap-3">
+      {lead?.heading && <h3 class="text-h6 text-fg-primary desktop:text-h5">{lead.heading}</h3>}
+      {
+        leadText.length > 0 && (
+          <div class="flex flex-col gap-5 desktop:gap-6">
+            {leadText.map((p) => (
+              <p class={body}>{p}</p>
+            ))}
+          </div>
+        )
+      }
+    </div>
   </div>
+  {
+    rest.map((block) => (
+      <div class="flex flex-col gap-2 desktop:gap-3">
+        <h4 class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{block.heading}</h4>
+        {paragraphs(block.body).map((p) => (
+          <p class={body}>{p}</p>
+        ))}
+        {block.items.length > 0 && (
+          <ul class:list={['list-disc pl-5 desktop:pl-6', body]}>
+            {block.items.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))
+  }
 </section>

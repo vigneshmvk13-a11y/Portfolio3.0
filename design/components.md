@@ -186,7 +186,7 @@ Tags start 40px from the top at every width (`pt-10`; Vignesh, 2026-10-23, was 8
 ### CaseTabs
 **Figma:** `234:18780`, mobile `234:5742` · **Status:** built
 
-In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-selected rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary-on-fill` (Figma's gray/500 is 3.0:1 on the track); active `fg-primary` on a white pill with a `line-subtle` border. 40px below the tabs (`pb-10`) to the first section at every width (Vignesh, 2026-10-23). Sticky at `top-5` (20px; Vignesh, 2026-10-23) from the tabs to the end of Reflection; sections scroll to 100px (`scroll-mt-25`). Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
+In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-selected rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary-on-fill` (Figma's gray/500 is 3.0:1 on the track); active `fg-primary` on a white pill with a `line-subtle` border. 32px below the tabs (`pb-8`), 48px on desktop (`pb-12`), to the first section (Vignesh, 2026-10-24; was 40 at every width). Sticky at `top-5` (20px; Vignesh, 2026-10-23) from the tabs to the end of Reflection; sections scroll to 100px (`scroll-mt-25`). Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
 
 States: active (`aria-current="location"`) · hover → `fg-primary` · focus ring. Without JS the active tab draws its own pill; with JS one pill slides between tabs (`translate` + `width`, `duration-base`, `ease-out`).
 
@@ -201,9 +201,9 @@ The section name ("OVERVIEW") as the section's `<h2>`, so the outline is Section
 Heading (`<h3>`, `text-h6`, desktop `text-h5`, `fg-primary`) and intro paragraphs (`text-body-3`, desktop `text-body-2`), `gap-4` (desktop `gap-3`). Used by Overview, Outcome and each Solution step.
 
 ### ContextSection
-**Figma:** `279:7530` (Fyn), `279:7574` (Gyst) · **Status:** built
+**Figma:** `290:57503` / `290:57552` (Fyn desktop / mobile), `290:57591` / `290:57648` (Gyst) · **Status:** built (redrawn 2026-10-24)
 
-For case studies without the full sections. No card: the text column (`max-w-case-text`), `pt-8` (desktop `pt-22`, Figma's 89 under the cover). Eyebrow, then blocks `gap-8` (desktop `gap-10`, Figma's 40): each a SectionLead plus an optional bullet list (Overview's `list-disc` style). `facts` render right under the last block as "**Label:** value" lines (`<dl>`, label `font-medium fg-primary`); `note` closes it in `text-body-4`. Heading → text uses SectionLead's gap (12 on desktop; Figma draws 20 here, as in other sections the template already sets at 12).
+For case studies without the full sections: Overview's white card (`bg-surface-raised`, `rounded-panel`, `px-6 py-8`; desktop `rounded-section p-22`) under the cover, 32px below it (desktop 48), eyebrow reading "Overview". The first block is the lead (eyebrow → heading 16 / 24, heading → text 8 / 12, `h6` / `h5`); the other blocks are a subhead (`label-2` / `label-1` medium) over text or a bullet list, 8 / 12 apart. Blocks `gap-8` (desktop `gap-12`). `note` is the lead's last paragraph. `context.facts` (Gyst: Role, Status) become the facts row under the cover when the project has no Role / Timeline / Team (CaseHero), and the card then follows it directly. Facts row padding is 32 above / 60 below on mobile (Figma `290:57640`). Figma draws the two lead paragraphs of Fyn without a gap and Gyst's with one; both use the paragraph gap.
 
 ### OverviewSection
 **Figma:** `234:18793`, mobile `234:5756` · **Status:** built

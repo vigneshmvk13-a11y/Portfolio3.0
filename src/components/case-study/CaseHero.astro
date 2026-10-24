@@ -12,12 +12,15 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { subtitle, cardMeta, heroVideo, role, timeline, team } = entry.data;
+const { subtitle, cardMeta, heroVideo, role, timeline, team, context } = entry.data;
+// Case studies without Role / Timeline / Team can carry their own facts (Gyst: Role, Status).
+const ownFacts = (context?.facts ?? []).map((fact) => ({ label: fact.label, lines: [fact.value] }));
 const facts = [
   { label: 'Role', lines: role ? [role] : [] },
   { label: 'Timeline', lines: timeline ? [timeline] : [] },
   { label: 'Team', lines: team.map((m) => (m.role ? `${m.name} (${m.role})` : m.name)), wide: true },
 ].filter((fact) => fact.lines.length > 0);
+if (facts.length === 0) facts.push(...ownFacts);
 ---
 
 <header class="pb-6 desktop:mx-auto desktop:max-w-case-text desktop:pb-12">
@@ -43,7 +46,7 @@ const facts = [
 
 {
   facts.length > 0 && (
-    <dl class="grid grid-cols-2 gap-x-4 gap-y-6 pt-6 pb-8 desktop:flex desktop:justify-center desktop:gap-6 desktop:py-22">
+    <dl class="grid grid-cols-2 gap-x-4 gap-y-6 pt-8 pb-15 desktop:flex desktop:justify-center desktop:gap-6 desktop:py-22">
       {facts.map((fact) => (
         <div class:list={['flex flex-col gap-2 desktop:w-meta-col', fact.wide && 'col-span-2']}>
           <dt class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{fact.label}</dt>

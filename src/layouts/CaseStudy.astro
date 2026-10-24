@@ -40,7 +40,7 @@ const { tocLabel, status, seoDescription, ogImage, context, overview, solution, 
 const { contact, nav } = await getSiteSettings();
 
 const sections = sectionsOf(entry);
-const hasFacts = Boolean(entry.data.role || entry.data.timeline || entry.data.team.length);
+const hasFacts = Boolean(entry.data.role || entry.data.timeline || entry.data.team.length || context?.facts.length);
 const has = (id: string) => sections.some((s) => s.id === id);
 // The System image links to another case study only if that one is published.
 const systemTarget = system?.link ? entries.find((e) => e.id === system.link) : undefined;
@@ -79,7 +79,7 @@ const speculation = JSON.stringify({
         sections.length > 0 ? (
           <div data-case-body>
             {sections.length > 1 && <CaseTabs sections={sections} />}
-            {has('context') && context && <ContextSection context={context} />}
+            {has('context') && context && <ContextSection context={context} afterFacts={hasFacts} />}
             {has('overview') && overview && <OverviewSection overview={overview} />}
             {has('solution') && <SolutionSection steps={solution} />}
             {has('system') && system && <SystemSection system={system} target={systemTarget} />}
