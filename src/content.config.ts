@@ -127,7 +127,7 @@ const about = defineCollection({
       avatarAlt: z.string().default(''),
       banner: image().optional(),
       bannerAlt: z.string().default(''),
-      gallery: z.array(z.object({ image: image(), alt: z.string() })).default([]),
+      gallery: z.array(z.object({ image: image(), alt: z.string(), title: z.string().default(''), caption: z.string().default('') })).default([]),
       journey: z
         .array(z.object({ role: z.string(), years: z.string(), place: z.string() }))
         .default([]),

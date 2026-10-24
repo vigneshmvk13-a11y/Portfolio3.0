@@ -126,8 +126,8 @@ Named spacing:
 | `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
 | `--spacing-avatar-overlap` | 73px | How far the avatar overlaps the banner (140 − 67) |
 | `--spacing-banner` | 200px | About banner height |
-| `--spacing-gallery-w` / `-h` | 170px / 200px | Gallery photo, desktop |
-| `--spacing-gallery-w-sm` / `-h-sm` | 150px / 176px | Gallery photo, mobile |
+| `--spacing-gallery-w` | 170px | Gallery card, mobile and desktop (Figma `311:67930`) |
+| `--spacing-gallery-photo-h` | 142px | Gallery card photo (full card width minus the 4px inset) |
 | `--scrollbar-w` / `--scrollbar-inset` / `--scrollbar-hit` / `--scrollbar-min` | 4px / 6px / 16px / 40px | Overlay scrollbar thumb in the About panel: width, gap from the edge, pointer hit width, shortest thumb (`components.md → AboutDrawer`) |
 | `--about-top` | 40px | Mobile/tablet: the bottom sheet grown into About stops this far below the top (Vignesh, 2026-10-24). Registered with `@property` so JS reads it in px |
 | `--sheet-h` | 237–265px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |

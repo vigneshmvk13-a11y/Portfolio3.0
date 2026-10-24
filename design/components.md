@@ -151,11 +151,11 @@ Modal `<dialog closedby="any">` (JS light-dismiss fallback), in a scroller (`[da
 Desktop opening: `@starting-style` transitions. `/?about` opens without the entrance (already grown on mobile). Fires `drawer:open` / `drawer:close`. Scripts: `drawer.ts` (with `sheet.ts`, `drag.ts`). All content from the `about` singleton.
 
 ### Gallery
-**Figma:** `280:9424` (desktop 170×200, `gap-3`, `px-6`), `280:9306` (mobile 150×176, `gap-2`, `px-4`); buttons `280:9431` / `280:9479` · **Status:** built
+**Figma:** `311:67930` (cards, 2026-10-24; mobile and desktop alike); buttons `280:9431` / `280:9479` · **Status:** built
 
-Horizontal scroll-snap row, `rounded-media-sm` images (`object-cover`, 2×/3× sources). Labelled region, `tabindex="0"` for keyboard scrolling, hidden scrollbar, `overscroll-behavior-x: contain`.
+Horizontal scroll-snap row of **photo cards**, `gap-5` (20), `px-4` (desktop `px-5`), top-aligned (heights follow the text). Each card: `<figure>`, `w-gallery-w` (170), `bg-surface-raised border-line-subtle rounded-media-sm p-1`, `gap-2`; the photo full width × `h-gallery-photo-h` (142), `rounded-media-sm`, `object-cover`, 2×/3× sources, real alt; `<figcaption>` `px-2 pb-2 gap-1 text-body-4`: title `font-medium fg-primary`, caption ("Place • Year") `fg-secondary`. Title and caption come from `about.gallery` (Keystatic: Card title, Card caption). Figma sets the first card's title at 14px and the rest at 12; all built at 12 (`body-4`). Labelled region, `tabindex="0"` for keyboard scrolling, hidden scrollbar, `overscroll-behavior-x: contain`.
 
-Previous / Next: `glass` IconButtons (CaretLeft / CaretRight), 48px, inset by the row's side padding and centred on the photos (mobile Figma puts them 12px low, copied from desktop; centred instead). Next shows until the row reaches its end; Previous once it has left the start; each fades (`--duration-fast`). A press scrolls by the photos that fully fit and lands on a snap point; near an end it goes all the way. Smooth, instant under reduced motion. A focused button that disappears hands focus to the other one or the row. Both render hidden, so without JS there are no dead buttons. Script: `gallery.ts`.
+Previous / Next: `glass` IconButtons (CaretLeft / CaretRight), 48px, inset by the row's side padding and centred on the photos (4px inset + half of 142), not the cards, whose heights vary. Next shows until the row reaches its end; Previous once it has left the start; each fades (`--duration-fast`). A press scrolls by the photos that fully fit and lands on a snap point; near an end it goes all the way. Smooth, instant under reduced motion. A focused button that disappears hands focus to the other one or the row. Both render hidden, so without JS there are no dead buttons. Script: `gallery.ts`.
 
 ### TimelineRow
 **Figma:** `234:5322` · **Status:** built

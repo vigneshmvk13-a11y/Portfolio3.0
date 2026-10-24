@@ -75,6 +75,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-24 · components · **About gallery: photo cards** (Figma `311:67930`): a 170px white card per photo with a title and a "Place • Year" caption, the same at every width; 20px apart; buttons centred on the photos. New `about.gallery` fields `title`, `caption` (Keystatic), filled from Figma. Tokens: `gallery-photo-h` (142) added; `gallery-h`, `gallery-w-sm`, `gallery-h-sm` removed. Why: Vignesh's redesign.
+
 - 2026-10-24 · rules · **Media limit raised from 4 MB to 5 MB per file** (`check-media.mjs`, AGENTS.md, rules.md, assets.md). Why: Vignesh; two solution loops (4.6 and 4.96 MB) were just over.
 
 - 2026-10-24 · layout-and-motion · **Mobile first run** (Vignesh's user tests: the wheel was out of thumb reach and didn't read as scrollable): the sheet collapses by itself after 2.5s untouched, the card peeks at the next project, "Swipe to explore" sits above the collapsed sheet until the first swipe, a sideways swipe on the sheet turns the wheel, and the TOC tab peeks out. Nudge and peek once per session, never with reduced motion.

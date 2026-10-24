@@ -303,8 +303,10 @@ export default config({
               publicPath: '../assets/about/',
             }),
             alt: fields.text({ label: 'Alt text' }),
+            title: fields.text({ label: 'Card title', description: 'e.g. "Avenged sevenfold live"' }),
+            caption: fields.text({ label: 'Card caption', description: 'Place • Year, e.g. "Badland, Bangalore • Circa 2024"' }),
           }),
-          { label: 'Gallery', itemLabel: (props) => props.fields.alt.value },
+          { label: 'Gallery', itemLabel: (props) => props.fields.title.value || props.fields.alt.value },
         ),
         journey: fields.array(
           fields.object({

@@ -1,9 +1,10 @@
 ---
 /**
- * Horizontal photo row in About (Figma 280:9424 desktop 170×200, 280:9306 mobile 150×176).
- * A keyboard-scrollable labelled region with Previous / Next glass buttons over the photos
- * (Figma 280:9431 / 280:9479): Next shows until the row reaches its end, Previous once it has left
- * the start (src/scripts/gallery.ts). Both start hidden, so without JS there are no dead buttons.
+ * Horizontal row of photo cards in About (Figma 311:67930, the same 170px card on mobile and desktop):
+ * a white card with a 4px inset photo (160×142), then a title and a "Place • Year" caption. Cards keep
+ * their own heights and align at the top. A keyboard-scrollable labelled region with Previous / Next glass
+ * buttons over the photos (Figma 280:9431): Next shows until the row reaches its end, Previous once it has
+ * left the start (src/scripts/gallery.ts). Both start hidden, so without JS there are no dead buttons.
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -14,7 +15,7 @@ import CaretLeftFill from '../icons/CaretLeftFill.astro';
 import CaretRightFill from '../icons/CaretRightFill.astro';
 
 interface Props {
-  images: { image: ImageMetadata; alt: string }[];
+  images: { image: ImageMetadata; alt: string; title?: string; caption?: string }[];
   /** id of the scrolling row, for the buttons' aria-controls. */
   id: string;
   class?: string;
@@ -28,22 +29,30 @@ const { images, id, class: className } = Astro.props;
     <div class:list={['gallery relative', className]} data-gallery>
       <div
         id={id}
-        class="gallery__track flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto px-4 desktop:scroll-px-5 desktop:gap-3 desktop:px-5"
+        class="gallery__track flex snap-x snap-mandatory scroll-px-4 items-start gap-5 overflow-x-auto px-4 desktop:scroll-px-5 desktop:px-5"
         role="region"
         aria-label="Photos"
         tabindex="0"
         data-gallery-track
       >
-        {images.map(({ image, alt }) => (
-          <Image
-            src={image}
-            alt={alt}
-            width={170}
-            height={200}
-            densities={[2, 3]}
-            fit="cover"
-            class="h-gallery-h-sm w-gallery-w-sm shrink-0 snap-start rounded-media-sm object-cover desktop:h-gallery-h desktop:w-gallery-w"
-          />
+        {images.map(({ image, alt, title, caption }) => (
+          <figure class="flex w-gallery-w shrink-0 snap-start flex-col gap-2 rounded-media-sm border border-line-subtle bg-surface-raised p-1">
+              <Image
+                src={image}
+                alt={alt}
+                width={160}
+                height={142}
+                densities={[2, 3]}
+                fit="cover"
+                class="h-gallery-photo-h w-full rounded-media-sm object-cover"
+              />
+              {(title || caption) && (
+                <figcaption class="flex flex-col gap-1 px-2 pb-2 text-body-4">
+                  {title && <span class="font-medium text-fg-primary">{title}</span>}
+                  {caption && <span class="text-fg-secondary">{caption}</span>}
+                </figcaption>
+              )}
+          </figure>
         ))}
       </div>
       <IconButton
@@ -51,7 +60,7 @@ const { images, id, class: className } = Astro.props;
         iconFill={CaretLeftFill}
         label="Previous photos"
         variant="glass"
-        class="absolute top-1/2 left-4 -translate-y-1/2 desktop:left-6"
+        class="gallery__btn absolute left-4 desktop:left-6"
         aria-controls={id}
         data-gallery-btn
         data-gallery-prev
@@ -62,7 +71,7 @@ const { images, id, class: className } = Astro.props;
         iconFill={CaretRightFill}
         label="Next photos"
         variant="glass"
-        class="absolute top-1/2 right-4 -translate-y-1/2 desktop:right-6"
+        class="gallery__btn absolute right-4 desktop:right-6"
         aria-controls={id}
         data-gallery-btn
         data-gallery-next
@@ -79,6 +88,12 @@ const { images, id, class: className } = Astro.props;
   }
   .gallery__track::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Centred on the photos (4px card inset + half the photo), not on the cards, whose heights vary. */
+  .gallery :global(.gallery__btn) {
+    top: calc(var(--spacing) + var(--spacing-gallery-photo-h) / 2);
+    translate: 0 -50%;
   }
 
   /* Fade in and out at the ends of the row (a state change, so reduced motion makes it instant). */

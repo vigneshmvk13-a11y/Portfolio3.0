@@ -25,14 +25,24 @@ bannerAlt: ''
 gallery:
   - image: ../assets/about/gallery/0/image.jpg
     alt: Vignesh in front of a large illuminated red sign at a night festival
+    title: "Avenged sevenfold live"
+    caption: "Badland, Bangalore • Circa 2024"
   - image: ../assets/about/gallery/1/image.jpg
     alt: Vignesh playing an acoustic guitar on stage
+    title: "Performing on stage for a corporate event"
+    caption: "Hycinth, Trivandrum • Circa 2025"
   - image: ../assets/about/gallery/2/image.jpg
     alt: Two mirrorless cameras with lenses on a table under blue light
+    title: "My filmmaking gear"
+    caption: "Home studio • Circa 2025"
   - image: ../assets/about/gallery/3/image.jpg
     alt: Vignesh in sunglasses and a white shirt, looking out from an auto-rickshaw
+    title: "Travel diaries"
+    caption: "Somewhere around the world • Circa 2025"
   - image: ../assets/about/gallery/4/image.jpg
     alt: 'Meme: a white kitten with a loading spinner above its head'
+    title: "When they say design is dead!"
+    caption: "N/A • N/A"
 journey:
   - role: Design Lead
     years: 2026-Present
