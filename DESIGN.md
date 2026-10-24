@@ -92,7 +92,7 @@ Newest first. Date · branch · change · why.
   - **Hover states** from Figma for icon buttons, case nav, System arrow, gallery carets and company logos (filled icons, solid white pills, brand-colour logos). Desktop only.
   - **Company tags are links** (DNEG, Kotak; new tab; Keystatic `about.affiliations.url`/`logoHover`). **Resume** is a link (`siteSettings.resume`, Google Drive). **Every external link opens in a new tab** automatically (`isExternal`).
   - **About close button** shows no focus ring after touch/mouse (kept for keyboard).
-  - **About spacing** from the new frames: desktop side padding 24 → 20, paragraph gap 24, buttons 48 below, heading 48 above / 24 below, mobile block gaps 40 / 20; timeline text sizes (role 14, details 12) on both breakpoints, a third each on desktop.
+  - **About spacing** from the new frames: desktop side padding 24 → 20, paragraph gap 24, buttons 48 below, heading 48 above / 32 below (mobile 24; was 24 / 20, Vignesh 2026-10-24), mobile block gaps 40 / 20; timeline text sizes (role 14, details 12) on both breakpoints, a third each on desktop.
   - **Case studies:** Outcome cards gap 48 desktop / 32 mobile, padding 24 (was 40 / 8, p-20 desktop).
   - **Case studies:** header 48px from the top on desktop; space under the tabs 48 desktop / 32 mobile (was 40); System cards like Outcome. **Fyn and Gyst redrawn** (`290:57495`, `290:57585` and mobiles): the Context text is now an Overview card, Gyst's Role / Status sit in the facts row under the cover.
   - **Type:** `h4` tracking −1%, `h5` −0.5% (Figma percentages, written as em).
