@@ -17,7 +17,7 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
 
 <section
   aria-labelledby="more-projects"
-  class="mt-15 pb-30 desktop:mx-auto desktop:mt-0 desktop:max-w-case-text desktop:pt-22 desktop:pb-12"
+  class="more-projects mt-15 desktop:mx-auto desktop:mt-0 desktop:max-w-case-text desktop:pt-22"
 >
   <div class="flex items-end justify-between pb-6">
     <h2 id="more-projects" class="text-h5 text-fg-primary">More projects</h2>
@@ -32,5 +32,20 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
       ))
     }
   </ul>
-  <a href="/" class:list={['inline-block pt-6 pb-12 desktop:hidden', seeAll]}>See all</a>
+  <a href="/" class:list={['inline-block pt-6 desktop:hidden', seeAll]}>See all</a>
 </section>
+
+<style>
+  /*
+   * At the end of the page the floating nav (CaseNav: 32px up, 56px tall) must clear the last content by a gap
+   * (Vignesh, 2026-10-24): 80px on desktop, 60px on mobile. Mobile adds the safe area the nav also sits above.
+   */
+  .more-projects {
+    padding-bottom: calc(var(--spacing) * 37 + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 75rem) {
+    .more-projects {
+      padding-bottom: calc(var(--spacing) * 42);
+    }
+  }
+</style>
