@@ -55,6 +55,13 @@ const resumeTodo = resume ? undefined : 'todo-content';
   >
     <span class="bottom-sheet__bar block rounded-full bg-line-strong" aria-hidden="true"></span>
   </button>
+  <!--
+    Mobile: says the wheel moves, just above the collapsed sheet, in the thumb's reach; the desktop footer's
+    "Scroll" hint, styled the same (src/scripts/first-run.ts). Decorative: the wheel has its own semantics.
+  -->
+  <p class="bottom-sheet__hint text-label-3 font-medium whitespace-nowrap text-fg-secondary desktop:hidden" aria-hidden="true">
+    Swipe to explore
+  </p>
 
   <div id="sheet-intro" class="bottom-sheet__intro w-full" data-sheet-intro>
     <Intro />
@@ -166,6 +173,23 @@ const resumeTodo = resume ? undefined : 'todo-content';
       width: calc(var(--spacing) * 10);
       height: var(--sheet-handle-h);
       margin-top: calc(1px + var(--sheet-handle-top));
+    }
+
+    /*
+     * "Swipe to explore": 12px above the surface's top edge, riding with it (--shift). Shown only while the
+     * sheet is collapsed, until the visitor first moves the wheel (data-swiped), and never over About.
+     */
+    .bottom-sheet__hint {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, calc(var(--shift) - 100% - var(--spacing) * 3));
+      opacity: 0;
+      transition: opacity var(--duration-base) var(--ease-out);
+      pointer-events: none;
+    }
+    .bottom-sheet[data-collapsed]:not([data-swiped], [data-about]) .bottom-sheet__hint {
+      opacity: 1;
     }
 
     /* Its own layer: its position, opacity and blur change every frame while the sheet moves. */

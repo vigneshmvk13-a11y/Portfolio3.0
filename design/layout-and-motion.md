@@ -173,6 +173,18 @@ The earlier proposal's "grow out" phase (gooey cards emerging from the first one
 - The landing isn't announced in the live region and doesn't set a hash.
 - Reduced motion: no intro; the resting state renders directly. Repeat visits in the session also go straight to rest. `scripts/screenshot.mjs` skips it unless `INTRO=1`; `test-wheel.mjs` skips it except in the intro tests.
 
+### First run (mobile; Vignesh, 2026-10-24)
+
+User tests: the wheel sits above the thumb's reach, behind the sheet, so people didn't find out it moves. `src/scripts/first-run.ts`, tokens `firstRun.*`:
+
+1. **Auto-collapse.** Once the intro has landed (or the page is ready), the sheet collapses by itself after 2.5s, unless the visitor has already touched, scrolled or typed. Nothing is taken from someone reading it; the handle brings it back. Every visit to the homepage, reduced motion included (it's a state change).
+2. **Nudge.** 0.2s into that collapse, the centre card turns 0.12 of a step towards the next project and settles back (0.8s, `ease-out` then `ease-in-out`). Wheel motion `via: 'hint'`: not announced, doesn't collapse or dismiss anything.
+3. **"Swipe to explore"**, `text-label-3` medium `fg-secondary` (the desktop "Scroll" hint's style), 12px above the collapsed sheet's edge, riding with it. Shown only while the sheet is collapsed, until the visitor first moves the wheel (any input: `data-swiped`, remembered for the session); never over About. `aria-hidden`: the wheel has its own semantics.
+4. **A sideways swipe on the sheet turns the wheel** (left = next project), with the same follow, momentum and snap as a drag on the wheel itself (`sheet.ts`). The direction is decided at the 6px slop: mostly sideways turns the wheel, mostly vertical stays the sheet's (collapse / open).
+5. **TOC peek.** After the nudge, the right-edge tab slides out 6px and back, twice (0.9s), pointing at the scrubber in thumb reach.
+
+The nudge and the peek run once per session and never with reduced motion. 60fps at 4× CPU (`perf-motion.mjs`: first run, sideways swipe).
+
 ### Phone held sideways (Vignesh, 2026-10-24)
 
 In landscape under 520px tall (and narrower than 75rem) the expanded sheet would fill the screen and the cards shrank to slivers. The sheet now **starts collapsed** (`sheet.ts`), `--sheet-h` is its collapsed height (125px) and `--wheel-gap` 16px, so the card is ~210px tall above it (global.css). Tap or drag the handle for the intro.
@@ -297,9 +309,10 @@ Tablet (768–1199, not designed): the mobile layout in the 846 column.
 ### Floating nav
 
 - Previous · Home · Next, fixed 32px above the bottom. Wraps round the homepage order (Next from Gyst is Data mapping).
-- **Collapses to Home** when the page scrolls down by 8px or more (`caseStudy.navScrollSlop`); **expands** when it scrolls up as much, at the top, within 160px of the end (`caseStudy.navEndZone`), and while any of its links has keyboard focus.
-- **Collapse:** Previous / Next fade out first (`duration-fast`), then the surface narrows to Home and they slide under it (`duration-slow`, `ease-in-out`: starts and ends at rest, no overshoot; Vignesh, 2026-10-23, it was the bouncing `ease-spring`). Home sits above them. **Expand** runs backwards: the surface opens and the labels slide out from under Home, and only once that's done (`duration-slow`) do they fade in (`duration-fast`), so they never show over Home (Vignesh, 2026-10-23; they used to start fading in 150ms into the slide). The surface moves its own `left` / `right` (an absolutely positioned span, so nothing else lays out) and keeps real rounded corners: an animated `clip-path` on the blurred layer showed artefacts on iOS Safari. Not `ease-out`: it starts at ~4.5× its average speed, so after the labels' pause the edges jumped ~15px in one frame (a jerk on Vignesh's iPhone). Not two translated halves (compositor-only): with the 40px blur each half sees its own end, so they blurred differently and showed a seam. 60fps at 4× CPU.
-- **Quicker (Vignesh, 2026-10-24):** collapse and expand take `duration-base` (300ms), labels fading out together with the slide, fading in once 60% of the slide has passed. **While the page scrolls the whole nav fades out** (`data-scrolling`, set by each scroll event and cleared `caseStudy.navIdle` (140ms) after the last; out in `duration-fast`, back in `duration-base`, not clickable meanwhile), and returns once scrolling has stopped, collapsed after a scroll down and expanded after a scroll up. Opacity only. It must not carry a `view-transition-name` at rest (that makes it a backdrop root, so the blur sees nothing); it's named only during a slide.
+- **Always in full; no collapsed state** (Vignesh, 2026-10-24). Shown on load. **Scrolling down hides it**: the bar sinks below the screen edge and fades out (`duration-base`, `ease-in-out`). **Scrolling up brings it back** (8px either way, `caseStudy.navScrollSlop`): it rises and fades in (`duration-base`, `ease-out`). It also shows at the very top, within 160px of the end (`caseStudy.navEndZone`, so it's always there when there's nowhere further down to go), and while any of its links has keyboard focus. Hidden, it isn't clickable.
+- **No opacity on the bar**: an ancestor with opacity < 1 is a backdrop root, so the blur saw nothing during the fade and popped back at the end (the colour flicker Vignesh saw). The surface, which carries the blur, and each link fade on their own; the bar only moves (`translate`). 60fps at 4× CPU.
+- The surface blurs what scrolls under it (`backdrop-blur-nav`, 40px). It must not carry a `view-transition-name` at rest (that makes it a backdrop root, so the blur sees nothing); it's named only during a slide.
+- History: until 2026-10-24 it collapsed to Home on scroll down and expanded on scroll up (Figma `234:31771`); that state is gone.
 
 ### Swipe (touch only)
 

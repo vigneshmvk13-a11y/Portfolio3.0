@@ -14,12 +14,15 @@
  *   (0 = footer, 1 = About), lifts the surface to --about-top, blurs the intro and buttons out by
  *   halfway (`sheet.aboutSwap`) and fades a scrim in behind. drawer.ts drives it through
  *   getSheetSurface() and draws About's content over the surface.
+ * - A sideways swipe on the sheet turns the wheel (Vignesh, 2026-10-24: the thumb rests on the sheet, not on
+ *   the wheel above it). Left = next project. Vertical drags stay the sheet's own.
  * Desktop (the same element is the static left column) ignores all of this.
  */
 import { animateValue, type AnimationPlaybackControlsWithThen as Controls } from 'motion';
 import { sheet as look } from '../lib/motion';
 import { prefersReducedMotion } from '../lib/reduced-motion';
 import { clamp01, DragSamples, DRAG_SLOP_PX, FLING_S, settleMotion } from './drag';
+import { MOMENTUM_S } from './wheel/input';
 import type { WheelController, WheelDetail } from './wheel/controller';
 
 const MOBILE = '(width < 75rem)';
@@ -30,6 +33,8 @@ export interface SheetSurface {
   travel(): number;
   /** 0 = the footer, 1 = grown into About. */
   setAbout(progress: number): void;
+  /** Collapse it, as a scroll would (first-run.ts). False if it was already collapsed. */
+  collapse(): boolean;
 }
 
 let surface: SheetSurface | null = null;
@@ -122,7 +127,7 @@ export function bindSheet(controller: WheelController): void {
   // ---------- Scrolling collapses it ----------
   controller.stage.addEventListener('wheel:start', (event) => {
     const { via } = (event as CustomEvent<WheelDetail>).detail;
-    if (via !== 'intro' && via !== 'init' && mobile.matches && !collapsed()) settle(true);
+    if (via !== 'intro' && via !== 'init' && via !== 'hint' && mobile.matches && !collapsed()) settle(true);
   });
   document.addEventListener('toc:hold', () => {
     if (mobile.matches && !collapsed()) settle(true);
@@ -130,31 +135,52 @@ export function bindSheet(controller: WheelController): void {
 
   // ---------- The user opens and closes it ----------
   let pointerId: number | null = null;
+  let startX = 0;
   let startY = 0;
   let startOpenness = 1;
   let dragging = false;
+  /** This drag is sideways: it turns the wheel instead of moving the sheet. */
+  let turning = false;
+  let startPosition = 0;
+  const xs: { t: number; x: number }[] = [];
   let suppressClick = false;
   const samples = new DragSamples();
 
   const press = (event: PointerEvent) => {
     if (!mobile.matches || pointerId !== null || event.button > 0) return;
     pointerId = event.pointerId;
+    startX = event.clientX;
     startY = event.clientY;
     dragging = false;
+    turning = false;
     samples.reset(event);
+    xs.length = 0;
+    xs.push({ t: event.timeStamp, x: event.clientX });
   };
 
   const move = (event: PointerEvent) => {
     if (event.pointerId !== pointerId || collapseShift <= 0) return;
+    const dx = event.clientX - startX;
     const dy = event.clientY - startY;
     if (!dragging) {
-      if (Math.abs(dy) < DRAG_SLOP_PX) return;
+      if (Math.hypot(dx, dy) < DRAG_SLOP_PX) return;
       dragging = true;
       (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+      turning = Math.abs(dx) > Math.abs(dy) && controller.enabled;
+      if (turning) {
+        startPosition = controller.position;
+        startX = event.clientX;
+      }
       animation?.stop(); // grab it mid-motion
       animation = null;
       startOpenness = openness;
       startY = event.clientY;
+    }
+    if (turning) {
+      xs.push({ t: event.timeStamp, x: event.clientX });
+      if (xs.length > 6) xs.shift();
+      controller.setPosition(startPosition - (event.clientX - startX) / controller.stepPx, 'drag');
+      return;
     }
     samples.add(event);
     openness = clamp01(startOpenness - (event.clientY - startY) / collapseShift);
@@ -172,6 +198,17 @@ export function bindSheet(controller: WheelController): void {
     dragging = false;
     suppressClick = true;
     window.setTimeout(() => (suppressClick = false), 0);
+    if (turning) {
+      turning = false;
+      // As a drag on the wheel itself (wheel/input.ts): carry the release speed, land on a card.
+      const last = xs[xs.length - 1];
+      const first = xs.find((s) => last.t - s.t <= 100) ?? xs[0];
+      const speed = -((last.x - first.x) / (Math.max(1, last.t - first.t) / 1000)) / controller.stepPx;
+      const reduced = prefersReducedMotion();
+      const projected = controller.position + (reduced ? 0 : speed * MOMENTUM_S);
+      controller.springTo(Math.round(projected), 'drag', reduced ? 0 : speed);
+      return;
+    }
     const velocity = -samples.velocity() / collapseShift; // openness per second
     // Settle to the nearer state, counting where the release speed would carry it.
     settle(openness + velocity * FLING_S < 0.5, velocity);
@@ -224,6 +261,11 @@ export function bindSheet(controller: WheelController): void {
     setAbout: (progress) => {
       about = clamp01(progress);
       if (mobile.matches) render();
+    },
+    collapse: () => {
+      if (!mobile.matches || collapsed()) return false;
+      settle(true);
+      return true;
     },
   };
 }

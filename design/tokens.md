@@ -241,7 +241,8 @@ The spin is keyframed rather than sprung, so its length is fixed: `[0 â†’ turnsÂ
 | `intro.spinOvershoot` | `0.12` positions | How far past the landing card the reel runs before settling ("clunk") |
 | `intro.spinOvershootAt` | `0.82` | Fraction of the spin spent reaching the overshoot; the rest settles back on `ease.inOut` |
 | `intro.revealDuration` | `0.5` s | Hero text, TOC, footer appear (`ease.out`) |
-| `caseStudy.navIdle` | `140` ms | Without a scroll event, the floating nav is at rest and its blur returns |
+| `caseStudy.navScrollSlop`, `navEndZone` | `8` px, `160` px | Floating nav: scroll this far to hide (down) / bring back (up); always shown this close to the end |
+| `firstRun.*` | see `motion.ts` | Mobile first run: `autoCollapse` 2.5s, `nudge` 0.12 positions over 0.8s, `tocPeek` 6px over 0.9s |
 | `intro.revealRise` | `12` px | Desktop columns rise while fading in (mobile sheet slides up 100%, TOC handle in from the edge) |
 | `intro.failsafe` | `3` s | CSS reveal if the script never runs (`--intro-failsafe: 3s`) |
 

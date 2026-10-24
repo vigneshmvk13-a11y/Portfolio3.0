@@ -154,6 +154,15 @@ try {
   report('mobile: About handle drag down + close', await m.measure(async () => { await m.touch('touchStart', grip.x, grip.y); for (let dy = 12; dy <= 360; dy += 12) { await m.touch('touchMove', grip.x, grip.y + dy); await sleep(16); } await m.touch('touchEnd'); }, 800));
   await m.close();
 
+  // First run (src/scripts/first-run.ts): left alone, the sheet collapses, the card peeks, the TOC tab peeks.
+  const fr = await page(393, 852);
+  await fr.goto('/');
+  await sleep(2300);
+  report('mobile: first run (collapse + nudge + TOC peek)', await fr.measure(async () => {}, 2400));
+  const frTop = await fr.eval("Math.round(document.querySelector('[data-sheet-bg]').getBoundingClientRect().top)");
+  report('mobile: sideways swipe on the sheet turns the wheel', await fr.measure(() => fr.swipeX(320, 120, frTop + 40, 250), 900));
+  await fr.close();
+
   const mi = await page(393, 852, { intro: true });
   await mi.goto('/');
   await sleep(2300);
@@ -164,8 +173,8 @@ try {
   const c = await page(1440, 1024);
   await c.goto('/work/smart-mapping/');
   await sleep(600);
-  report('case desktop: nav collapse (scroll down)', await c.measure(async () => { for (let i = 0; i < 6; i++) { await c.wheel(100); await sleep(40); } }, 900));
-  report('case desktop: nav expand (scroll up)', await c.measure(() => c.wheel(-120), 900));
+  report('case desktop: nav hides (scroll down)', await c.measure(async () => { for (let i = 0; i < 6; i++) { await c.wheel(100); await sleep(40); } }, 900));
+  report('case desktop: nav returns (scroll up)', await c.measure(() => c.wheel(-120), 900));
   report('case desktop: tab tap (pill + smooth scroll)', await c.measure(() => c.click('[data-case-tab="outcome"]'), 1200));
   await c.close();
 

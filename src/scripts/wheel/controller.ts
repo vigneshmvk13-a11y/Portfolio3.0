@@ -17,7 +17,7 @@ import { prefersReducedMotion } from '../../lib/reduced-motion';
 import { activeIndex, shortestDelta } from './geometry';
 import { WheelRenderer } from './render';
 
-export type Via = 'wheel' | 'drag' | 'key' | 'toc' | 'click' | 'hash' | 'intro' | 'init';
+export type Via = 'wheel' | 'drag' | 'key' | 'toc' | 'click' | 'hash' | 'intro' | 'init' | 'hint';
 
 export interface WheelDetail {
   index: number;

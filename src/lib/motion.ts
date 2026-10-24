@@ -56,6 +56,25 @@ export const sheet = {
   aboutSwap: 0.5,
 } as const;
 
+/**
+ * Mobile homepage, first moments (design/layout-and-motion.md → First run). The wheel sits above the thumb's
+ * reach, behind the sheet, so the page shows it moves.
+ */
+export const firstRun = {
+  /** s after the intro lands (or the page is ready) with no input before the sheet collapses by itself. */
+  autoCollapse: 2.5,
+  /** s after that collapse starts before the centre card peeks at the next one. */
+  nudgeDelay: 0.2,
+  /** Positions the card turns towards the next project before settling back (a peek, not a step). */
+  nudge: 0.12,
+  nudgeDuration: 0.8,
+  /** Share of the nudge spent reaching the peek. */
+  nudgeAt: 0.4,
+  /** px the right-edge TOC tab slides out, twice, after the nudge. */
+  tocPeek: 6,
+  tocPeekDuration: 0.9,
+} as const;
+
 /** Mobile TOC (design/layout-and-motion.md → TOC handle). */
 export const toc = {
   /** A press released within this many seconds without dragging is a tap: the panel stays open. */
@@ -120,12 +139,10 @@ export const wheel = {
 
 /** Case-study page (design/layout-and-motion.md → Case study). */
 export const caseStudy = {
-  /** px scrolled in one direction before the floating nav collapses (down) or expands (up). */
+  /** px scrolled in one direction before the floating nav hides (down) or comes back (up). */
   navScrollSlop: 8,
-  /** px from the page end where the floating nav always shows in full. */
+  /** px from the page end where the floating nav always shows. */
   navEndZone: 160,
-  /** ms without a scroll event before the floating nav counts as at rest and its blur fades back in. */
-  navIdle: 140,
   /** Touch swipe between case studies: px of travel before a horizontal drag is recognised. */
   swipeSlop: 10,
   /** A swipe can't start this close (px) to the screen edges, which belong to the browser's back/forward. */

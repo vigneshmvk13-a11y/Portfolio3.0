@@ -39,6 +39,7 @@ async function page(width, height, { reduced = false, mobile = width < 768, intr
   const errors = [];
   listeners.add((m) => { if (m.sessionId === sessionId && m.method === 'Runtime.exceptionThrown') errors.push(m.params.exceptionDetails.exception?.description ?? m.params.exceptionDetails.text); });
   const p = {
+    sessionId,
     sessionId, targetId, errors,
     async goto(path, wait = 600) { const loaded = new Promise((ok) => { const l = (m) => { if (m.sessionId === sessionId && m.method === 'Page.loadEventFired') { listeners.delete(l); ok(); } }; listeners.add(l); }); await send('Page.navigate', { url: BASE + path }, sessionId); await loaded; await sleep(wait); },
     /** Inline opacity the renderer wrote on card i (1 = front, --wheel-fade at ±1). */
@@ -194,6 +195,17 @@ try {
   await sleep(1400);
   s = await m.state();
   check('fast flick carries momentum (≥ 2 steps)', Number(s.index) >= 2, s.index);
+  await m.key('Home', 'Home', 36); await sleep(1200);
+
+  // First run: a sideways swipe on the sheet turns the wheel (left = next), and the swipe label is gone.
+  const sheetY = await m.eval(`Math.round(document.querySelector('[data-sheet-bg]').getBoundingClientRect().top) + 40`);
+  await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 320, y: sheetY }] }, m.sessionId);
+  for (let i = 1; i <= 8; i++) { await sleep(25); await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 320 - 25 * i, y: sheetY }] }, m.sessionId); }
+  await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, m.sessionId);
+  await sleep(1200);
+  s = await m.state();
+  const swiped = await m.eval(`document.querySelector('[data-bottom-sheet]').hasAttribute('data-swiped')`);
+  check('sideways swipe on the sheet: next project, swipe label dismissed', s.index === '1' && swiped, `${JSON.stringify(s)} swiped=${swiped}`);
   await m.key('Home', 'Home', 36); await sleep(1200);
 
   // TOC morph: press and hold, scrub, release.

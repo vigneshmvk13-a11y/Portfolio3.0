@@ -63,6 +63,7 @@ export function runIntro(controller: WheelController): void {
     delete root.dataset.introSpinning;
     controller.enabled = true;
     root.dataset.intro = 'done';
+    document.dispatchEvent(new CustomEvent('intro:done'));
     if (skipped) return;
 
     const visible = [...document.querySelectorAll<HTMLElement>('[data-intro-reveal]')].filter(

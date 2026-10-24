@@ -1,9 +1,9 @@
 ---
 /**
- * Floating project navigation (Figma 234:23100 expanded, 234:31771 collapsed; mobile 234:10068).
- * Previous · Home · Next, wrapping round the homepage order. Collapses to Home while scrolling down,
- * expands on scroll up, at the page end, and when any of its links has focus (src/scripts/case-study/nav.ts).
- * Home sits above the sliding labels. The surface blurs what scrolls under it (backdrop-blur-nav, 40px)
+ * Floating project navigation (Figma 234:23100, mobile 234:10068). Previous · Home · Next, wrapping round
+ * the homepage order. Always in full (no collapsed state since 2026-10-24): it sinks out of sight while the
+ * page scrolls and rises back once scrolling stops or the finger lifts (src/scripts/case-study/nav.ts).
+ * The surface blurs what scrolls under it (backdrop-blur-nav, 40px)
  * and is surface-caption, not Figma's 70% gray/600-ish fill: white text on that is 2.8:1
  * (design/rules.md → Accessibility).
  */
@@ -21,20 +21,20 @@ interface Props {
 const { previous, next, homeHref } = Astro.props;
 const pill =
   'group relative flex items-center justify-center rounded-full border border-line-default text-fg-on-media transition-[border-color,background-color,color] duration-(--duration-fast) ease-out hover:border-surface-raised hover:bg-surface-raised hover:text-fg-primary';
-const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-medium`;
+const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
 ---
 
 <nav aria-label="Projects" class="case-nav pointer-events-none fixed inset-x-0 z-20 flex justify-center" data-case-nav>
   <div class="case-nav__bar pointer-events-auto relative flex items-center gap-1 p-1">
-    <span aria-hidden="true" class="case-nav__bg absolute inset-y-0 rounded-full bg-surface-caption"></span>
-    <a href={`/work/${previous.id}/`} rel="prev" class:list={[side, 'case-nav__prev']} data-case-nav-prev>
+    <span aria-hidden="true" class="case-nav__bg absolute inset-0 rounded-full bg-surface-caption backdrop-blur-nav"></span>
+    <a href={`/work/${previous.id}/`} rel="prev" class:list={[side, 'case-nav__item']} data-case-nav-prev>
       Previous<span class="sr-only">: {previous.data.tocLabel}</span>
     </a>
-    <a href={homeHref} class:list={[pill, 'z-10 p-3']} aria-label="All projects" data-case-nav-home>
+    <a href={homeHref} class:list={[pill, 'case-nav__item p-3']} aria-label="All projects" data-case-nav-home>
       <HouseSimple class="size-icon-lg group-hover:hidden" />
       <HouseSimpleFill class="hidden size-icon-lg group-hover:block" />
     </a>
-    <a href={`/work/${next.id}/`} rel="next" class:list={[side, 'case-nav__next']} data-case-nav-next>
+    <a href={`/work/${next.id}/`} rel="next" class:list={[side, 'case-nav__item']} data-case-nav-next>
       Next<span class="sr-only">: {next.data.tocLabel}</span>
     </a>
   </div>
@@ -50,76 +50,34 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
   }
 
   /*
-   * Collapse (Vignesh, 2026-10-24: quick, no felt delay): Previous / Next fade out (duration-fast) while the
-   * surface narrows to Home and they slide under it (duration-base, ease-in-out: starts and ends at rest,
-   * no overshoot), all at once. Expand runs it backwards; the labels fade in only once they've slid out
-   * from under Home (60% of the slide), so they never show over it. Each state's transition list sets the
-   * timing for entering that state.
+   * Scrolling down hides it (Vignesh, 2026-10-24): the bar sinks below the screen edge and fades out;
+   * scrolling up, it rises back and fades in, in full (duration-base each way; ease-in-out out, ease-out in).
    *
-   * The surface moves its own edges (left / right on an absolutely positioned span, so nothing else lays
-   * out) and keeps its real rounded corners.
-   * - Not an animated clip-path: iOS Safari draws it badly on a backdrop-filter layer.
-   * - Not ease-out: it starts at ~4.5× its average speed (a jerk on an iPhone). ease-in-out starts from rest.
-   * - Not two translated halves (compositor-only): with a 40px blur each half sees its own end, so the
-   *   halves blurred differently and showed a seam down the middle.
-   *
-   * While the page scrolls (data-scrolling, nav.ts) the whole nav fades out, and fades back in once it has
-   * stopped: collapsed after a scroll down, expanded after a scroll up. Opacity only.
-   * 60fps at 4× CPU (perf-motion.mjs).
+   * No opacity on the bar itself: an ancestor with opacity < 1 is a backdrop root, so the blur would see
+   * nothing during the fade and pop back at the end (the flicker of the previous version). The surface,
+   * which carries the blur, and each link fade on their own; the bar only moves (translate, which isn't a
+   * backdrop root). Keyboard focus inside always shows it.
    */
   .case-nav__bar {
-    --nav-shift: calc(var(--spacing-nav-btn) + var(--spacing));
+    --nav-drop: calc(100% + var(--spacing) * 8 + env(safe-area-inset-bottom));
+    transition: translate var(--duration-base) var(--ease-out);
   }
-  .case-nav__bg {
-    left: 0;
-    right: 0;
-    transition:
-      left var(--duration-base) var(--ease-in-out),
-      right var(--duration-base) var(--ease-in-out);
-  }
-  .case-nav__bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    -webkit-backdrop-filter: blur(var(--blur-nav));
-    backdrop-filter: blur(var(--blur-nav));
+  .case-nav__bg,
+  .case-nav__item {
     transition: opacity var(--duration-base) var(--ease-out);
   }
-  /* The whole nav steps aside while the page moves, and returns (as it then stands) once it has stopped. */
-  .case-nav__bar {
-    transition: opacity var(--duration-base) var(--ease-out);
-  }
-  [data-case-nav][data-scrolling] .case-nav__bar {
-    opacity: 0;
+  [data-case-nav][data-hidden]:not(:focus-within) .case-nav__bar {
+    translate: 0 var(--nav-drop);
     pointer-events: none;
-    transition-duration: var(--duration-fast);
+    transition-timing-function: var(--ease-in-out);
   }
-  .case-nav__side {
-    transition:
-      translate var(--duration-base) var(--ease-in-out),
-      opacity var(--duration-fast) var(--ease-out) calc(var(--duration-base) * 0.6);
-  }
-  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__side {
+  [data-case-nav][data-hidden]:not(:focus-within) :is(.case-nav__bg, .case-nav__item) {
     opacity: 0;
-    pointer-events: none;
-    transition:
-      translate var(--duration-base) var(--ease-in-out),
-      opacity var(--duration-fast) var(--ease-out);
-  }
-  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__bg {
-    left: var(--nav-shift);
-    right: var(--nav-shift);
-  }
-  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__prev {
-    translate: var(--nav-shift) 0;
-  }
-  [data-case-nav][data-collapsed]:not(:focus-within) .case-nav__next {
-    translate: calc(-1 * var(--nav-shift)) 0;
+    transition-timing-function: var(--ease-in-out);
   }
 
   /* Slow device (src/scripts/quality.ts): no backdrop blur. */
-  :global(html[data-quality='lite']) .case-nav__bg::before {
-    display: none;
+  :global(html[data-quality='lite']) .case-nav__bg {
+    backdrop-filter: none;
   }
 </style>

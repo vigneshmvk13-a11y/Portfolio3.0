@@ -13,9 +13,9 @@ import type { WheelController } from './controller';
 
 const LINE_HEIGHT_PX = 16;
 /** Pointer travel before a touch counts as a drag (and the tap is cancelled). */
-const DRAG_SLOP_PX = 6;
+export const DRAG_SLOP_PX = 6;
 /** How far momentum carries: projected = position + velocity × this (seconds). */
-const MOMENTUM_S = 0.2;
+export const MOMENTUM_S = 0.2;
 
 export function bindWheelInput(controller: WheelController): void {
   const { stage } = controller;

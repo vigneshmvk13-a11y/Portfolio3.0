@@ -75,6 +75,9 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-24 · layout-and-motion · **Mobile first run** (Vignesh's user tests: the wheel was out of thumb reach and didn't read as scrollable): the sheet collapses by itself after 2.5s untouched, the card peeks at the next project, "Swipe to explore" sits above the collapsed sheet until the first swipe, a sideways swipe on the sheet turns the wheel, and the TOC tab peeks out. Nudge and peek once per session, never with reduced motion.
+- 2026-10-24 · layout-and-motion · **Floating nav: no collapsed state.** It hides (sinks + fades) on scroll down and comes back in full on scroll up, at the top and near the end. Fixes the colour flicker on reappearing: the fade was on the blur layer's ancestor (a backdrop root). Why: Vignesh.
+
 - 2026-10-24 · all · **Round two** (Figma `286:12975`, `290:59953`):
   - **About text:** mobile "Journey so far" 18px; second paragraph 16px on mobile; timeline role 16 (mobile) / 14, details 14 on both. Figma draws the first mobile row's role at 14; built 16 like the other three.
   - **Case studies on mobile** follow Figma's spacing: 60px between sections, 16 / 8 heading rhythm, card and image gaps (`components.md`). Mobile header and the 32px under the tabs kept as decided.

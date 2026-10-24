@@ -110,20 +110,21 @@ try {
   await d.eval('window.scrollTo(0, 0)');
   await sleep(200);
   for (let i = 0; i < 6; i++) { await d.scroll(120); await sleep(40); }
-  await sleep(300);
-  check('nav collapses on scroll down', await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-collapsed')`));
+  check('nav hides while scrolling', await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`));
+  await sleep(500);
+  check('nav stays hidden when scrolling stops', await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`));
   await d.scroll(-120);
   await sleep(300);
-  check('nav expands on scroll up', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-collapsed')`)));
+  check('nav returns on scroll up', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`)));
   await d.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
   await sleep(300);
-  check('nav shows in full at the page end', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-collapsed')`)));
+  check('nav shows at the page end', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`)));
 
   const more = await d.eval(`[...document.querySelectorAll('[aria-labelledby="more-projects"] [data-card-link]')].map((a) => a.dataset.cardLink).join(', ')`);
   check('More projects: the next three', more === 'fyn, nova, prime-compass', more);
 
   // Home → card (collapse), then card → cover (expand).
-  await d.eval('window.scrollTo(0, 0)'); await sleep(400); // the nav is out of the way until scrolling has stopped
+  await d.eval('window.scrollTo(0, 0)'); await sleep(300);
   let arrived = d.loaded();
   await d.click('[data-case-nav-home]');
   await arrived; await sleep(800); // the transition takes 0.5s and blocks input meanwhile
@@ -193,13 +194,17 @@ try {
 
   // Floating nav at rest: blurred backdrop (a view-transition-name would make it a backdrop root).
   await d.goto('/work/smart-mapping/');
-  const navStyle = await d.eval(`(() => { const nav = document.querySelector('[data-case-nav]'); return { name: getComputedStyle(nav).viewTransitionName, blur: getComputedStyle(nav.querySelector('.case-nav__bg'), '::before').backdropFilter }; })()`);
+  const navStyle = await d.eval(`(() => { const nav = document.querySelector('[data-case-nav]'); return { name: getComputedStyle(nav).viewTransitionName, blur: getComputedStyle(nav.querySelector('.case-nav__bg')).backdropFilter }; })()`);
   check('nav blur 40px, no transition name at rest', navStyle.name === 'none' && navStyle.blur === 'blur(40px)', JSON.stringify(navStyle));
   await d.eval('window.scrollTo(0, 0)');
   for (let i = 0; i < 6; i++) { await d.scroll(120); await sleep(40); }
+  await sleep(500);
+  const hiddenBar = await d.eval(`getComputedStyle(document.querySelector('.case-nav__bar')).opacity`);
+  await d.scroll(-120);
   await sleep(900);
-  const collapsed = await d.eval(`(() => { const s = (q) => getComputedStyle(document.querySelector(q)); return { prev: s('[data-case-nav-prev]').opacity, next: s('[data-case-nav-next]').opacity, homeZ: s('[data-case-nav-home]').zIndex }; })()`);
-  check('collapsed: labels hidden, Home on top', collapsed.prev === '0' && collapsed.next === '0' && collapsed.homeZ === '10', JSON.stringify(collapsed));
+  const rest = await d.eval(`(() => { const s = (q) => getComputedStyle(document.querySelector(q)); return { prev: s('[data-case-nav-prev]').opacity, next: s('[data-case-nav-next]').opacity, bar: s('.case-nav__bar').opacity }; })()`);
+  check('hidden: the bar itself never fades (blur stays live)', hiddenBar === '1', hiddenBar);
+  check('after scrolling up: back in full', rest.prev === '1' && rest.next === '1' && rest.bar === '1', JSON.stringify(rest));
   await d.close();
 
   // Mobile: swipe left goes to the next project; a short drag springs back; the tab row doesn't swipe.

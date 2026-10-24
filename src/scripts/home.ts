@@ -8,6 +8,7 @@ import { bindToc } from './toc';
 import { bindTocMorph } from './toc-morph';
 import { bindHash, indexFromHash } from './hash';
 import { bindSheet } from './sheet';
+import { bindFirstRun } from './first-run';
 import { initAboutDrawer } from './drawer';
 import { initMotionCovers, setActiveCover } from './media';
 import { watchQuality } from './quality';
@@ -35,6 +36,8 @@ export function initHome(): WheelController | null {
   bindTocMorph(wheel);
   bindHash(wheel);
   bindSheet(wheel);
+  // Mobile: the sheet steps aside and the wheel shows it moves (after the sheet, which it drives).
+  bindFirstRun(wheel);
   // After the sheet: on mobile, About grows out of it (including the /?about deep link).
   initAboutDrawer();
 
@@ -55,7 +58,7 @@ export function initHome(): WheelController | null {
     const card = activeCard();
     setActiveCover(card?.querySelector<HTMLElement>('[data-motion-cover]') ?? null);
     // Announce changes the user made, not the initial placement or the intro landing.
-    if (status && card && via !== 'init' && via !== 'intro') status.textContent = card.getAttribute('aria-label') ?? '';
+    if (status && card && via !== 'init' && via !== 'intro' && via !== 'hint') status.textContent = card.getAttribute('aria-label') ?? '';
     stage.dataset.index = String(index);
   });
 
