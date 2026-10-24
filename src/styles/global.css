@@ -146,6 +146,17 @@
   }
 }
 
+/*
+ * Phone held sideways (Vignesh, 2026-10-24): the expanded sheet would fill the screen, so the wheel is laid
+ * out above the collapsed sheet (sheet.ts starts it collapsed here), with tighter gaps between cards.
+ */
+@media (orientation: landscape) and (max-height: 520px) and (width < 75rem) {
+  :root {
+    --wheel-gap: 16px;
+    --sheet-h: 125px;
+  }
+}
+
 /* ---------- Static tokens → utilities ---------- */
 @theme static {
   --*: initial;

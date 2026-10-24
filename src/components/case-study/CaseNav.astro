@@ -63,9 +63,8 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
    * - Not two translated halves (compositor-only): with a 40px blur each half sees its own end, so the
    *   halves blurred differently and showed a seam down the middle.
    *
-   * Blur: it lives on the surface's ::before, which fades out while the page scrolls (data-scrolling,
-   * nav.ts) and back in once it has stopped, so the pill is a plain tint while content streams under it.
-   * Opacity of the blur layer, not an animated blur radius.
+   * While the page scrolls (data-scrolling, nav.ts) the whole nav fades out, and fades back in once it has
+   * stopped: collapsed after a scroll down, expanded after a scroll up. Opacity only.
    * 60fps at 4× CPU (perf-motion.mjs).
    */
   .case-nav__bar {
@@ -87,8 +86,13 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
     backdrop-filter: blur(var(--blur-nav));
     transition: opacity var(--duration-base) var(--ease-out);
   }
-  [data-case-nav][data-scrolling] .case-nav__bg::before {
+  /* The whole nav steps aside while the page moves, and returns (as it then stands) once it has stopped. */
+  .case-nav__bar {
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  [data-case-nav][data-scrolling] .case-nav__bar {
     opacity: 0;
+    pointer-events: none;
     transition-duration: var(--duration-fast);
   }
   .case-nav__side {

@@ -173,6 +173,10 @@ The earlier proposal's "grow out" phase (gooey cards emerging from the first one
 - The landing isn't announced in the live region and doesn't set a hash.
 - Reduced motion: no intro; the resting state renders directly. Repeat visits in the session also go straight to rest. `scripts/screenshot.mjs` skips it unless `INTRO=1`; `test-wheel.mjs` skips it except in the intro tests.
 
+### Phone held sideways (Vignesh, 2026-10-24)
+
+In landscape under 520px tall (and narrower than 75rem) the expanded sheet would fill the screen and the cards shrank to slivers. The sheet now **starts collapsed** (`sheet.ts`), `--sheet-h` is its collapsed height (125px) and `--wheel-gap` 16px, so the card is ~210px tall above it (global.css). Tap or drag the handle for the intro.
+
 ## About
 
 Figma section `280:9512`. A side drawer on desktop; on mobile and tablet the bottom sheet grows into it.
@@ -295,7 +299,7 @@ Tablet (768–1199, not designed): the mobile layout in the 846 column.
 - Previous · Home · Next, fixed 32px above the bottom. Wraps round the homepage order (Next from Gyst is Data mapping).
 - **Collapses to Home** when the page scrolls down by 8px or more (`caseStudy.navScrollSlop`); **expands** when it scrolls up as much, at the top, within 160px of the end (`caseStudy.navEndZone`), and while any of its links has keyboard focus.
 - **Collapse:** Previous / Next fade out first (`duration-fast`), then the surface narrows to Home and they slide under it (`duration-slow`, `ease-in-out`: starts and ends at rest, no overshoot; Vignesh, 2026-10-23, it was the bouncing `ease-spring`). Home sits above them. **Expand** runs backwards: the surface opens and the labels slide out from under Home, and only once that's done (`duration-slow`) do they fade in (`duration-fast`), so they never show over Home (Vignesh, 2026-10-23; they used to start fading in 150ms into the slide). The surface moves its own `left` / `right` (an absolutely positioned span, so nothing else lays out) and keeps real rounded corners: an animated `clip-path` on the blurred layer showed artefacts on iOS Safari. Not `ease-out`: it starts at ~4.5× its average speed, so after the labels' pause the edges jumped ~15px in one frame (a jerk on Vignesh's iPhone). Not two translated halves (compositor-only): with the 40px blur each half sees its own end, so they blurred differently and showed a seam. 60fps at 4× CPU.
-- **Quicker (Vignesh, 2026-10-24):** collapse and expand take `duration-base` (300ms), labels fading out together with the slide, fading in once 60% of the slide has passed. The blur (40px) lives on the surface's `::before` and is **off while the page scrolls** (`data-scrolling`, set by each scroll event and cleared `caseStudy.navIdle` (140ms) after the last) and fades back in (`duration-base`; out in `duration-fast`) once scrolling has stopped. It is the blur layer's opacity that animates, not the blur radius. It must not carry a `view-transition-name` at rest (that makes it a backdrop root, so the blur sees nothing); it's named only during a slide.
+- **Quicker (Vignesh, 2026-10-24):** collapse and expand take `duration-base` (300ms), labels fading out together with the slide, fading in once 60% of the slide has passed. **While the page scrolls the whole nav fades out** (`data-scrolling`, set by each scroll event and cleared `caseStudy.navIdle` (140ms) after the last; out in `duration-fast`, back in `duration-base`, not clickable meanwhile), and returns once scrolling has stopped, collapsed after a scroll down and expanded after a scroll up. Opacity only. It must not carry a `view-transition-name` at rest (that makes it a backdrop root, so the blur sees nothing); it's named only during a slide.
 
 ### Swipe (touch only)
 

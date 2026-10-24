@@ -123,7 +123,7 @@ try {
   check('More projects: the next three', more === 'fyn, nova, prime-compass', more);
 
   // Home → card (collapse), then card → cover (expand).
-  await d.eval('window.scrollTo(0, 0)');
+  await d.eval('window.scrollTo(0, 0)'); await sleep(400); // the nav is out of the way until scrolling has stopped
   let arrived = d.loaded();
   await d.click('[data-case-nav-home]');
   await arrived; await sleep(800); // the transition takes 0.5s and blocks input meanwhile

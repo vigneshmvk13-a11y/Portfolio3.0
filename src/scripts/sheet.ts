@@ -203,6 +203,13 @@ export function bindSheet(controller: WheelController): void {
     }
     scrim.style.opacity = '';
   };
+  // A phone held sideways: start collapsed so the wheel has the screen (global.css, landscape block).
+  if (mobile.matches && window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches) {
+    openness = 0;
+    sheet.toggleAttribute('data-collapsed', true);
+    grabber.setAttribute('aria-expanded', 'false');
+    grabber.setAttribute('aria-label', 'Show introduction');
+  }
   mobile.addEventListener('change', syncBreakpoint);
   new ResizeObserver(() => mobile.matches && measure()).observe(sheet);
   // The sheet's top moves with the viewport height (browser bars) without the sheet resizing.
