@@ -19,7 +19,7 @@ const { steps } = Astro.props;
 <section
   id="solution"
   aria-labelledby="solution-label"
-  class="mt-8 scroll-mt-25 pt-8 desktop:mt-0 desktop:pt-22"
+  class="mt-15 scroll-mt-25 desktop:mt-0 desktop:pt-22"
   data-case-section
 >
   <Eyebrow id="solution-label" class="desktop:mx-auto desktop:max-w-case-text">Solution</Eyebrow>
@@ -32,7 +32,7 @@ const { steps } = Astro.props;
             intro={step.body}
             class:list={[
               'pb-8 desktop:mx-auto desktop:max-w-case-text desktop:pb-12',
-              i === 0 ? 'pt-6' : 'pt-8 desktop:pt-0',
+              i === 0 ? 'pt-4 desktop:pt-6' : 'desktop:pt-0',
             ]}
           />
           {step.media?.image && (

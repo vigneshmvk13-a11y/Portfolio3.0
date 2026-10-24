@@ -200,6 +200,8 @@ The section name ("OVERVIEW") as the section's `<h2>`, so the outline is Section
 
 Heading (`<h3>`, `text-h6`, desktop `text-h5`, `fg-primary`) and intro paragraphs (`text-body-3`, desktop `text-body-2`), `gap-4` (desktop `gap-3`). Used by Overview, Outcome and each Solution step.
 
+> **Case-study mobile spacing (Vignesh, 2026-10-24: Figma is the truth, Figma `290:47723`):** sections sit 60px apart (`mt-15`, no top padding); eyebrow → heading 16, heading → text 8 (`SectionLead` `gap-2`, desktop `gap-3`); Overview groups 32 apart; Final designs label → images 16; Outcome cards 16 apart; More projects: heading → cards 24, cards 16 apart, See all 24 above / 48 below.
+
 ### ContextSection
 **Figma:** `290:57503` / `290:57552` (Fyn desktop / mobile), `290:57591` / `290:57648` (Gyst) · **Status:** built (redrawn 2026-10-24)
 

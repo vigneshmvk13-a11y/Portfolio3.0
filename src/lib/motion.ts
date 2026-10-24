@@ -73,8 +73,6 @@ export const toc = {
 export const intro = {
   /** Ceiling for the whole sequence. */
   total: 2.0,
-  /** Longest wait for card covers to decode before spinning, so none paints for the first time mid-spin. */
-  decodeWait: 0.3,
   /** Full revolutions; whole numbers, so it lands back on the first project. */
   spinTurns: 1,
   spinDuration: 1.2,
@@ -84,9 +82,10 @@ export const intro = {
   spinOvershoot: 0.12,
   /** Fraction of the spin spent reaching the overshoot. */
   spinOvershootAt: 0.82,
-  /** Hero text, TOC and footer appear after the landing. */
+  /** The other cards fade in over this much of the first turn (positions), trailing the lead card. */
+  trailIn: 0.6,
+  /** Hero text, TOC and footer fade in together after the landing (no stagger). */
   revealDuration: 0.5,
-  revealStagger: 0.08,
   /** px the desktop columns rise while fading in. */
   revealRise: 12,
   failsafe: 3,
@@ -125,6 +124,8 @@ export const caseStudy = {
   navScrollSlop: 8,
   /** px from the page end where the floating nav always shows in full. */
   navEndZone: 160,
+  /** ms without a scroll event before the floating nav counts as at rest and its blur fades back in. */
+  navIdle: 140,
   /** Touch swipe between case studies: px of travel before a horizontal drag is recognised. */
   swipeSlop: 10,
   /** A swipe can't start this close (px) to the screen edges, which belong to the browser's back/forward. */

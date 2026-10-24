@@ -11,6 +11,7 @@ import { bindSheet } from './sheet';
 import { initAboutDrawer } from './drawer';
 import { initMotionCovers, setActiveCover } from './media';
 import { watchQuality } from './quality';
+import { intro } from '../lib/motion';
 
 let controller: WheelController | null = null;
 
@@ -63,13 +64,24 @@ export function initHome(): WheelController | null {
 
   new ResizeObserver(() => wheel.refresh()).observe(stage);
 
+  // Intro pending: the very first render already hides the other cards (intro.ts reveals them as it spins).
+  const root = document.documentElement;
+  const introPending = root.dataset.intro === 'pending';
+  if (introPending) wheel.setIntro({ lead: 0, reveal: () => 0 });
   // Restore from the hash (or start at the first project) without animation.
   wheel.jumpTo(indexFromHash(wheel) ?? 0, 'init');
   document.documentElement.dataset.wheelReady = '';
 
   // The head script in index.astro decided whether the intro runs; load it only then.
-  if (document.documentElement.dataset.intro === 'pending') {
+  if (introPending) {
     void import('./intro/intro').then(({ runIntro }) => runIntro(wheel));
+    // The intro never ran (a failed import): show the page as it rests, like the CSS failsafe does.
+    window.setTimeout(() => {
+      if (root.dataset.intro !== 'pending') return;
+      wheel.setIntro(null);
+      wheel.refresh();
+      wheel.enabled = true;
+    }, intro.failsafe * 1000);
   }
 
   return wheel;

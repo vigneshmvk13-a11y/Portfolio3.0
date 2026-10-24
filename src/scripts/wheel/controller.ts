@@ -184,6 +184,11 @@ export class WheelController {
     running.stop();
   }
 
+  /** Intro reveal: see WheelRenderer.setIntro. */
+  setIntro(intro: { lead: number; reveal: (position: number) => number } | null): void {
+    this.renderer.setIntro(intro);
+  }
+
   /** Paint every card ahead of a long motion (see WheelRenderer.prewarm). */
   prewarm(): void {
     this.renderer.prewarm();

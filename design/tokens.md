@@ -234,14 +234,14 @@ The spin is keyframed rather than sprung, so its length is fixed: `[0 → turns�
 | `motion.ts` | Value | Use |
 |---|---|---|
 | `intro.total` | `2.0` s (ceiling) | Whole sequence (≤0.3 prep + spin 1.2 + last reveal ends ~0.66 later; the prep is usually ~0.1) |
-| `intro.decodeWait` | `0.3` s | Longest wait for card covers to decode before the spin (60fps: no first paint mid-spin) |
+| `intro.trailIn` | `0.6` positions | The other cards fade in over this much of the first turn |
 | `intro.spinTurns` | `1` | Whole revolutions, so it lands on the first project |
 | `intro.spinDuration` | `1.2` s | Spin, overshoot and settle back |
 | `intro.spinEase` | `[0.3, 0.1, 0.15, 1]` | Fast spin, hard deceleration into the landing |
 | `intro.spinOvershoot` | `0.12` positions | How far past the landing card the reel runs before settling ("clunk") |
 | `intro.spinOvershootAt` | `0.82` | Fraction of the spin spent reaching the overshoot; the rest settles back on `ease.inOut` |
 | `intro.revealDuration` | `0.5` s | Hero text, TOC, footer appear (`ease.out`) |
-| `intro.revealStagger` | `0.08` s | Between revealed elements, in DOM order |
+| `caseStudy.navIdle` | `140` ms | Without a scroll event, the floating nav is at rest and its blur returns |
 | `intro.revealRise` | `12` px | Desktop columns rise while fading in (mobile sheet slides up 100%, TOC handle in from the edge) |
 | `intro.failsafe` | `3` s | CSS reveal if the script never runs (`--intro-failsafe: 3s`) |
 

@@ -99,6 +99,19 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
       visibility: visible;
     }
   }
+  /*
+   * Only the lead card shows in the first frame; the neighbours come in as the wheel spins (intro.ts sets
+   * data-intro-spinning, and from then on the renderer owns their opacity). The same failsafe applies.
+   */
+  html[data-intro='pending']:not([data-intro-spinning]) .wheel-card:not([data-offset='0']) {
+    opacity: 0;
+    animation: intro-failsafe-card 0s var(--intro-failsafe) forwards;
+  }
+  @keyframes intro-failsafe-card {
+    to {
+      opacity: var(--wheel-fade);
+    }
+  }
 </style>
 
 <script>

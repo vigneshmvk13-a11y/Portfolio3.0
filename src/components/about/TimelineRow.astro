@@ -19,8 +19,8 @@ const { role, years, place, last = false } = Astro.props;
     !last && 'border-b border-line-default',
   ]}
 >
-  <p class="text-label-2 font-medium text-fg-strong desktop:flex-1">{role}</p>
-  <p class="flex gap-1 text-label-3 desktop:contents">
+  <p class="text-label-1 font-medium text-fg-strong desktop:flex-1 desktop:text-label-2">{role}</p>
+  <p class="flex gap-1 text-label-2 desktop:contents">
     <span class="whitespace-nowrap desktop:flex-1 desktop:text-center">{years}</span>
     <span aria-hidden="true" class="desktop:hidden">•</span>
     <span class="desktop:flex-1 desktop:text-right">{place}</span>

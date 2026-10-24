@@ -8,6 +8,11 @@ export class WheelRenderer {
   private metrics: Metrics = { h: 0, gap: 0 };
   /** Last pose written per card, so a frame only touches what changed (hidden cards cost nothing). */
   private written: CardPose[] = [];
+  /**
+   * Intro: the card at `lead` shows at once; the others fade in as the wheel turns, by `reveal(position)`
+   * (0 = hidden, 1 = as posed). Null outside the intro.
+   */
+  private intro: { lead: number; reveal: (position: number) => number } | null = null;
 
   constructor(
     private readonly stage: HTMLElement,
@@ -29,11 +34,18 @@ export class WheelRenderer {
     return Math.max(1, stepDistance(this.metrics));
   }
 
+  /** Start (or, with null, end) the intro reveal. */
+  setIntro(intro: { lead: number; reveal: (position: number) => number } | null): void {
+    this.intro = intro;
+  }
+
   render(position: number): void {
     const n = this.cards.length;
+    const reveal = this.intro?.reveal(position) ?? 1;
     for (let i = 0; i < n; i++) {
       const card = this.cards[i];
-      const pose = poseAt(ringOffset(i, position, n), this.metrics);
+      let pose = poseAt(ringOffset(i, position, n), this.metrics);
+      if (reveal < 1 && i !== this.intro?.lead) pose = { ...pose, opacity: pose.opacity * reveal };
       const last = this.written[i];
       if (last && !last.visible && !pose.visible) continue;
       const style = card.style;

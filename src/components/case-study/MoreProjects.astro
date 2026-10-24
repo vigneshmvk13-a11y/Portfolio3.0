@@ -17,13 +17,13 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
 
 <section
   aria-labelledby="more-projects"
-  class="pb-30 desktop:mx-auto desktop:max-w-case-text desktop:pt-22 desktop:pb-40"
+  class="mt-15 pb-30 desktop:mx-auto desktop:mt-0 desktop:max-w-case-text desktop:pt-22 desktop:pb-40"
 >
-  <div class="flex items-end justify-between py-8 desktop:pt-0 desktop:pb-6">
+  <div class="flex items-end justify-between pb-6">
     <h2 id="more-projects" class="text-h5 text-fg-primary">More projects</h2>
     <a href="/" class:list={['hidden desktop:block', seeAll]}>See all</a>
   </div>
-  <ul class="grid gap-5 desktop:grid-cols-3">
+  <ul class="grid gap-4 desktop:grid-cols-3 desktop:gap-5">
     {
       entries.map((entry) => (
         <li class="aspect-card">
@@ -32,5 +32,5 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
       ))
     }
   </ul>
-  <a href="/" class:list={['inline-block py-8 desktop:hidden', seeAll]}>See all</a>
+  <a href="/" class:list={['inline-block pt-6 pb-12 desktop:hidden', seeAll]}>See all</a>
 </section>

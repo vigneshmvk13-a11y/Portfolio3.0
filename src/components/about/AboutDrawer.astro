@@ -69,7 +69,7 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
         <div class="flex flex-col gap-6 desktop:gap-0">
           <div class="flex flex-col gap-5 px-4 desktop:gap-6 desktop:px-5 desktop:py-6">
             {firstParagraph && <p class="text-label-1 font-regular desktop:text-body-2" set:html={renderInline(firstParagraph)} />}
-            {otherParagraphs.map((paragraph) => <p class="text-body-3 desktop:text-body-2" set:html={renderInline(paragraph)} />)}
+            {otherParagraphs.map((paragraph) => <p class="text-body-2" set:html={renderInline(paragraph)} />)}
           </div>
           <div class="flex gap-2 px-4 desktop:gap-3 desktop:px-5 desktop:pb-12">
             {resume ? (
@@ -87,7 +87,7 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
       {
         about.journey.length > 0 && (
           <section aria-labelledby="journey-title" class="flex flex-col gap-5 desktop:gap-0">
-            <h3 id="journey-title" class="px-4 text-label-1 font-medium text-fg-strong desktop:px-5 desktop:pt-12 desktop:pb-6 desktop:text-body-1">
+            <h3 id="journey-title" class="px-4 text-body-1 font-medium text-fg-strong desktop:px-5 desktop:pt-12 desktop:pb-6">
               Journey so far
             </h3>
             <ol class="flex flex-col gap-3 px-5 pb-5 desktop:pb-10">

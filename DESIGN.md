@@ -75,6 +75,13 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-24 · all · **Round two** (Figma `286:12975`, `290:59953`):
+  - **About text:** mobile "Journey so far" 18px; second paragraph 16px on mobile; timeline role 16 (mobile) / 14, details 14 on both. Figma draws the first mobile row's role at 14; built 16 like the other three.
+  - **Case studies on mobile** follow Figma's spacing: 60px between sections, 16 / 8 heading rhythm, card and image gaps (`components.md`). Mobile header and the 32px under the tabs kept as decided.
+  - **Floating nav:** collapse and expand in 300ms, blur off while scrolling and back after 140ms idle (`layout-and-motion.md → Floating nav`).
+  - **Intro:** only the lead card at first paint, the spin starts at once, the other cards trail in behind it, the chrome fades in together. 0 missed frames at 4× CPU.
+  - Dropped: dragging the open footer up into About.
+
 - 2026-10-24 · all · **Polish pass** (Figma `286:12972` spacing, `286:12974` hover, `286:12975` About, `290:59953` case studies):
   - **Home layout:** intro, card and TOC are a fixed 80px apart on desktop at every width, the group capped and centred; the footer shares its width (`layout-and-motion.md`).
   - **Hover states** from Figma for icon buttons, case nav, System arrow, gallery carets and company logos (filled icons, solid white pills, brand-colour logos). Desktop only.

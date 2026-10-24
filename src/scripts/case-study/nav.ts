@@ -1,6 +1,7 @@
 /**
  * Floating Previous / Home / Next (design/layout-and-motion.md → Case study → Floating nav).
- * Collapses to Home while scrolling down; expands on scroll up, at the top and near the page end.
+ * Collapses to Home while scrolling down; expands on scroll up, at the top and near the page end. While the
+ * page moves its backdrop blur is off (data-scrolling); it fades back in once scrolling has stopped.
  * Keyboard focus inside it always shows it in full (CSS :focus-within).
  */
 import { caseStudy } from '../../lib/motion';
@@ -11,6 +12,7 @@ export function bindNav(): void {
 
   let anchor = window.scrollY;
   let frame = 0;
+  let idle = 0;
 
   function update(): void {
     frame = 0;
@@ -29,6 +31,9 @@ export function bindNav(): void {
   window.addEventListener(
     'scroll',
     () => {
+      nav.setAttribute('data-scrolling', '');
+      window.clearTimeout(idle);
+      idle = window.setTimeout(() => nav.removeAttribute('data-scrolling'), caseStudy.navIdle);
       if (!frame) frame = requestAnimationFrame(update);
     },
     { passive: true },
