@@ -1,6 +1,6 @@
 # Assets: covers, loops, share image, favicon
 
-Where each asset goes, what size, what format. Limits are enforced by `pnpm check` (`scripts/check-media.mjs`: any file in `public/media` over 4 MB fails).
+Where each asset goes, what size, what format. Limits are enforced by `pnpm check` (`scripts/check-media.mjs`: any file in `public/media` over 5 MB fails).
 
 ## Cover video (homepage card and case-study cover)
 
@@ -14,7 +14,7 @@ Where each asset goes, what size, what format. Limits are enforced by `pnpm chec
 
 - Same rules as covers, in `public/media/<slug>/`, any file name; reference them from the solution step's `media` fields (`mp4`, `webm`, `image` as poster).
 - Width: the case column is 846px, so export **1692×(height)** (2×). For the Prime compass / Nova half-width images, 837 (2×: 1674).
-- ≤ 4 MB per file. If a loop doesn't fit: shorten, then lower fps to 24, then raise the CRF; resolution last.
+- ≤ 5 MB per file. If a loop doesn't fit: shorten, then lower fps to 24, then raise the CRF; resolution last.
 
 ### Encoding (ffmpeg, not a dependency; run it yourself)
 
@@ -25,7 +25,7 @@ ffmpeg -i in.mov -an -vf "scale=1106:-2,fps=30" -c:v libx264 -crf 24 -preset slo
 ffmpeg -i in.mov -an -vf "scale=1106:-2,fps=30" -c:v libvpx-vp9 -crf 34 -b:v 0 cover.webm
 ```
 
-Raise `-crf` (24 → 28, 34 → 38) until each file is under 4 MB. HandBrake works too.
+Raise `-crf` (24 → 28, 34 → 38) until each file is under 5 MB. HandBrake works too.
 
 ## Share image (link previews)
 

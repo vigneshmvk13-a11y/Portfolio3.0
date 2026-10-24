@@ -5,11 +5,16 @@ cardMeta: B2B • SAAS
 status: live
 order: 4
 draft: false
-seoDescription: >-
-  Prime Compass began as an AI-powered testing platform. I helped translate complex AI and system behavior into a usable product.
 heroVideo:
   poster: ../../assets/covers/prime-compass/heroVideo/poster.png
-  alt: Motion-blurred streaks of yellow and teal with a small orange dot at the centre
+  alt: >-
+    Motion-blurred streaks of yellow and teal with a small orange dot at the
+    centre
+  webm: /media/prime-compass/heroVideo/webm.webm
+ogImage: ../../assets/og/prime-compass/ogImage.png
+seoDescription: >-
+  Prime Compass began as an AI-powered testing platform. I helped translate
+  complex AI and system behavior into a usable product.
 role: Founding Product Designer
 timeline: 3 months
 team:
@@ -21,15 +26,24 @@ team:
     role: Architect & Engineering head
   - name: Jacob Nelson
     role: Engineer
+tools: []
+context:
+  blocks: []
+  facts: []
 overview:
   heading: Designing a product around an autonomous AI
   intro: >-
-    Prime Compass began as an AI-powered testing platform. I worked closely with the founders, principal architect,
-    and engineering team to translate complex AI and system behavior into a usable product.
+    Prime Compass began as an AI-powered testing platform. I worked closely with
+    the founders, principal architect, and engineering team to translate complex
+    AI and system behavior into a usable product.
   challengeLabel: The challenge
   challenge:
-    - Make autonomous AI activity visible without exposing unnecessary complexity.
-    - Help users understand what the AI discovered and how confident they should be.
+    - >-
+      Make autonomous AI activity visible without exposing unnecessary
+      complexity.
+    - >-
+      Help users understand what the AI discovered and how confident they should
+      be.
     - Give users ways to correct mistakes and recover from failures.
     - Turn large amounts of discovered behavior into something actionable
   insightLabel: The key insight
@@ -37,72 +51,85 @@ overview:
 solution:
   - heading: Making autonomous AI observable
     body: >-
-      Instead of hiding discovery behind a loading state, I designed the experience to show where the AI was, what it
-      was finding, and when it needed help.
+      Instead of hiding discovery behind a loading state, I designed the
+      experience to show where the AI was, what it was finding, and when it
+      needed help.
     media:
       image: ../../assets/case-studies/prime-compass/solution/0/media/image.png
       alt: >-
-        Discovery setup: the application URL and environment, personas and documents, with AI suggestions beside the
-        Start discovery button
+        Discovery setup: the application URL and environment, personas and
+        documents, with AI suggestions beside the Start discovery button
   - heading: Turning behavioral change into a visual signal
     body: >-
-      I designed the Drift Map to show the relationship between a baseline and discovered behavior, helping users see
-      where change was happening before investigating the details.
+      I designed the Drift Map to show the relationship between a baseline and
+      discovered behavior, helping users see where change was happening before
+      investigating the details.
     media:
       image: ../../assets/case-studies/prime-compass/solution/1/media/image.png
       alt: >-
-        Discovery v5 overview compared against v11.4: module, feature and scenario counts, AI-generated insights, and
-        the start of the Drift Orbit
+        Discovery v5 overview compared against v11.4: module, feature and
+        scenario counts, AI-generated insights, and the start of the Drift Orbit
 system:
   heading: Building the language behind the product
   intro: >-
-    As Prime Compass expanded across discovery, dashboards, graphs, comparison, and configuration, I established a
-    scalable design system instead of designing each screen in isolation.
+    As Prime Compass expanded across discovery, dashboards, graphs, comparison,
+    and configuration, I established a scalable design system instead of
+    designing each screen in isolation.
   image: ../../assets/case-studies/prime-compass/system/image.png
   alt: >-
-    The Nova design system file in Figma: its primitive and component pages, open on Buttons with every size and state
+    The Nova design system file in Figma: its primitive and component pages,
+    open on Buttons with every size and state
   link: nova
   cards:
     - title: Brand primitives
       body: Color, typography, spacing, radius, elevation, and foundational tokens.
     - title: Semantic aliases
-      body: Meaningful roles for surfaces, text, borders, feedback, status, and interaction.
+      body: >-
+        Meaningful roles for surfaces, text, borders, feedback, status, and
+        interaction.
     - title: Component tokens
-      body: Reusable components and interaction states mapped to the semantic system.
+      body: >-
+        Reusable components and interaction states mapped to the semantic
+        system.
 finalDesigns:
   - image: ../../assets/case-studies/prime-compass/finalDesigns/0/image.png
     alt: >-
-      Discovery in progress: AI suggestions next to a live discovery log and a summary of the modules, scenarios and
-      nodes found so far
+      Discovery in progress: AI suggestions next to a live discovery log and a
+      summary of the modules, scenarios and nodes found so far
     layout: full
   - image: ../../assets/case-studies/prime-compass/finalDesigns/1/image.png
     alt: >-
-      Modules and scenarios list beside the overview, with module, feature and scenario counts against the current
-      baseline and AI-generated insights
+      Modules and scenarios list beside the overview, with module, feature and
+      scenario counts against the current baseline and AI-generated insights
     layout: full
   - image: ../../assets/case-studies/prime-compass/finalDesigns/2/image.png
     alt: >-
-      Drift Orbit: modules plotted around baseline v11.4 by how far they have drifted, colour-coded as aligned,
-      moderate or high drift
+      Drift Orbit: modules plotted around baseline v11.4 by how far they have
+      drifted, colour-coded as aligned, moderate or high drift
     layout: full
 outcome:
   heading: From AI capability to a usable product model
   intro: >-
-    My contribution went beyond individual screens. I helped shape how users understood, supervised, and acted on an
-    autonomous system.
+    My contribution went beyond individual screens. I helped shape how users
+    understood, supervised, and acted on an autonomous system.
   cards:
     - title: Observable AI
       body: Made AI activity and discoveries visible at the right level of detail.
     - title: Behavioral intelligence
       body: Turned discovered behavior and drift into understandable visual models.
     - title: Scalable foundation
-      body: Established a design system that could support PrimeThoughts' broader product portfolio.
+      body: >-
+        Established a design system that could support PrimeThoughts' broader
+        product portfolio.
 reflection:
   heading: AI products need observable behavior
   body: >-
-    When software makes decisions autonomously, hiding the process doesn't necessarily make the experience simpler.
-    Users need enough visibility to understand what the system is doing and whether they should trust the result.
+    When software makes decisions autonomously, hiding the process doesn't
+    necessarily make the experience simpler. Users need enough visibility to
+    understand what the system is doing and whether they should trust the
+    result.
 
 
-    This project also reinforced that failure is part of the UX, and that complex data becomes useful when the
-    interface gives people a clear mental model of the relationships underneath it.
+    This project also reinforced that failure is part of the UX, and that
+    complex data becomes useful when the interface gives people a clear mental
+    model of the relationships underneath it.

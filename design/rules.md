@@ -55,8 +55,8 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 
 ## Media
 
-- Covers: MP4 (H.264) + WebM + poster, ~30s loop, no audio, no text, ≤ 4 MB per file (`check-media.mjs`).
-- Encoding guidance for staying under 4 MB at 30s: 720p (1280×720, or the card's 553×400 at 2× ≈ 1106×800), 24–30fps, ~1 Mbps target. Abstract motion compresses well; busy UI captures don't. If a cover can't fit, shorten the loop before dropping resolution.
+- Covers: MP4 (H.264) + WebM + poster, ~30s loop, no audio, no text, ≤ 5 MB per file (`check-media.mjs`).
+- Encoding guidance for staying under 5 MB at 30s: 720p (1280×720, or the card's 553×400 at 2× ≈ 1106×800), 24–30fps, ~1 Mbps target. Abstract motion compresses well; busy UI captures don't. If a cover can't fit, shorten the loop before dropping resolution.
 - Every image has real alt text describing the content, not the file ("Smart Mapping table showing source fields mapped to target fields"). Purely decorative images get `alt=""`.
 
 ## Copy

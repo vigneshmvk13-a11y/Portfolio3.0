@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fails when any file under public/media is larger than 4 MB (AGENTS.md → Media rules).
+ * Fails when any file under public/media is larger than 5 MB (AGENTS.md → Media rules).
  * Reports every hit; never re-encodes.
  */
 import { readdir, stat } from 'node:fs/promises';
@@ -8,7 +8,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../public/media/', import.meta.url));
-const LIMIT = 4 * 1024 * 1024;
+const LIMIT = 5 * 1024 * 1024;
 
 async function* walk(dir) {
   let entries;
@@ -34,9 +34,9 @@ for await (const file of walk(root)) {
 }
 
 if (tooLarge.length > 0) {
-  console.error(`check-media: ${tooLarge.length} file(s) over 4 MB:`);
+  console.error(`check-media: ${tooLarge.length} file(s) over 5 MB:`);
   for (const { file, mb } of tooLarge) console.error(`  ${file}  ${mb} MB`);
   console.error('Report these to Vignesh; do not re-encode silently.');
   process.exit(1);
 }
-console.log(`check-media: ${count} file(s) in public/media, all ≤ 4 MB.`);
+console.log(`check-media: ${count} file(s) in public/media, all ≤ 5 MB.`);

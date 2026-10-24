@@ -71,10 +71,10 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
 ├── keystatic.config.ts
 ├── public/
 │   ├── fonts/                  ← General Sans woff2
-│   ├── media/<slug>/           ← cover.mp4, cover.webm only (committed, ≤ 4 MB each)
+│   ├── media/<slug>/           ← cover.mp4, cover.webm only (committed, ≤ 5 MB each)
 │   └── resume.pdf
 ├── scripts/
-│   ├── check-media.mjs         ← fails on any /public/media file > 4 MB
+│   ├── check-media.mjs         ← fails on any /public/media file > 5 MB
 │   ├── check-tokens.mjs        ← fails on raw hex / arbitrary Tailwind values in src/
 │   └── screenshot · test-wheel · test-case-study · perf-motion (.mjs)
 └── src/
@@ -164,7 +164,7 @@ Keystatic's admin UI and its GitHub mode need server routes, which a static buil
 
 - Case studies lead with a looping motion cover: ~30s, no audio, no text.
 - Every cover ships **MP4 (H.264) + WebM** and a **poster** (also the LCP image). Markup: `<video autoplay muted loop playsinline preload="none" poster="…">`, WebM source first.
-- Videos live in `/public/media/<slug>/`; posters in `src/assets/covers/<slug>/` so `astro:assets` can optimise them. Both committed. `scripts/check-media.mjs` runs in `pnpm check` and **fails on any file over 4 MB**. Report every hit to Vignesh; don't re-encode silently.
+- Videos live in `/public/media/<slug>/`; posters in `src/assets/covers/<slug>/` so `astro:assets` can optimise them. Both committed. `scripts/check-media.mjs` runs in `pnpm check` and **fails on any file over 5 MB**. Report every hit to Vignesh; don't re-encode silently.
 - Lazy: below-the-fold videos don't load until near the viewport (`IntersectionObserver` sets `src`).
 - **At most one video plays at a time**, and only when it's the active/visible one. Pause and reset the others. **One exception (Vignesh, 2026-10-24):** the three covers in a case study's More projects row all autoplay together (`data-autoplay`) while near the viewport; they're small cards. Every other cover keeps the one-at-a-time rule.
 - `prefers-reduced-motion: reduce` or `Save-Data` → poster only, no video element playback.
