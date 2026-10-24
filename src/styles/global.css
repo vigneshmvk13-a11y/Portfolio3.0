@@ -204,6 +204,7 @@
 
   --radius-item: 8px;
   --radius-button-sm: 12px;
+  --radius-photo: 12px;
   --radius-media-sm: 16px;
   --radius-button-lg: 16px;
   --radius-tabs: 14px;
@@ -226,8 +227,8 @@
   --spacing-avatar: 140px;
   --spacing-avatar-overlap: 73px;
   --spacing-banner: 200px;
-  --spacing-gallery-w: 170px;
-  --spacing-gallery-photo-h: 142px;
+  --spacing-gallery-w: 200px;
+  --spacing-gallery-photo-h: 190px;
   --spacing-icon-xs: 16px;
   --spacing-icon-sm: 18px;
   --spacing-icon-md: 20px;

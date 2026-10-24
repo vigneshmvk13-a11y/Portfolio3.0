@@ -1,8 +1,8 @@
 ---
 /**
- * Horizontal row of photo cards in About (Figma 311:67930, the same 170px card on mobile and desktop):
- * a white card with a 4px inset photo (160×142), then a title and a "Place • Year" caption. Cards keep
- * their own heights and align at the top. A keyboard-scrollable labelled region with Previous / Next glass
+ * Horizontal row of photo cards in About (Figma 311:68027 desktop, 311:68093 mobile; the same 200px card
+ * at both): a grey card with a 4px inset photo (192×190), then a title and a "Place • Year" caption.
+ * Cards keep their own heights and align at the top. A keyboard-scrollable labelled region with Previous / Next glass
  * buttons over the photos (Figma 280:9431): Next shows until the row reaches its end, Previous once it has
  * left the start (src/scripts/gallery.ts). Both start hidden, so without JS there are no dead buttons.
  */
@@ -29,27 +29,27 @@ const { images, id, class: className } = Astro.props;
     <div class:list={['gallery relative', className]} data-gallery>
       <div
         id={id}
-        class="gallery__track flex snap-x snap-mandatory scroll-px-4 items-start gap-5 overflow-x-auto px-4 desktop:scroll-px-5 desktop:px-5"
+        class="gallery__track flex snap-x snap-mandatory scroll-px-5 items-start gap-2 overflow-x-auto px-5"
         role="region"
         aria-label="Photos"
         tabindex="0"
         data-gallery-track
       >
         {images.map(({ image, alt, title, caption }) => (
-          <figure class="flex w-gallery-w shrink-0 snap-start flex-col gap-2 rounded-media-sm border border-line-subtle bg-surface-raised p-1">
+          <figure class="flex w-gallery-w shrink-0 snap-start flex-col gap-3 rounded-media-sm bg-surface-page p-1">
               <Image
                 src={image}
                 alt={alt}
-                width={160}
-                height={142}
+                width={192}
+                height={190}
                 densities={[2, 3]}
                 fit="cover"
-                class="h-gallery-photo-h w-full rounded-media-sm object-cover"
+                class="h-gallery-photo-h w-full rounded-photo object-cover"
               />
               {(title || caption) && (
-                <figcaption class="flex flex-col gap-1 px-2 pb-2 text-body-4">
-                  {title && <span class="font-medium text-fg-primary">{title}</span>}
-                  {caption && <span class="text-fg-secondary">{caption}</span>}
+                <figcaption class="flex flex-col gap-0.5 px-3 pb-3">
+                  {title && <span class="text-body-3 font-medium text-fg-primary">{title}</span>}
+                  {caption && <span class="text-body-4 font-medium text-fg-secondary">{caption}</span>}
                 </figcaption>
               )}
           </figure>

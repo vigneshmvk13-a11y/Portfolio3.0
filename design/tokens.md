@@ -126,8 +126,8 @@ Named spacing:
 | `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
 | `--spacing-avatar-overlap` | 73px | How far the avatar overlaps the banner (140 − 67) |
 | `--spacing-banner` | 200px | About banner height |
-| `--spacing-gallery-w` | 170px | Gallery card, mobile and desktop (Figma `311:67930`) |
-| `--spacing-gallery-photo-h` | 142px | Gallery card photo (full card width minus the 4px inset) |
+| `--spacing-gallery-w` | 200px | About gallery card, mobile and desktop (Figma `311:68027` / `311:68093`) |
+| `--spacing-gallery-photo-h` | 190px | About gallery card photo (card width minus the 4px inset) |
 | `--scrollbar-w` / `--scrollbar-inset` / `--scrollbar-hit` / `--scrollbar-min` | 4px / 6px / 16px / 40px | Overlay scrollbar thumb in the About panel: width, gap from the edge, pointer hit width, shortest thumb (`components.md → AboutDrawer`) |
 | `--about-top` | 40px | Mobile/tablet: the bottom sheet grown into About stops this far below the top (Vignesh, 2026-10-24). Registered with `@property` so JS reads it in px |
 | `--sheet-h` | 237–265px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
@@ -139,6 +139,7 @@ Named spacing:
 |---|---|---|
 | `rounded-item` | 8px | TOC items, dash |
 | `rounded-button-sm` | 12px | Desktop icon button, case-study tab |
+| `rounded-photo` | 12px | A photo inset 4px inside a 16px card (About gallery), so the corners stay concentric |
 | `rounded-tabs` | 14px | Case-study tab track (12 + its 2px padding) |
 | `rounded-tile` | 20px | Case-study Outcome cards |
 | `rounded-media-sm` | 16px | Gallery photos, close button |
