@@ -20,7 +20,9 @@ const facts = [
   { label: 'Timeline', lines: timeline ? [timeline] : [] },
   { label: 'Team', lines: team.map((m) => (m.role ? `${m.name} (${m.role})` : m.name)), wide: true },
 ].filter((fact) => fact.lines.length > 0);
-if (facts.length === 0) facts.push(...ownFacts);
+// Data mapping centres its row (Figma 290:52079); Gyst's starts at the text edge, 89px in (290:57594).
+const ownRow = facts.length === 0;
+if (ownRow) facts.push(...ownFacts);
 ---
 
 <header class="pb-6 desktop:mx-auto desktop:max-w-case-text desktop:pb-12">
@@ -46,7 +48,7 @@ if (facts.length === 0) facts.push(...ownFacts);
 
 {
   facts.length > 0 && (
-    <dl class="grid grid-cols-2 gap-x-4 gap-y-6 pt-8 pb-15 desktop:flex desktop:justify-center desktop:gap-6 desktop:py-22">
+    <dl class:list={['grid grid-cols-2 gap-x-4 gap-y-6 pt-8 pb-15 desktop:flex desktop:gap-6 desktop:py-22', ownRow ? 'desktop:justify-start desktop:px-22' : 'desktop:justify-center']}>
       {facts.map((fact) => (
         <div class:list={['flex flex-col gap-2 desktop:w-meta-col', fact.wide && 'col-span-2']}>
           <dt class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{fact.label}</dt>
