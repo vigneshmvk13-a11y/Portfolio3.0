@@ -193,7 +193,7 @@ try {
 
   // Floating nav at rest: blurred backdrop (a view-transition-name would make it a backdrop root).
   await d.goto('/work/smart-mapping/');
-  const navStyle = await d.eval(`(() => { const nav = document.querySelector('[data-case-nav]'); return { name: getComputedStyle(nav).viewTransitionName, blur: getComputedStyle(nav.querySelector('.case-nav__bg')).backdropFilter }; })()`);
+  const navStyle = await d.eval(`(() => { const nav = document.querySelector('[data-case-nav]'); return { name: getComputedStyle(nav).viewTransitionName, blur: getComputedStyle(nav.querySelector('.case-nav__bg'), '::before').backdropFilter }; })()`);
   check('nav blur 40px, no transition name at rest', navStyle.name === 'none' && navStyle.blur === 'blur(40px)', JSON.stringify(navStyle));
   await d.eval('window.scrollTo(0, 0)');
   for (let i = 0; i < 6; i++) { await d.scroll(120); await sleep(40); }
