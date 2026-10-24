@@ -219,8 +219,8 @@ JS only (`motion.ts → caseStudy`); behaviour in `layout-and-motion.md → Case
 
 | `motion.ts` | Value | Meaning |
 |---|---|---|
-| `caseStudy.navScrollSlop` | `8` px | Scroll in one direction before the floating nav collapses (down) or expands (up) |
-| `caseStudy.navEndZone` | `160` px | Within this of the page end the nav always shows in full |
+| `caseStudy.navScrollSlop` | `8` px | Scroll in one direction before the floating nav hides (down) or comes back (up) |
+| `caseStudy.navEndZone` | `160` px | Within this of the page end the nav always shows |
 | `caseStudy.swipeSlop` | `10` px | Horizontal travel before a touch drag is a swipe |
 | `caseStudy.swipeEdge` | `24` px | No swipe starts this close to the screen edges (the browser's back/forward) |
 | `caseStudy.swipeCommit` | `0.25` | Share of the screen width past which a release changes project |
@@ -241,7 +241,6 @@ The spin is keyframed rather than sprung, so its length is fixed: `[0 → turns�
 | `intro.spinOvershoot` | `0.12` positions | How far past the landing card the reel runs before settling ("clunk") |
 | `intro.spinOvershootAt` | `0.82` | Fraction of the spin spent reaching the overshoot; the rest settles back on `ease.inOut` |
 | `intro.revealDuration` | `0.5` s | Hero text, TOC, footer appear (`ease.out`) |
-| `caseStudy.navScrollSlop`, `navEndZone` | `8` px, `160` px | Floating nav: scroll this far to hide (down) / bring back (up); always shown this close to the end |
 | `firstRun.*` | see `motion.ts` | Mobile first run: `autoCollapse` 2.5s, `nudge` 0.12 positions over 0.8s, `tocPeek` 6px over 0.9s |
 | `intro.revealRise` | `12` px | Desktop columns rise while fading in (mobile sheet slides up 100%, TOC handle in from the edge) |
 | `intro.failsafe` | `3` s | CSS reveal if the script never runs (`--intro-failsafe: 3s`) |
