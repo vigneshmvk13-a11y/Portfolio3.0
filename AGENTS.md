@@ -238,6 +238,8 @@ Headless Chrome reports `prefers-reduced-motion: reduce` by default; the scripts
 
 `/_system` (tokens and components) and `/keystatic` exist only under `pnpm dev`.
 
+**New content fields don't show in dev?** The dev server caches parsed content (`.astro/data-store.json`) by each file's digest, so after adding a field to `content.config.ts` an unchanged YAML file keeps its old parse (the new fields come through empty), even across restarts. Delete `.astro/` and restart `pnpm dev`, or make any edit to the YAML file. `pnpm build` is unaffected.
+
 ## First tasks, in order
 
 1. **Ask** about anything still ambiguous here or in `DESIGN.md → Open questions`. Batch the questions; don't drip them.
