@@ -10,6 +10,7 @@ import Eyebrow from './Eyebrow.astro';
 import SectionLead from './SectionLead.astro';
 import CaseImage from './CaseImage.astro';
 import ArrowUpRight from '../icons/ArrowUpRight.astro';
+import ArrowUpRightFill from '../icons/ArrowUpRightFill.astro';
 import { paragraphs, type CaseStudy } from '../../lib/content';
 
 interface Props {
@@ -51,9 +52,10 @@ const { heading, intro, image, alt, cards } = system;
               />
               <span
                 aria-hidden="true"
-                class="absolute top-4 right-4 flex items-center justify-center rounded-full border border-line-default p-3 text-fg-on-media transition-[border-color] duration-(--duration-fast) ease-out group-hover:border-surface-raised"
+                class="absolute top-4 right-4 flex items-center justify-center rounded-full border border-line-default p-3 text-fg-on-media transition-[border-color,background-color,color] duration-(--duration-fast) ease-out group-hover:border-surface-raised group-hover:bg-surface-raised group-hover:text-fg-primary"
               >
-                <ArrowUpRight class="size-icon-lg" />
+                <ArrowUpRight class="size-icon-lg group-hover:hidden" />
+                <ArrowUpRightFill class="hidden size-icon-lg group-hover:block" />
               </span>
               <span class="sr-only">{target.data.tocLabel} case study</span>
             </a>

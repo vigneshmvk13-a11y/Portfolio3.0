@@ -10,6 +10,8 @@ import type { ImageMetadata } from 'astro';
 import IconButton from '../ui/IconButton.astro';
 import CaretLeft from '../icons/CaretLeft.astro';
 import CaretRight from '../icons/CaretRight.astro';
+import CaretLeftFill from '../icons/CaretLeftFill.astro';
+import CaretRightFill from '../icons/CaretRightFill.astro';
 
 interface Props {
   images: { image: ImageMetadata; alt: string }[];
@@ -46,6 +48,7 @@ const { images, id, class: className } = Astro.props;
       </div>
       <IconButton
         icon={CaretLeft}
+        iconFill={CaretLeftFill}
         label="Previous photos"
         variant="glass"
         class="absolute top-1/2 left-4 -translate-y-1/2 desktop:left-6"
@@ -56,6 +59,7 @@ const { images, id, class: className } = Astro.props;
       />
       <IconButton
         icon={CaretRight}
+        iconFill={CaretRightFill}
         label="Next photos"
         variant="glass"
         class="absolute top-1/2 right-4 -translate-y-1/2 desktop:right-6"

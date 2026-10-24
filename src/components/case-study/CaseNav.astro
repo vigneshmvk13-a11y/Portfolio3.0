@@ -8,6 +8,7 @@
  * (design/rules.md → Accessibility).
  */
 import HouseSimple from '../icons/HouseSimple.astro';
+import HouseSimpleFill from '../icons/HouseSimpleFill.astro';
 import type { CaseStudy } from '../../lib/content';
 
 interface Props {
@@ -19,7 +20,7 @@ interface Props {
 
 const { previous, next, homeHref } = Astro.props;
 const pill =
-  'relative flex items-center justify-center rounded-full border border-line-default text-fg-on-media transition-[border-color] duration-(--duration-fast) ease-out hover:border-surface-raised';
+  'group relative flex items-center justify-center rounded-full border border-line-default text-fg-on-media transition-[border-color,background-color,color] duration-(--duration-fast) ease-out hover:border-surface-raised hover:bg-surface-raised hover:text-fg-primary';
 const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-medium`;
 ---
 
@@ -30,7 +31,8 @@ const side = `${pill} case-nav__side w-nav-btn px-4 py-3 text-label-1 font-mediu
       Previous<span class="sr-only">: {previous.data.tocLabel}</span>
     </a>
     <a href={homeHref} class:list={[pill, 'z-10 p-3']} aria-label="All projects" data-case-nav-home>
-      <HouseSimple class="size-icon-lg" />
+      <HouseSimple class="size-icon-lg group-hover:hidden" />
+      <HouseSimpleFill class="hidden size-icon-lg group-hover:block" />
     </a>
     <a href={`/work/${next.id}/`} rel="next" class:list={[side, 'case-nav__next']} data-case-nav-next>
       Next<span class="sr-only">: {next.data.tocLabel}</span>

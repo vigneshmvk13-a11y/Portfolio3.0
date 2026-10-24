@@ -4,6 +4,7 @@
  * Same surface as IconButton `sm`. design/components.md → Button.
  */
 import type { HTMLAttributes } from 'astro/types';
+import { isExternal } from '../../lib/links';
 
 type IconComponent = (props: { class?: string }) => unknown;
 
@@ -14,7 +15,7 @@ interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
   trailingIcon?: IconComponent;
 }
 
-const { href, external = false, leadingIcon: Leading, trailingIcon: Trailing, class: className, ...rest } = Astro.props;
+const { href, external = isExternal(href), leadingIcon: Leading, trailingIcon: Trailing, class: className, ...rest } = Astro.props;
 
 const classes = [
   'inline-flex items-center gap-2.5 p-4 rounded-button-sm border border-line-subtle bg-surface-raised',
@@ -31,7 +32,7 @@ const classes = [
       href={href}
       class:list={classes}
       target={external ? '_blank' : undefined}
-      rel={external ? 'noopener' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
       {...(rest as HTMLAttributes<'a'>)}
     >
       {Leading && <Leading class="size-icon-sm" />}

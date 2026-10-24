@@ -285,6 +285,8 @@ export default config({
           fields.object({
             name: fields.text({ label: 'Name (alt text)' }),
             logo: fields.image({ label: 'Logo', directory: 'src/assets/logos', publicPath: '../assets/logos/' }),
+            logoHover: fields.image({ label: 'Logo (hover)', directory: 'src/assets/logos', publicPath: '../assets/logos/' }),
+            url: fields.url({ label: 'Link (opens in a new tab)' }),
           }),
           { label: 'Affiliations', itemLabel: (props) => props.fields.name.value },
         ),
@@ -353,7 +355,11 @@ export default config({
             pattern: { regex: /^(mailto:|https:\/\/)/, message: 'Start with mailto: or https://' },
           },
         }),
-        resume: fields.file({ label: 'Resume PDF', directory: 'public', publicPath: '/' }),
+        resume: fields.text({
+          label: 'Resume link',
+          description: 'https:// link to the resume (opens in a new tab)',
+          validation: { pattern: { regex: /^https:\/\//, message: 'Start with https://' } },
+        }),
         socials: fields.array(
           fields.object({
             label: fields.text({ label: 'Label' }),

@@ -14,6 +14,8 @@ import Todo from '../dev/Todo.astro';
 import X from '../icons/X.astro';
 import File from '../icons/File.astro';
 import ChatCircleDots from '../icons/ChatCircleDots.astro';
+import FileFill from '../icons/FileFill.astro';
+import ChatCircleDotsFill from '../icons/ChatCircleDotsFill.astro';
 import Gallery from './Gallery.astro';
 import TimelineRow from './TimelineRow.astro';
 import { getAbout, getSiteSettings } from '../../lib/content';
@@ -21,7 +23,6 @@ import { renderInline } from '../../lib/inline-markdown';
 
 const about = await getAbout();
 const { nav, contact, resume } = await getSiteSettings();
-const contactIsExternal = contact.startsWith('https://');
 const [firstParagraph, ...otherParagraphs] = about.bio;
 ---
 
@@ -72,11 +73,11 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
           </div>
           <div class="flex gap-2 px-4 desktop:gap-3 desktop:px-6 desktop:pb-8">
             {resume ? (
-              <IconButton icon={File} label={nav.resume} variant="lg-outlined" href={resume} external />
+              <IconButton icon={File} iconFill={FileFill} label={nav.resume} variant="lg-outlined" href={resume} />
             ) : (
-              <Todo class="self-center">resume PDF</Todo>
+              <Todo class="self-center">resume link</Todo>
             )}
-            <IconButton icon={ChatCircleDots} label={nav.contact} variant="lg-outlined" href={contact} external={contactIsExternal} />
+            <IconButton icon={ChatCircleDots} iconFill={ChatCircleDotsFill} label={nav.contact} variant="lg-outlined" href={contact} />
           </div>
         </div>
       </div>
@@ -106,6 +107,11 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
 </dialog>
 
 <style>
+  /* Opened by touch or mouse: no ring on the close button until a key is pressed (drawer.ts). */
+  .about-drawer[data-pointer-open] :global([data-about-close]:focus-visible) {
+    outline: none;
+  }
+
   /*
    * ---------- Mobile and tablet ----------
    * Transparent: the bottom sheet's surface (BottomSheet.astro) sits right behind it, risen to

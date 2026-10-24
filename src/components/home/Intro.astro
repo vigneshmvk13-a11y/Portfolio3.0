@@ -25,7 +25,7 @@ const { name, role, currently, affiliations } = await getAbout();
             <span class="text-label-2 desktop:text-label-1" aria-hidden="true">
               {i === 0 ? '@' : '&'}
             </span>
-            <LogoPill src={affiliation.logo} alt={affiliation.name} />
+            <LogoPill src={affiliation.logo} alt={affiliation.name} hoverSrc={affiliation.logoHover} href={affiliation.url} />
           </li>
         ))}
       </ul>

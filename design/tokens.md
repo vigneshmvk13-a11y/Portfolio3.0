@@ -68,8 +68,8 @@ Tailwind v4 text tokens carry line height, tracking and default weight, so `text
 
 | Utility | Size / line (px) | Tracking | Default weight | Use |
 |---|---|---|---|---|
-| `text-h4` | 32 / 38 | -0.2px | 500 | Desktop intro name |
-| `text-h5` | 24 / 30 | -0.15px | 500 | Mobile case-study title (placeholder) |
+| `text-h4` | 32 / 38 | -1% (-0.01em) | 500 | Desktop intro name |
+| `text-h5` | 24 / 30 | -0.5% (-0.005em) | 500 | Mobile case-study title (placeholder) |
 | `text-h6` | 20 / 24 | 0 | 500 | Mobile intro name (Figma 260:6911) |
 | `text-body-1` | 18 / 28 | 0 | 400 | "Journey so far" (500) |
 | `text-body-2` | 16 / 24 | 0 | 400 | About paragraphs |

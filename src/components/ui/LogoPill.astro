@@ -1,26 +1,46 @@
 ---
 /**
  * Company logo pill: 64×24 on mobile (Figma 246:2313), 80×30 on desktop. Raster from Figma, optimised
- * by astro:assets (sized for the larger one). design/components.md → LogoPill.
+ * by astro:assets (sized for the larger one). With `href` it's a link (a new tab, named as such), and with
+ * `hoverSrc` the logo turns to its brand colour on hover (Figma 286:12974). design/components.md → LogoPill.
  */
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
+import { externalAttrs, isExternal } from '../../lib/links';
 
 interface Props {
   src: ImageMetadata;
   alt: string;
+  hoverSrc?: ImageMetadata;
+  href?: string;
   class?: string;
 }
 
-const { src, alt, class: className } = Astro.props;
+const { src, alt, hoverSrc, href, class: className } = Astro.props;
+const size = 'w-logo-w-sm h-logo-h-sm rounded-card object-cover desktop:w-logo-w desktop:h-logo-h';
+const fade = 'transition-opacity duration-(--duration-fast) ease-out';
+const image = { width: 80, height: 30, densities: [2, 3], fit: 'cover' as const };
 ---
 
-<Image
-  src={src}
-  alt={alt}
-  width={80}
-  height={30}
-  densities={[2, 3]}
-  fit="cover"
-  class:list={['w-logo-w-sm h-logo-h-sm rounded-card object-cover desktop:w-logo-w desktop:h-logo-h', className]}
-/>
+{
+  href ? (
+    <a
+      href={href}
+      class:list={['group relative block shrink-0 rounded-card', size, className]}
+      {...externalAttrs(isExternal(href))}
+    >
+      <Image src={src} alt={alt} {...image} class:list={[size, hoverSrc && fade, hoverSrc && 'group-hover:opacity-0']} />
+      {hoverSrc && (
+        <Image
+          src={hoverSrc}
+          alt=""
+          {...image}
+          class:list={['absolute inset-0 opacity-0 group-hover:opacity-100', fade, size]}
+        />
+      )}
+      {isExternal(href) && <span class="sr-only">(opens in new tab)</span>}
+    </a>
+  ) : (
+    <Image src={src} alt={alt} {...image} class:list={[size, className]} />
+  )
+}

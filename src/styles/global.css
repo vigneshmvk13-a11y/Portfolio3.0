@@ -142,6 +142,7 @@
     --home-gap: 80px;
     --home-w: calc(var(--card-w) + 2 * (var(--container-side) + var(--home-gap)));
     --home-max: calc(var(--home-w) + 2 * var(--spacing-gutter-inner));
+    --home-cols: minmax(0, 1fr) var(--card-w) minmax(0, 1fr);
   }
 }
 
@@ -160,11 +161,11 @@
 
   --text-h4: 2rem;
   --text-h4--line-height: 2.375rem;
-  --text-h4--letter-spacing: -0.2px;
+  --text-h4--letter-spacing: -0.01em;
   --text-h4--font-weight: 500;
   --text-h5: 1.5rem;
   --text-h5--line-height: 1.875rem;
-  --text-h5--letter-spacing: -0.15px;
+  --text-h5--letter-spacing: -0.005em;
   --text-h5--font-weight: 500;
   --text-h6: 1.25rem;
   --text-h6--line-height: 1.5rem;

@@ -10,6 +10,9 @@ import IconButton from '../ui/IconButton.astro';
 import User from '../icons/User.astro';
 import File from '../icons/File.astro';
 import ChatCircleDots from '../icons/ChatCircleDots.astro';
+import UserFill from '../icons/UserFill.astro';
+import FileFill from '../icons/FileFill.astro';
+import ChatCircleDotsFill from '../icons/ChatCircleDotsFill.astro';
 import { getSiteSettings } from '../../lib/content';
 
 interface Props {
@@ -18,11 +21,10 @@ interface Props {
 
 const { class: className } = Astro.props;
 const { nav, contact, resume } = await getSiteSettings();
-const contactIsExternal = contact.startsWith('https://');
-// No PDF yet: the button exists in dev only, outlined as a TODO, and is left out of production.
+// No resume link yet: the button exists in dev only, outlined as a TODO, and is left out of production.
 const showResume = Boolean(resume) || import.meta.env.DEV;
 const resumeHref = resume ?? '#todo-resume';
-const resumeLabel = resume ? nav.resume : `${nav.resume} (TODO(content): resume PDF)`;
+const resumeLabel = resume ? nav.resume : `${nav.resume} (TODO(content): resume link)`;
 const resumeTodo = resume ? undefined : 'todo-content';
 ---
 
@@ -59,15 +61,15 @@ const resumeTodo = resume ? undefined : 'todo-content';
   </div>
 
   <div class="bottom-sheet__actions flex gap-2 desktop:hidden" data-sheet-actions>
-    <IconButton icon={User} label={nav.about} variant="lg" data-about-open aria-haspopup="dialog" aria-controls="about" />
-    {showResume && <IconButton icon={File} label={resumeLabel} variant="lg" href={resumeHref} external={Boolean(resume)} class={resumeTodo} />}
-    <IconButton icon={ChatCircleDots} label={nav.contact} variant="lg" href={contact} external={contactIsExternal} />
+    <IconButton icon={User} iconFill={UserFill} label={nav.about} variant="lg" data-about-open aria-haspopup="dialog" aria-controls="about" />
+    {showResume && <IconButton icon={File} iconFill={FileFill} label={resumeLabel} variant="lg" href={resumeHref} class={resumeTodo} />}
+    <IconButton icon={ChatCircleDots} iconFill={ChatCircleDotsFill} label={nav.contact} variant="lg" href={contact} />
   </div>
 
   <div class="hidden gap-2 desktop:flex">
-    <IconButton icon={User} label={nav.about} data-about-open aria-haspopup="dialog" aria-controls="about" />
-    {showResume && <IconButton icon={File} label={resumeLabel} href={resumeHref} external={Boolean(resume)} class={resumeTodo} />}
-    <IconButton icon={ChatCircleDots} label={nav.contact} href={contact} external={contactIsExternal} />
+    <IconButton icon={User} iconFill={UserFill} label={nav.about} data-about-open aria-haspopup="dialog" aria-controls="about" />
+    {showResume && <IconButton icon={File} iconFill={FileFill} label={resumeLabel} href={resumeHref} class={resumeTodo} />}
+    <IconButton icon={ChatCircleDots} iconFill={ChatCircleDotsFill} label={nav.contact} href={contact} />
   </div>
 
 </header>

@@ -100,8 +100,12 @@ export function initAboutDrawer(): void {
   scroller.addEventListener('scroll', syncOnWhite, { passive: true });
 
   // ---------- Open and close ----------
-  const open = (animate = true) => {
+  // The close button takes focus on open. Safari shows a ring for that even after a tap, so the ring stays
+  // hidden unless the sheet was opened from the keyboard, or until a key is pressed (AboutDrawer.astro).
+  const open = (animate = true, viaKeyboard = false) => {
     if (dialog.open) return;
+    dialog.toggleAttribute('data-pointer-open', !viaKeyboard);
+    if (!viaKeyboard) document.addEventListener('keydown', () => dialog.removeAttribute('data-pointer-open'), { once: true });
     if (mobile.matches) {
       // Start exactly on the sheet's surface, wherever it rests (open or collapsed).
       travel = getSheetSurface()?.travel() ?? 0;
@@ -130,7 +134,8 @@ export function initAboutDrawer(): void {
     const target = event.target as Element | null;
     if (target?.closest('[data-about-open]')) {
       event.preventDefault();
-      open();
+      // detail is 0 for a click made with Enter or Space.
+      open(true, (event as MouseEvent).detail === 0);
     } else if (target?.closest('[data-about-close]')) {
       close();
     }

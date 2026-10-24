@@ -61,7 +61,7 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
     --home-max and centred, so a wider screen adds margin, not gap (layout-and-motion.md → Home layout).
   -->
   <div
-    class="mx-auto h-dvh desktop:max-w-(--home-max) desktop:grid desktop:grid-cols-[minmax(0,1fr)_var(--card-w)_minmax(0,1fr)] desktop:gap-x-(--home-gap) desktop:px-gutter-inner"
+    class="mx-auto h-dvh desktop:max-w-(--home-max) desktop:grid desktop:grid-cols-(--home-cols) desktop:gap-x-(--home-gap) desktop:px-gutter-inner"
   >
     <div class="desktop:flex desktop:items-center desktop:justify-end">
       <BottomSheet />

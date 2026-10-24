@@ -1,6 +1,7 @@
 ---
 /** Inline text link inside prose. Never colour-only: always underlined. design/components.md → Link. */
 import ArrowUpRight from '../icons/ArrowUpRight.astro';
+import { isExternal } from '../../lib/links';
 
 interface Props {
   href: string;
@@ -8,7 +9,7 @@ interface Props {
   class?: string;
 }
 
-const { href, external = false, class: className } = Astro.props;
+const { href, external = isExternal(href), class: className } = Astro.props;
 ---
 
 <a
@@ -20,7 +21,7 @@ const { href, external = false, class: className } = Astro.props;
     className,
   ]}
   target={external ? '_blank' : undefined}
-  rel={external ? 'noopener' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
 >
   <slot />
   {

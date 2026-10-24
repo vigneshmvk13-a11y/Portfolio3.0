@@ -5,20 +5,23 @@
  * Extra attributes (data-*, aria-controls, aria-expanded…) pass through.
  */
 import type { HTMLAttributes } from 'astro/types';
+import { isExternal } from '../../lib/links';
 
 type Variant = 'sm' | 'lg' | 'lg-outlined' | 'close' | 'glass';
 
 interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
   icon: (props: { class?: string }) => unknown;
+  /** Filled glyph shown on hover (Figma 286:12974). */
+  iconFill?: (props: { class?: string }) => unknown;
   /** Accessible name; becomes aria-label. */
   label: string;
   variant?: Variant;
   href?: string;
-  /** Opens in a new tab and says so in the accessible name. */
+  /** Opens in a new tab and says so in the accessible name. Defaults to true for links to another site. */
   external?: boolean;
 }
 
-const { icon: Icon, label, variant = 'sm', href, external = false, class: className, ...rest } = Astro.props;
+const { icon: Icon, iconFill: IconFill, label, variant = 'sm', href, external = isExternal(href), class: className, ...rest } = Astro.props;
 
 const raised = 'bg-surface-raised text-fg-secondary hover:text-fg-primary';
 const variants: Record<Variant, { box: string; icon: string }> = {
@@ -28,14 +31,14 @@ const variants: Record<Variant, { box: string; icon: string }> = {
   close: { box: `${raised} p-4 rounded-media-sm border border-line-default hover:border-line-strong`, icon: 'size-icon-sm' },
   // Over photos (Figma 280:9431): frosted grey circle, white caret.
   glass: {
-    box: 'p-3 rounded-full border border-line-default bg-surface-glass text-fg-on-media backdrop-blur-glass',
+    box: 'p-3 rounded-full border border-line-default bg-surface-glass text-fg-on-media backdrop-blur-glass hover:border-surface-raised hover:bg-surface-raised hover:text-fg-primary',
     icon: 'size-icon-lg',
   },
 };
 
 const classes = [
-  'inline-flex shrink-0 items-center justify-center',
-  'transition-[border-color,color,scale] duration-(--duration-fast) ease-out',
+  'group inline-flex shrink-0 items-center justify-center',
+  'transition-[border-color,background-color,color,scale] duration-(--duration-fast) ease-out',
   'active:scale-96',
   variants[variant].box,
   className,
@@ -50,14 +53,16 @@ const accessibleName = external ? `${label} (opens in new tab)` : label;
       class:list={classes}
       aria-label={accessibleName}
       target={external ? '_blank' : undefined}
-      rel={external ? 'noopener' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
       {...(rest as HTMLAttributes<'a'>)}
     >
-      <Icon class={variants[variant].icon} />
+      <Icon class:list={[variants[variant].icon, IconFill && 'group-hover:hidden']} />
+      {IconFill && <IconFill class:list={[variants[variant].icon, 'hidden group-hover:block']} />}
     </a>
   ) : (
     <button type="button" class:list={classes} aria-label={accessibleName} {...rest}>
-      <Icon class={variants[variant].icon} />
+      <Icon class:list={[variants[variant].icon, IconFill && 'group-hover:hidden']} />
+      {IconFill && <IconFill class:list={[variants[variant].icon, 'hidden group-hover:block']} />}
     </button>
   )
 }
