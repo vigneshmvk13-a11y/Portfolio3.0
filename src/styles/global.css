@@ -118,7 +118,6 @@
   --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
   --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))), var(--wheel-room));
   --card-w: calc(var(--card-h) * (var(--aspect-card)));
-  --wheel-column: calc(var(--card-w) + var(--container-stack) - var(--spacing-card-w));
   --wheel-centre-y: min(
     calc(var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)),
     calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--wheel-gap) - var(--card-h) / 2)
@@ -139,6 +138,10 @@
     --wheel-gap: 60px;
     --card-h: var(--wheel-card-h-desktop);
     --wheel-centre-y: 50%;
+    /* Intro ↔ card ↔ index, always 80px; the group's width, and the page edge it keeps clear (40px). */
+    --home-gap: 80px;
+    --home-w: calc(var(--card-w) + 2 * (var(--container-side) + var(--home-gap)));
+    --home-max: calc(var(--home-w) + 2 * var(--spacing-gutter-inner));
   }
 }
 

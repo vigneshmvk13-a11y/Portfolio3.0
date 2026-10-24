@@ -10,7 +10,7 @@ const { footerCredit } = await getSiteSettings();
 ---
 
 <footer
-  class="pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto hidden max-w-page grid-cols-3 items-center px-gutter py-10 text-label-3 font-medium desktop:grid"
+  class="pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto hidden max-w-(--home-max) grid-cols-3 items-center px-gutter-inner py-10 text-label-3 font-medium desktop:grid"
   data-intro-reveal="fade"
 >
   <p class="pointer-events-auto" set:html={renderInline(footerCredit, 'font-medium text-fg-strong')} />

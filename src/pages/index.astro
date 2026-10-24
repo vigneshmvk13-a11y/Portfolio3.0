@@ -56,16 +56,22 @@ const deepLinkSlugs = entries.slice(1).map((entry) => entry.id);
     }
   </script>
 
-  <div class="mx-auto h-dvh max-w-page desktop:grid desktop:grid-cols-[1fr_var(--wheel-column)_1fr]">
-    <div class="desktop:flex desktop:items-center desktop:pr-gutter-inner desktop:pl-gutter">
+  <!--
+    Desktop: intro, card and index sit --home-gap (80px) apart at every width. The group is capped at
+    --home-max and centred, so a wider screen adds margin, not gap (layout-and-motion.md → Home layout).
+  -->
+  <div
+    class="mx-auto h-dvh desktop:max-w-(--home-max) desktop:grid desktop:grid-cols-[minmax(0,1fr)_var(--card-w)_minmax(0,1fr)] desktop:gap-x-(--home-gap) desktop:px-gutter-inner"
+  >
+    <div class="desktop:flex desktop:items-center desktop:justify-end">
       <BottomSheet />
     </div>
 
-    <main id="main" class="h-dvh desktop:px-5" tabindex="-1">
+    <main id="main" class="h-dvh" tabindex="-1">
       <ProjectWheel entries={entries} />
     </main>
 
-    <div class="hidden desktop:flex desktop:items-center desktop:pr-gutter desktop:pl-gutter-inner" data-intro-reveal="rise">
+    <div class="hidden desktop:flex desktop:items-center" data-intro-reveal="rise">
       <nav aria-label="Projects" class="w-full max-w-side">
         <ProjectToc entries={entries} />
       </nav>
