@@ -106,6 +106,7 @@ Named spacing:
 | `--container-page` | 1736px | Desktop content max width |
 | `--container-stack` | 669px | Desktop centre column |
 | `--container-side` | 265.5px | Intro and TOC width cap |
+| `--home-gap`, `--home-w`, `--home-max`, `--home-cols` | 80px, derived | Desktop home: gap between intro, card and TOC; the group's width; its capped width; its grid columns (`global.css`) |
 | `--container-drawer` | 576px | About drawer |
 | `--container-prose` | 720px | Placeholder page column **(proposed)** |
 | `--container-case` | 846px | Case-study column (Figma `234:18763`) |
@@ -130,7 +131,7 @@ Named spacing:
 | `--scrollbar-w` / `--scrollbar-inset` / `--scrollbar-hit` / `--scrollbar-min` | 4px / 6px / 16px / 40px | Overlay scrollbar thumb in the About panel: width, gap from the edge, pointer hit width, shortest thumb (`components.md → AboutDrawer`) |
 | `--about-top` | 40px | Mobile/tablet: the bottom sheet grown into About stops this far below the top (Vignesh, 2026-10-24). Registered with `@property` so JS reads it in px |
 | `--sheet-h` | 237–265px | Expanded bottom sheet height, scaled with viewport height (see Mobile sheet spacing below); reserves room under the wheel |
-| `--card-h`, `--card-w`, `--wheel-column` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
+| `--card-h`, `--card-w` | derived | Card size and desktop centre column, per breakpoint, in `global.css` (see `layout-and-motion.md`) |
 
 ## Radius
 

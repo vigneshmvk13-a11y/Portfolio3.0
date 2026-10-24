@@ -46,6 +46,12 @@ Principles and decisions Figma doesn't draw. Log every change in the `DESIGN.md`
 - **Motion at 60fps, always**, including at 4× CPU throttle: `transform`/`opacity` first, prepare before the first moving frame, prove it with `scripts/perf-motion.mjs` (0 missed frames). Details in AGENTS.md → Motion rules.
 - No third-party scripts. (Analytics, if wanted later: Cloudflare Web Analytics, which needs no dependency. Ask first.)
 
+## Links and hover
+
+- **External links open in a new tab** (Vignesh, 2026-10-24): any `http(s)://` href gets `target="_blank"` and `rel="noopener noreferrer"` plus "(opens in new tab)" for screen readers. It is automatic in `Link`, `Button`, `IconButton` and `LogoPill` (`src/lib/links.ts → isExternal`); site links stay relative.
+- **Hover is desktop only** (Figma `286:12974`): Tailwind's `hover:` already applies only where `(hover: hover)`. Pattern: icon buttons, the case nav and the gallery / System arrows turn to the **filled** Phosphor glyph (`*Fill.astro` icons, `IconButton iconFill`), the glass ones to a solid white pill; company logos swap to their brand-colour image.
+- **Focus ring:** `:focus-visible` as before, but the About close button, focused by script on open, shows no ring after a tap or click (Safari shows one for any programmatic focus); keyboard opens keep it.
+
 ## Media
 
 - Covers: MP4 (H.264) + WebM + poster, ~30s loop, no audio, no text, ≤ 4 MB per file (`check-media.mjs`).

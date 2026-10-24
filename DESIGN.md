@@ -75,6 +75,16 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-24 · all · **Polish pass** (Figma `286:12972` spacing, `286:12974` hover, `286:12975` About, `290:59953` case studies):
+  - **Home layout:** intro, card and TOC are a fixed 80px apart on desktop at every width, the group capped and centred; the footer shares its width (`layout-and-motion.md`).
+  - **Hover states** from Figma for icon buttons, case nav, System arrow, gallery carets and company logos (filled icons, solid white pills, brand-colour logos). Desktop only.
+  - **Company tags are links** (DNEG, Kotak; new tab; Keystatic `about.affiliations.url`/`logoHover`). **Resume** is a link (`siteSettings.resume`, Google Drive). **Every external link opens in a new tab** automatically (`isExternal`).
+  - **About close button** shows no focus ring after touch/mouse (kept for keyboard).
+  - **About spacing** from the new frames: desktop side padding 24 → 20, paragraph gap 24, buttons 48 below, heading 48 above / 24 below, mobile block gaps 40 / 20; timeline text sizes (role 14, details 12) on both breakpoints, a third each on desktop.
+  - **Case studies:** Outcome cards gap 48 desktop / 32 mobile, padding 24 (was 40 / 8, p-20 desktop).
+  - **Type:** `h4` tracking −1%, `h5` −0.5% (Figma percentages, written as em).
+  - **Assets guide** `design/assets.md`; `Base.astro` links `favicon.ico` and `apple-touch-icon.png` once they exist in `public/`.
+
 - 2026-10-24 · all · **About rebuilt** from Figma section `280:9512` (desktop drawer and mobile sheet, each with a scrolled state):
   - **Mobile: the footer becomes About.** Tapping About grows the bottom sheet's own surface up to 40px from the top (`--about-top`). The About dialog has no surface of its own and rides on that edge, so it's one sheet. The footer's intro and buttons blur out by halfway; About's content blurs in past halfway; closing plays it back. Close by the close button, by dragging the handle down or tapping it, by Esc, or by tapping above the sheet. Why: Vignesh ("one seamless morph from footer to about sheet").
   - **Handle:** light over the banner, grey with a white fade once white content is under it (Figma `280:9401`). The old compact sticky header (`234:34225`) is removed: the new scrolled frame has none.

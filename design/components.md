@@ -13,7 +13,7 @@ Build order: **foundation** (IconButton, Button, Link, LogoPill, Badge, MotionCo
 ### IconButton
 **Figma:** `178:1441`, mobile `233:4704`, drawer `234:5306` · **Status:** built
 
-Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`ChatCircleDots`), Close (`X`).
+Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`ChatCircleDots`), Close (`X`). **Hover** (Figma `286:12974`, `(hover: hover)` only): border `line-strong`, icon `fg-primary` and swapped for its filled twin (`iconFill`, e.g. `UserFill`); `close` has none. `glass` (gallery carets) turns solid white with a filled caret. External links open in a new tab automatically.
 
 | Variant | Box | Padding | Radius | Icon | Border | Where |
 |---|---|---|---|---|---|---|
@@ -42,7 +42,7 @@ Inline text link inside prose. `text-fg-strong`, underline `decoration-line-stro
 ### LogoPill
 **Figma:** `144:52` (DNEG), `144:49` (Kotak) · **Status:** built
 
-`w-logo-w-sm h-logo-h-sm` (64×24) on mobile, `w-logo-w h-logo-h` (80×30) on desktop, `rounded-card`. In the intro, "@" and "&" are `label-2` on mobile and `label-1` on desktop; the row is `gap-1` (4px) throughout (Figma 246:2310, 233:4527). Raster in Figma; request SVGs, otherwise export 2× and 3× through `astro:assets`. Alt "DNEG", "Kotak Mahindra Bank".
+`w-logo-w-sm h-logo-h-sm` (64×24) on mobile, `w-logo-w h-logo-h` (80×30) on desktop, `rounded-card`. In the intro, "@" and "&" are `label-2` on mobile and `label-1` on desktop; the row is `gap-1` (4px) throughout (Figma 246:2310, 233:4527). Raster in Figma; request SVGs, otherwise export 2× and 3× through `astro:assets`. Alt "DNEG", "Kotak Mahindra Bank". **Links** (Vignesh, 2026-10-24): each opens its company site in a new tab (`url` on the `about.affiliations` item, Keystatic); on hover the brand-colour image (`logoHover`, Figma `286:12974`) fades in over it. Same on mobile (links), hover desktop only.
 
 ### Badge
 **Figma:** `230:4637` (NDA, with Lock), `230:4652` (Coming soon) · **Status:** built

@@ -24,13 +24,13 @@ Mobile structure, card column `max-w-(--spacing-card-w)` centred, BottomSheet co
 One viewport-height composition. The document doesn't scroll; scroll input steps the project wheel.
 
 ```
-| Left (1fr)            | Centre (wheel, 669)  | Right (1fr)           |
-| pl-gutter pr-gutter-inner | px-5             | pl-gutter-inner pr-gutter |
+| Left (1fr, ≤265.5)    | Centre (card-w)      | Right (1fr, ≤265.5)   |
+|      ←80→ (--home-gap)|                      |(--home-gap) 80→       |
 | Intro, v-centred      | wheel, v-centred     | ProjectToc, v-centred |
 |_______________________ FooterBar (fixed) _______________________|
 ```
 
-- Grid `grid-cols-[1fr_var(--wheel-column)_1fr]`, centred with `max-w-page`. `--wheel-column = card-w + (669 − 553)`: exactly Figma's 669 at a 400px card, and it shrinks with the card on shorter viewports, so the side columns don't get squeezed (at a fixed 669, 1280×800 wrapped the name onto four lines). Arbitrary values are allowed **only** when every value inside is a token `var()` or a grid keyword; `check-tokens.mjs` whitelists that pattern and the `(--token)` shorthand.
+- **Fixed 80px gaps (Vignesh, 2026-10-24):** intro → card and card → TOC are `--home-gap` (80px) at every width. Grid `grid-cols-(--home-cols)` = `minmax(0,1fr) card-w minmax(0,1fr)`, `gap-x-(--home-gap)`, `px-gutter-inner`, centred and capped at `--home-max` (card-w + 2 × (265.5 + 80) + 2 × 40). A wider screen adds margin, never gap; a narrower one (1200–1400) shrinks the side columns, as before. The intro is right-aligned in its column and the TOC left-aligned, so the gap stays exact. The footer uses the same width, so the credit lines up with the intro. Figma's 1920 frame measures 98px (58px card margin + 40px column padding); Vignesh chose 80. Arbitrary values are allowed **only** when every value inside is a token `var()` or a grid keyword; `check-tokens.mjs` whitelists that pattern and the `(--token)` shorthand.
 - `h-dvh`, `bg-surface-page`.
 - Side content capped at `max-w-side`.
 - Card height = `min(400px, 39dvh)` (`--wheel-card-h-desktop`), width from the aspect. At 1024 tall that's Figma's 400; shorter viewports scale the card down so slices of both neighbours stay visible.

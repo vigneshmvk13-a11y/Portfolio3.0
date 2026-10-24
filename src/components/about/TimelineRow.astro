@@ -1,7 +1,7 @@
 ---
 /**
  * One Journey row (Figma 234:5322 desktop, 234:5267 mobile).
- * Desktop: role · years · place in one row. Mobile: role, then "years • place" below.
+ * Desktop: role · years · place in one row, a third each (Figma 288:46717). Mobile: role, then "years • place" below.
  */
 interface Props {
   role: string;
@@ -19,9 +19,9 @@ const { role, years, place, last = false } = Astro.props;
     !last && 'border-b border-line-default',
   ]}
 >
-  <p class="text-label-2 font-medium text-fg-strong desktop:flex-1 desktop:text-label-3">{role}</p>
-  <p class="flex gap-1 text-label-3 desktop:contents desktop:text-label-2">
-    <span class="whitespace-nowrap">{years}</span>
+  <p class="text-label-2 font-medium text-fg-strong desktop:flex-1">{role}</p>
+  <p class="flex gap-1 text-label-3 desktop:contents">
+    <span class="whitespace-nowrap desktop:flex-1 desktop:text-center">{years}</span>
     <span aria-hidden="true" class="desktop:hidden">•</span>
     <span class="desktop:flex-1 desktop:text-right">{place}</span>
   </p>

@@ -38,10 +38,10 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
   <div class="about-drawer__scroll" data-about-scroll>
     <h2 id="about-title" class="sr-only">About {about.name}</h2>
 
-    <div class="flex flex-col gap-8 desktop:gap-0">
+    <div class="flex flex-col gap-10 desktop:gap-0">
       <div class="flex flex-col gap-6 desktop:gap-0">
         <div class="overflow-hidden rounded-t-panel-inner desktop:rounded-none">
-          <div class="relative flex h-banner items-start justify-end overflow-hidden p-4 desktop:p-6" data-about-banner>
+          <div class="relative flex h-banner items-start justify-end overflow-hidden p-4 desktop:p-5" data-about-banner>
             {
               about.banner && (
                 <Image src={about.banner} alt={about.bannerAlt} width={576} height={200} densities={[2]} fit="cover" class="absolute inset-0 size-full object-cover" />
@@ -67,11 +67,11 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
         </div>
 
         <div class="flex flex-col gap-6 desktop:gap-0">
-          <div class="flex flex-col gap-5 px-4 desktop:px-6 desktop:py-8">
+          <div class="flex flex-col gap-5 px-4 desktop:gap-6 desktop:px-5 desktop:py-6">
             {firstParagraph && <p class="text-label-1 font-regular desktop:text-body-2" set:html={renderInline(firstParagraph)} />}
             {otherParagraphs.map((paragraph) => <p class="text-body-3 desktop:text-body-2" set:html={renderInline(paragraph)} />)}
           </div>
-          <div class="flex gap-2 px-4 desktop:gap-3 desktop:px-6 desktop:pb-8">
+          <div class="flex gap-2 px-4 desktop:gap-3 desktop:px-5 desktop:pb-12">
             {resume ? (
               <IconButton icon={File} iconFill={FileFill} label={nav.resume} variant="lg-outlined" href={resume} />
             ) : (
@@ -82,16 +82,15 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
         </div>
       </div>
 
-      <!-- Desktop: 32px under the photos + 32px above the heading = Figma's 64px heading padding. -->
-      <Gallery images={about.gallery} id="about-gallery" class="desktop:pb-8" />
+      <Gallery images={about.gallery} id="about-gallery" />
 
       {
         about.journey.length > 0 && (
-          <section aria-labelledby="journey-title" class="flex flex-col gap-8 desktop:gap-0">
-            <h3 id="journey-title" class="px-4 text-label-1 font-medium text-fg-strong desktop:px-6 desktop:py-8 desktop:text-body-1">
+          <section aria-labelledby="journey-title" class="flex flex-col gap-5 desktop:gap-0">
+            <h3 id="journey-title" class="px-4 text-label-1 font-medium text-fg-strong desktop:px-5 desktop:pt-12 desktop:pb-6 desktop:text-body-1">
               Journey so far
             </h3>
-            <ol class="flex flex-col gap-3 px-5 pb-5 desktop:px-6 desktop:pb-10">
+            <ol class="flex flex-col gap-3 px-5 pb-5 desktop:pb-10">
               {about.journey.map((row, i) => (
                 <TimelineRow {...row} last={i === about.journey.length - 1} />
               ))}
