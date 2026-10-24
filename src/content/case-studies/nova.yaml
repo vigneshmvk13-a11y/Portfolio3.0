@@ -10,6 +10,7 @@ heroVideo:
   alt: >-
     Nova design system file showing colour primitives and semantic colour
     tokens, over a blurred sunset sea
+  mp4: /media/nova/heroVideo/mp4.mp4
   webm: /media/nova/heroVideo/webm.webm
 ogImage: ../../assets/og/nova/ogImage.png
 seoDescription: >-
@@ -60,6 +61,7 @@ solution:
       alt: >-
         Figma variables panel for Nova: primitive, semantic and component
         collections, open on the grey colour scale
+      mp4: /media/nova/solution/0/media/mp4.mp4
       webm: /media/nova/solution/0/media/webm.webm
   - heading: Making the system usable by AI-assisted coding workflows
     body: >-
@@ -73,6 +75,7 @@ solution:
       alt: >-
         Code editor with the design system as Markdown files, open on the AI
         insight card's component spec
+      mp4: /media/nova/solution/1/media/mp4.mp4
       webm: /media/nova/solution/1/media/webm.webm
   - heading: Connecting design decisions to implementation
     body: >-
@@ -84,6 +87,7 @@ solution:
       alt: >-
         The Nova design system file in Figma, open on the Buttons page with
         every size and state
+      mp4: /media/nova/solution/2/media/mp4.mp4
       webm: /media/nova/solution/2/media/webm.webm
 system:
   cards: []

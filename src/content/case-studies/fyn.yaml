@@ -8,6 +8,7 @@ draft: false
 heroVideo:
   poster: ../../assets/covers/fyn/heroVideo/poster.png
   alt: Soft pastel gradient fading from grey-blue to peach
+  mp4: /media/fyn/heroVideo/mp4.mp4
   webm: /media/fyn/heroVideo/webm.webm
 ogImage: ../../assets/og/fyn/ogImage.png
 seoDescription: >-

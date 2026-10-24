@@ -10,6 +10,7 @@ heroVideo:
   alt: >-
     Motion-blurred streaks of yellow and teal with a small orange dot at the
     centre
+  mp4: /media/prime-compass/heroVideo/mp4.mp4
   webm: /media/prime-compass/heroVideo/webm.webm
 ogImage: ../../assets/og/prime-compass/ogImage.png
 seoDescription: >-
@@ -59,6 +60,7 @@ solution:
       alt: >-
         Discovery setup: the application URL and environment, personas and
         documents, with AI suggestions beside the Start discovery button
+      mp4: /media/prime-compass/solution/0/media/mp4.mp4
   - heading: Turning behavioral change into a visual signal
     body: >-
       I designed the Drift Map to show the relationship between a baseline and
@@ -69,6 +71,7 @@ solution:
       alt: >-
         Discovery v5 overview compared against v11.4: module, feature and
         scenario counts, AI-generated insights, and the start of the Drift Orbit
+      mp4: /media/prime-compass/solution/1/media/mp4.mp4
 system:
   heading: Building the language behind the product
   intro: >-

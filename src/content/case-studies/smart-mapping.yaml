@@ -10,6 +10,7 @@ heroVideo:
   alt: >-
     Motion-blurred landscape in amber and pale blue, with a text cursor blinking
     in a white input box at the centre
+  mp4: /media/smart-mapping/heroVideo/mp4.mp4
   webm: /media/smart-mapping/heroVideo/webm.webm
 ogImage: ../../assets/og/smart-mapping/ogImage.png
 seoDescription: >-
@@ -52,6 +53,7 @@ solution:
       alt: >-
         Smart mapping for a purchase order as a table: each target field with
         its type, an empty source column, and every row marked Unmapped
+      mp4: /media/smart-mapping/solution/0/media/mp4.mp4
       webm: /media/smart-mapping/solution/0/media/webm.webm
   - heading: Replacing code with understandable rules
     body: >-
@@ -63,6 +65,7 @@ solution:
         The same table with Contract connected as a source: most fields now
         mapped from contract fields, a few still unmapped, and the pointer on
         Save
+      mp4: /media/smart-mapping/solution/1/media/mp4.mp4
       webm: /media/smart-mapping/solution/1/media/webm.webm
 system:
   cards: []
