@@ -1,15 +1,3 @@
-name: Vignesh
-role: Design Leader
-currently: Currently leading the mobile experience for wholesale banking
-affiliations:
-  - name: DNEG
-    logo: ../assets/logos/affiliations/0/logo.png
-    logoHover: ../assets/logos/affiliations/0/logoHover.png
-    url: https://www.dneg.com/
-  - name: Kotak Mahindra Bank
-    logo: ../assets/logos/affiliations/1/logo.png
-    logoHover: ../assets/logos/affiliations/1/logoHover.png
-    url: https://www.kotak.bank.in/
 bio:
   - >-
     **I’m Vignesh**, a multidisciplinary designer blending **UX, motion, and

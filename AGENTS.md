@@ -111,6 +111,7 @@ Transitive packages the approved set pulls in are fine: Keystatic's required pee
     ├── content/
     │   ├── case-studies/<slug>.yaml
     │   ├── summaries/<page>.yaml
+    │   ├── home.yaml
     │   ├── about.yaml
     │   └── site-settings.yaml
     ├── content.config.ts
@@ -152,6 +153,8 @@ Astro ignores page files that start with `_`, so dev-only pages live in `src/dev
 Long text is plain multiline text; a blank line starts a new paragraph. Each section, and its tab, renders only when it has content. The Decision block (options, trade-offs) was dropped on 2026-10-22: the Figma Solution steps carry the decisions in lighter form.
 
 **`summaries`** — collection keyed by page id (`home`, `about`, or a case-study slug): `recruiter`, `designer`, `curious` (each short rich text), `generatedWith` (model + date, for honesty), `reviewed` (checkbox; unreviewed summaries don't render). **The site never calls an AI API at build or runtime.** Summaries are written or pre-generated outside the build and committed.
+
+**`home`** — singleton, labelled **Homepage hero**: `headline` ("I'm Vignesh,"), `role` (grey, own line on desktop), `currently` (the line under it), `affiliations` (array of `{ name, logo, logoHover?, url? }`, the "@ DNEG & Kotak" pills).
 
 **`about`** — singleton: bio paragraphs (rich text, allows emphasis spans), avatar, banner, gallery (images + alt), journey (array of `{ role, years, place }`).
 

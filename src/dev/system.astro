@@ -18,10 +18,10 @@ import Lock from '../components/icons/Lock.astro';
 import ArrowLeft from '../components/icons/ArrowLeft.astro';
 import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
 import HouseSimple from '../components/icons/HouseSimple.astro';
-import { getAbout, getPublishedCaseStudies } from '../lib/content';
+import { getHome, getPublishedCaseStudies } from '../lib/content';
 import { duration, ease, spring, intro, wheel } from '../lib/motion';
 
-const about = await getAbout();
+const home = await getHome();
 const studies = await getPublishedCaseStudies();
 
 const surfaces = [
@@ -244,7 +244,7 @@ const caption = 'text-label-3 text-fg-secondary';
     <section class={section}>
       <h2 class={h2}>LogoPill, Badge</h2>
       <div class="flex flex-wrap items-center gap-4">
-        {about.affiliations.map((a) => <LogoPill src={a.logo} alt={a.name} />)}
+        {home.affiliations.map((a) => <LogoPill src={a.logo} alt={a.name} />)}
         <Badge status="nda" />
         <Badge status="coming-soon" />
         <span class={caption}>live / placeholder → no badge</span>

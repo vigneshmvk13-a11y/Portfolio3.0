@@ -5,15 +5,15 @@
  * after the comma, body-3.
  */
 import LogoPill from '../ui/LogoPill.astro';
-import { getAbout } from '../../lib/content';
+import { getHome } from '../../lib/content';
 
-const { name, role, currently, affiliations } = await getAbout();
+const { headline, role, currently, affiliations } = await getHome();
 ---
 
 <div class="flex flex-col items-center gap-(--sheet-intro-gap) text-center desktop:items-start desktop:gap-6 desktop:text-left">
   <div class="flex flex-col gap-2">
     <h1 class="text-h6 text-fg-primary desktop:text-h4">
-      I'm {name}, <span class="text-fg-secondary desktop:block">{role}</span>
+      {headline} <span class="text-fg-secondary desktop:block">{role}</span>
     </h1>
     <p class="text-body-4 desktop:text-body-3">{currently}</p>
   </div>

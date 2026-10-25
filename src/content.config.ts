@@ -114,14 +114,21 @@ const summaries = defineCollection({
   }),
 });
 
+const home = defineCollection({
+  loader: glob({ pattern: 'home.yaml', base: './src/content' }),
+  schema: ({ image }) =>
+    z.object({
+      headline: z.string(),
+      role: z.string(),
+      currently: z.string(),
+      affiliations: z.array(z.object({ name: z.string(), logo: image(), logoHover: image().optional(), url: z.url().optional() })).default([]),
+    }),
+});
+
 const about = defineCollection({
   loader: glob({ pattern: 'about.yaml', base: './src/content' }),
   schema: ({ image }) =>
     z.object({
-      name: z.string(),
-      role: z.string(),
-      currently: z.string(),
-      affiliations: z.array(z.object({ name: z.string(), logo: image(), logoHover: image().optional(), url: z.url().optional() })).default([]),
       bio: z.array(z.string()).default([]),
       avatar: image().optional(),
       avatarAlt: z.string().default(''),
@@ -153,4 +160,4 @@ const siteSettings = defineCollection({
     }),
 });
 
-export const collections = { caseStudies, summaries, about, siteSettings };
+export const collections = { caseStudies, summaries, home, about, siteSettings };

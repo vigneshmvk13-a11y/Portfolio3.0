@@ -46,6 +46,12 @@ export function sectionsOf({ data }: CaseStudy): CaseSection[] {
   return sections.filter((s) => s.filled).map(({ id, label }) => ({ id, label }));
 }
 
+export async function getHome() {
+  const entry = await getEntry('home', 'home');
+  if (!entry) throw new Error('Missing src/content/home.yaml');
+  return entry.data;
+}
+
 export async function getAbout() {
   const entry = await getEntry('about', 'about');
   if (!entry) throw new Error('Missing src/content/about.yaml');

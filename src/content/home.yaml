@@ -1,0 +1,12 @@
+headline: I'm Vignesh,
+role: Design leader
+currently: Leading design teams building enterprise banking experiences
+affiliations:
+  - name: DNEG
+    logo: ../assets/logos/affiliations/0/logo.png
+    logoHover: ../assets/logos/affiliations/0/logoHover.png
+    url: https://www.dneg.com/
+  - name: Kotak Mahindra Bank
+    logo: ../assets/logos/affiliations/1/logo.png
+    logoHover: ../assets/logos/affiliations/1/logoHover.png
+    url: https://www.kotak.bank.in/

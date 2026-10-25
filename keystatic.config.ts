@@ -273,13 +273,13 @@ export default config({
   },
 
   singletons: {
-    about: singleton({
-      label: 'About',
-      path: 'src/content/about',
+    home: singleton({
+      label: 'Homepage hero',
+      path: 'src/content/home',
       format: { data: 'yaml' },
       schema: {
-        name: fields.text({ label: 'Name' }),
-        role: fields.text({ label: 'Role' }),
+        headline: fields.text({ label: 'Headline', description: 'First line of the hero, e.g. "I\'m Vignesh,"' }),
+        role: fields.text({ label: 'Role', description: 'Shown in grey after the headline (its own line on desktop), e.g. "Design Leader"' }),
         currently: fields.text({ label: 'Current work line', multiline: true }),
         affiliations: fields.array(
           fields.object({
@@ -288,8 +288,16 @@ export default config({
             logoHover: fields.image({ label: 'Logo (hover)', directory: 'src/assets/logos', publicPath: '../assets/logos/' }),
             url: fields.url({ label: 'Link (opens in a new tab)' }),
           }),
-          { label: 'Affiliations', itemLabel: (props) => props.fields.name.value },
+          { label: 'Affiliations', description: 'Logo pills: "@" before the first, "&" before the rest', itemLabel: (props) => props.fields.name.value },
         ),
+      },
+    }),
+
+    about: singleton({
+      label: 'About',
+      path: 'src/content/about',
+      format: { data: 'yaml' },
+      schema: {
         bio: fields.array(fields.mdx.inline({ label: 'Paragraph' }), { label: 'Bio paragraphs' }),
         avatar: fields.image({ label: 'Avatar', directory: 'src/assets/about', publicPath: '../assets/about/' }),
         avatarAlt: fields.text({ label: 'Avatar alt' }),
