@@ -20,7 +20,7 @@ const { sections } = Astro.props;
   data-case-tabs
   data-no-swipe
 >
-  <div class="w-full overflow-hidden rounded-tabs bg-surface-selected desktop:w-auto">
+  <div class="w-full overflow-hidden rounded-tabs bg-surface-subtle desktop:w-auto">
     <ul class="case-tabs__list relative flex gap-1 overflow-x-auto p-0.5" data-case-tabs-list>
       <li aria-hidden="true" class="case-tabs__pill absolute top-0.5 bottom-0.5 left-0 rounded-button-sm border border-line-subtle bg-surface-raised" data-case-tabs-pill></li>
       {
@@ -30,7 +30,7 @@ const { sections } = Astro.props;
               href={`#${section.id}`}
               class:list={[
                 'case-tabs__tab block rounded-button-sm border border-transparent px-5 py-3',
-                'text-label-2 font-medium whitespace-nowrap text-fg-secondary-on-fill desktop:text-label-1',
+                'text-label-2 font-medium whitespace-nowrap text-fg-secondary desktop:text-label-1',
                 'transition-colors duration-(--duration-fast) ease-out hover:text-fg-primary',
               ]}
               aria-current={i === 0 ? 'location' : undefined}

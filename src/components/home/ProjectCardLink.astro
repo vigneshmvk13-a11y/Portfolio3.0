@@ -21,7 +21,7 @@ interface Props {
 }
 
 const { entry, compact = false, priority = false, active = false, autoplay = false, sizes, class: className } = Astro.props;
-const { subtitle, cardMeta, status, heroVideo } = entry.data;
+const { subtitle, cardMeta, status, heroVideo, lightCover } = entry.data;
 ---
 
 <a
@@ -54,7 +54,8 @@ const { subtitle, cardMeta, status, heroVideo } = entry.data;
   />
   <div
     class:list={[
-      'absolute inset-x-0 bottom-0 flex items-start gap-4 bg-surface-caption p-4 text-fg-on-media backdrop-blur-caption',
+      'absolute inset-x-0 bottom-0 flex items-start gap-4 p-4 text-fg-on-media backdrop-blur-caption',
+      lightCover ? 'bg-surface-caption-strong' : 'bg-surface-caption',
       !compact && 'desktop:gap-5 desktop:px-8',
     ]}
     data-card-caption

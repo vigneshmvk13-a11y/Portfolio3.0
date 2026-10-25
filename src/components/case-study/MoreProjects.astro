@@ -26,7 +26,7 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
   <ul class="grid gap-4 desktop:grid-cols-3 desktop:gap-6">
     {
       entries.map((entry) => (
-        <li class="aspect-card desktop:aspect-auto desktop:h-50">
+        <li class="aspect-card desktop:aspect-auto desktop:h-50" data-nav-media>
           <ProjectCardLink entry={entry} compact autoplay sizes="(min-width: 75rem) 207px, min(calc(100vw - 48px), 846px)" />
         </li>
       ))

@@ -52,6 +52,11 @@ export default config({
           description: 'Never built in production',
           defaultValue: false,
         }),
+        lightCover: fields.checkbox({
+          label: 'Light cover',
+          description: 'The cover is pale where the caption sits: use the stronger caption fill (80% instead of 50%) so the white title stays readable',
+          defaultValue: false,
+        }),
         heroVideo: fields.object(
           {
             poster: fields.image({

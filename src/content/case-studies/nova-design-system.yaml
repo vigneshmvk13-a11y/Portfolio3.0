@@ -5,6 +5,7 @@ cardMeta: B2B • Design system
 status: live
 order: 3
 draft: false
+lightCover: true
 heroVideo:
   poster: ../../assets/covers/nova-design-system/heroVideo/poster.png
   alt: >-

@@ -5,6 +5,7 @@ cardMeta: B2B • Product design
 status: live
 order: 4
 draft: false
+lightCover: true
 heroVideo:
   poster: ../../assets/covers/prime-compass/heroVideo/poster.png
   alt: >-

@@ -25,7 +25,7 @@ const { heading, intro, cards } = Astro.props.outcome;
     cards.length > 0 && (
       <ul class="grid gap-4 desktop:grid-cols-3 desktop:gap-6">
         {cards.map((card) => (
-          <li class="flex flex-col gap-8 rounded-tile bg-surface-raised p-6 desktop:gap-12">
+          <li class="flex flex-col gap-8 rounded-tile bg-surface-subtle p-6 desktop:gap-12">
             <h4 class="text-label-2 font-medium text-fg-primary desktop:text-label-1">{card.title}</h4>
             {paragraphs(card.body).map((p) => (
               <p class="text-body-3 desktop:text-body-2">{p}</p>

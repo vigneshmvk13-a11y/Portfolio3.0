@@ -22,6 +22,7 @@ const caseStudies = defineCollection({
       status: z.enum(STATUS).default('placeholder'),
       order: z.number().int().min(1),
       draft: z.boolean().default(false),
+      lightCover: z.boolean().default(false),
       heroVideo: z
         .object({
           poster: image().nullish().transform((value) => value ?? undefined),

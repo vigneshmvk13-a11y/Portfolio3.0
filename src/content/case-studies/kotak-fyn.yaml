@@ -5,6 +5,7 @@ cardMeta: Banking • NDA
 status: nda
 order: 2
 draft: false
+lightCover: true
 heroVideo:
   poster: ../../assets/covers/kotak-fyn/heroVideo/poster.png
   alt: Soft pastel gradient fading from grey-blue to peach

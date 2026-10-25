@@ -17,13 +17,13 @@ Square button, one Phosphor icon. About (`User`), Resume (`File`), Contact (`Cha
 
 | Variant | Box | Padding | Radius | Icon | Border | Where |
 |---|---|---|---|---|---|---|
-| `sm` | 52 | `p-4` | `rounded-button-sm` | `icon-sm` | `border-line-subtle` | Desktop intro |
-| `lg` | 50 | `p-4` | `rounded-button-lg` | `icon-xs` | `border-line-default` (hover `line-strong`) | Mobile sheet (border added in Figma 246:2317, 2026-10-21) |
-| `lg-outlined` | 60 | `p-5` | `rounded-button-lg` | `icon-sm` | `border-line-default` | About drawer |
-| `close` | 52 | `p-4` | `rounded-media-sm` | `icon-sm` | `border-line-default` | Drawer close |
+| `sm` | 52 | `p-4` | `rounded-button-sm` | `icon-sm` | action surface (below) | Desktop intro |
+| `lg` | 50 | `p-4` | `rounded-button-lg` | `icon-xs` | action surface | Mobile sheet (border added in Figma 246:2317, 2026-10-21) |
+| `cta` | 50 → 52 | `p-4` | `rounded-button-lg` → `rounded-button-sm` | `icon-xs` → `icon-sm` | action surface | About: the homepage buttons as one component, `lg` below the desktop breakpoint and `sm` from it (was `lg-outlined`, 60px, as Figma draws it; Vignesh 2026-10-26: same size as the homepage's) |
+| `close` | 52 | `p-4` | `rounded-media-sm` | `icon-sm` | action surface | Drawer close |
 | `glass` | 48 | `p-3` | `rounded-full` | `icon-lg` | `border-line-default` | Gallery Previous / Next over photos (Figma 280:9431): `bg-surface-glass backdrop-blur-glass`, icon `text-fg-on-media` |
 
-`bg-surface-raised`, icon `text-fg-secondary` (all but `glass`).
+**Action surface** (`sm`, `lg`, `cta`, `close` and Button; icon and label `fg-secondary-on-fill` (gray/700) at rest, `fg-primary` (gray/900) on hover; `src/lib/ui-classes.ts`; Vignesh 2026-10-26, because white buttons vanish on the white page): with a hover (`hoverable` = hover and fine pointer), `surface-subtle` fill and stroke (gray/50) at rest, `surface-raised` fill with a `line-default` stroke (gray/200) on hover; without one (touch), `surface-raised` and `line-default` all the time. Icon `text-fg-secondary`, `fg-primary` on hover. `close` uses it too (Vignesh 2026-10-26), over the banner; `glass` as below.
 
 States (proposed): hover → `border-line-strong`, icon `text-fg-primary` (`--duration-fast`); active → `scale-96`; focus-visible → focus ring (`rules.md`); disabled → not used.
 
@@ -82,7 +82,7 @@ A link to `/work/[slug]` for every status (`rules.md → Content states`). `roun
 
 1. **MotionCover** fills the card (`object-cover`). The small white square in the Smart Mapping cover is part of the cover image, not UI.
 2. **Badge** (by `status`) top-right.
-3. **Caption bar**: bottom, `bg-surface-caption backdrop-blur-caption`, `text-fg-on-media`. Subtitle left (`text-label-2 font-medium`; one line + ellipsis on desktop, two lines on mobile). Meta right (`text-label-2`), **desktop only**: the mobile caption is the title alone (Figma 260:6971–260:6975). Mobile and tablet: `p-4` (Figma 256:6791, 2026-10-22). Desktop: `px-8 py-4`, `gap-5`.
+3. **Caption bar**: bottom, `bg-surface-caption backdrop-blur-caption` (`bg-surface-caption-strong` when the case study has **Light cover**; `rules.md → Accessibility`), `text-fg-on-media`. Subtitle left (`text-label-2 font-medium`; one line + ellipsis on desktop, two lines on mobile). Meta right (`text-label-2`), **desktop only**: the mobile caption is the title alone (Figma 260:6971–260:6975). Mobile and tablet: `p-4` (Figma 256:6791, 2026-10-22). Desktop: `px-8 py-4`, `gap-5`.
 
 States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset. · lite (`html[data-quality="lite"]`, slow device): caption `[data-card-caption]` without the backdrop blur.
 
@@ -139,10 +139,10 @@ Fixed bottom, `px-gutter py-10`, `text-label-3 font-medium`, three-column grid. 
 
 Modal `<dialog closedby="any">` (JS light-dismiss fallback), in a scroller (`[data-about-scroll]`) so the mobile handle can sit above the content. Desktop: `w-drawer`, inset 40px top/left/bottom, `rounded-panel bg-surface-raised`, no shadow, over a `surface-scrim` backdrop (Vignesh, 2026-10-24; Figma `234:4968` draws none); the whole panel scrolls, banner included. Mobile: **the bottom sheet grows into it** (`layout-and-motion.md → About`). The dialog sits at `--about-top` (40px) with **no surface of its own**: a transparent 1px border, `rounded-t-panel` clip and `p-1` inset over the sheet's risen surface, which draws the white, border and corners. The scrim is the sheet's (`surface-scrim`), behind its surface. Tablet: the same, at the sheet's width (`card-w`, centred), since it grows out of it.
 
-1. Header: `h-banner` (200px) image, `close` IconButton top-right (`p-4` mobile, `p-6` desktop). Mobile: square-bottomed banner inside a `rounded-t-panel-inner` (28px) clip.
+1. Header: `h-banner` (200px) image, `close` IconButton top-right (`p-4` mobile, `p-6` desktop). The banner has `rounded-b-panel-inner` (28px) at every width (Figma `280:9285`, `280:9404`; it was square-bottomed on mobile), inside a `rounded-t-panel-inner` clip.
 2. Avatar `size-avatar rounded-full`, overlapping the banner by `avatar-overlap` (73px). Centred on mobile, left (`px-5`) on desktop with a 2px `surface-raised` ring.
 3. Bio from `about.bio` (inline Markdown: `**…**` → `font-medium text-fg-strong`). Desktop `text-body-2` both paragraphs, `px-6 py-8 gap-5`. Mobile: para 1 `text-label-1` regular, others `text-body-3`, `px-4`.
-4. Actions: Resume + Contact (`lg-outlined`), `gap-2` mobile / `gap-3` desktop.
+4. Actions: Resume + Contact (`cta`, the homepage buttons' size), `gap-2` (8px) at every width.
 5. Gallery: see Gallery.
 6. Journey: heading "Journey so far", `text-body-1` desktop / `text-label-1` mobile, `font-medium text-fg-strong`, `px-4` / `px-6`; desktop 64px above it (gallery `pb-8` + heading `pt-8`). TimelineRow list `gap-3`, `px-5 pb-5` mobile / `px-6 pb-10` desktop.
 
@@ -188,7 +188,7 @@ Tags start 40px from the top at every width (`pt-10`; Vignesh, 2026-10-23, was 8
 ### CaseTabs
 **Figma:** `234:18780`, mobile `234:5742` · **Status:** built
 
-In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-selected rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary-on-fill` (Figma's gray/500 is 3.0:1 on the track); active `fg-primary` on a white pill with a `line-subtle` border. 32px below the tabs (`pb-8`), 48px on desktop (`pb-12`), to the first section (Vignesh, 2026-10-24; was 40 at every width). Sticky at `top-5` (20px; Vignesh, 2026-10-23) from the tabs to the end of Reflection; sections scroll to 100px (`scroll-mt-25`). Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
+In-page `<nav aria-label="Sections">` of links, not ARIA tabs (each tab scrolls; nothing is hidden). Track `bg-surface-subtle rounded-tabs p-0.5`, tabs `gap-1`, each `px-5 py-3 rounded-button-sm`, `text-label-2` (desktop `text-label-1`) `font-medium`. Inactive `fg-secondary` (gray/600, 4.53:1 on the gray/50 track; Figma's gray/500 is 3.0:1); active `fg-primary` on a white pill with a `line-subtle` border. 32px below the tabs (`pb-8`), 48px on desktop (`pb-12`), to the first section (Vignesh, 2026-10-24; was 40 at every width). Sticky at `top-5` (20px; Vignesh, 2026-10-23) from the tabs to the end of Reflection; sections scroll to 100px (`scroll-mt-25`). Mobile: full width, the row scrolls sideways (`touch-action: pan-x`, no scrollbar) and keeps the active tab in view. Order follows the page, not Figma's (Figma lists Outcome before Final designs).
 
 States: active (`aria-current="location"`) · hover → `fg-primary` · focus ring. Without JS the active tab draws its own pill; with JS one pill slides between tabs (`translate` + `width`, `duration-base`, `ease-out`).
 
@@ -249,7 +249,7 @@ White card like Overview. Eyebrow, heading, paragraphs (no gap between them, as 
 ### CaseNav
 **Figma:** `234:23100`, mobile `234:10068` (the collapsed `234:31771` is retired, 2026-10-24) · **Status:** built. Hides on scroll down, returns on scroll up (`layout-and-motion.md → Floating nav`).
 
-Fixed, centred, 32px above the bottom (plus the safe area). A pill (`p-1 gap-1 rounded-full`) on `surface-caption` with `backdrop-blur-nav` (40px: what scrolls under it blurs): Previous and Next (`w-nav-btn` 97, `px-4 py-3`, `text-label-1 font-medium fg-on-media`) and Home (`p-3`, HouseSimple `icon-lg` 22, `z-10` so the sliding labels pass under it). Each has a `line-default` border, hover `surface-raised` border. Figma's fill (70% grey, white text 2.8:1) is replaced by `surface-caption` (4.5–4.7:1). Previous / Next wrap round the homepage order; their accessible names add the project ("Previous: Gyst - Productivity app"). Home goes to `/#slug` (`/` for the first project), so the wheel lands on this project.
+Fixed, centred, 32px above the bottom (plus the safe area). A pill (`p-1 gap-1 rounded-full`) on `surface-caption` with a `surface-caption-boost` layer over it (together the 80% `surface-caption-strong`) and `backdrop-blur-nav` (40px: what scrolls under it blurs). While a `[data-nav-media]` element (the cover, the More projects cards) is behind the nav, `nav.ts` sets `data-over-media` and the boost fades out over `duration-base`, leaving Figma's 50%: Previous and Next (`w-nav-btn` 97, `px-4 py-3`, `text-label-1 font-medium fg-on-media`) and Home (`p-3`, HouseSimple `icon-lg` 22, `z-10` so the sliding labels pass under it). Each has a `line-default` border, hover `surface-raised` border. Figma's fill (70% grey, white text 2.8:1) is replaced by the 80% over the page (4.6:1). Previous / Next wrap round the homepage order; their accessible names add the project ("Previous: Gyst - Productivity app"). Home goes to `/#slug` (`/` for the first project), so the wheel lands on this project.
 
 States: expanded · collapsed (Previous / Next fade out first, `duration-fast`; then the surface narrows to Home (its `left` / `right`, not a clip-path) and they slide under it on `duration-slow` + `ease-in-out`, no bounce; expanding runs it backwards, the labels fading in only after the surface has opened and they've slid clear of Home) · any link focused → expanded (`:focus-within`) · lite: no blur. Named `case-nav` only during a slide transition, so it stays put; a permanent `view-transition-name` would make it a backdrop root and kill the blur.
 

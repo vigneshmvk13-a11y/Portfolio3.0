@@ -6,6 +6,9 @@
 @import "tailwindcss";
 @import "./fonts.css";
 
+/* Pointer devices with a real hover (not touch): the action buttons rest on gray/50 only there. */
+@custom-variant hoverable (@media (hover: hover) and (pointer: fine));
+
 /* ---------- Primitives (no utilities) ---------- */
 :root {
   --gray-white: #ffffff;
@@ -20,7 +23,15 @@
   --gray-900: #282828;
   --gray-black: #000000;
   --lime-200: #cae6a0;
-  --overlay-84: rgb(84 84 84 / 0.8);
+  /*
+   * Grey #545454 in multiply mode over a blurred backdrop. A neutral grey in multiply only scales the
+   * backdrop by 1 - a + a * 84/255, so it is the same pixels as black at alpha 1 - that factor, in normal mode:
+   * no mix-blend-mode (it would break on the fixed nav's stacking context and cost the wheel a blend per frame).
+   * 50% fill -> black 33.5%; 80% fill -> black 53.6%; boost is the black that takes 33.5% to 53.6%.
+   */
+  --multiply-50: rgb(0 0 0 / 0.335);
+  --multiply-80: rgb(0 0 0 / 0.536);
+  --multiply-80-boost: rgb(0 0 0 / 0.302);
   /* gray/500 at 40%: the gallery's glass buttons (Figma 280:9431). */
   --glass-40: rgb(134 134 134 / 0.4);
   --scrim-24: rgb(0 0 0 / 0.24);
@@ -267,11 +278,14 @@
 
 /* ---------- Semantic colour (references primitives) ---------- */
 @theme inline {
-  --color-surface-page: var(--gray-50);
+  --color-surface-page: var(--gray-white);
+  --color-surface-subtle: var(--gray-50);
   --color-surface-raised: var(--gray-white);
-  --color-surface-selected: var(--gray-100);
-  --color-surface-hover: var(--gray-100);
-  --color-surface-caption: var(--overlay-84);
+  --color-surface-selected: var(--gray-50);
+  --color-surface-hover: var(--gray-50);
+  --color-surface-caption: var(--multiply-50);
+  --color-surface-caption-strong: var(--multiply-80);
+  --color-surface-caption-boost: var(--multiply-80-boost);
   --color-surface-scrim: var(--scrim-24);
   --color-surface-badge: var(--lime-200);
   --color-surface-glass: var(--glass-40);

@@ -36,7 +36,7 @@ const { images, id, class: className } = Astro.props;
         data-gallery-track
       >
         {images.map(({ image, alt, title, caption }) => (
-          <figure class="flex w-gallery-w shrink-0 snap-start flex-col gap-3 rounded-media-sm bg-surface-page p-1">
+          <figure class="flex w-gallery-w shrink-0 snap-start flex-col gap-3 rounded-media-sm bg-surface-subtle p-1">
               <Image
                 src={image}
                 alt={alt}

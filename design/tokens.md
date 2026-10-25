@@ -30,7 +30,9 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `--gray-900` | `gray/900` | `#282828` |
 | `--gray-black` | `gray/black` | `#000000` |
 | `--lime-200` | `lime/200` | `#CAE6A0` |
-| `--overlay-84` | (not a variable) | `rgb(84 84 84 / 0.8)` |
+| `--multiply-50` | grey `#545454` at 50%, multiply | `rgb(0 0 0 / 0.335)`: a neutral grey in multiply scales the backdrop by `1 − a + a·84/255`, so it equals black at `1 −` that factor in normal mode (no `mix-blend-mode`) |
+| `--multiply-80` | the same grey at 80% | `rgb(0 0 0 / 0.536)` |
+| `--multiply-80-boost` | what turns 50% into 80% | `rgb(0 0 0 / 0.302)` |
 | `--glass-40` | (not a variable; `gray/500` at 40%) | `rgb(134 134 134 / 0.4)` |
 | `--scrim-24` | (not a variable) | `rgb(0 0 0 / 0.24)` **(proposed)** |
 
@@ -38,18 +40,21 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 
 | Utility stem | → | Use |
 |---|---|---|
-| `surface-page` | `--gray-50` | Page background, all breakpoints (mobile moved from white to gray/50 in Figma 246:2300, 2026-10-21) |
+| `surface-page` | `--gray-white` | Page background on every page and breakpoint: home, About, case studies (was gray/50; Vignesh 2026-10-26, Figma still draws gray/50) |
+| `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
 | `surface-raised` | `--gray-white` | Buttons, drawer, sheet |
-| `surface-selected` | `--gray-100` | Active TOC item |
-| `surface-hover` | `--gray-100` **(proposed)** | Hover on TOC items and text buttons |
-| `surface-caption` | `--overlay-84` | Card caption bar; floating case-study nav (white text 4.5–4.7:1, where Figma's 70% grey fill gives 2.8:1) |
+| `surface-selected` | `--gray-50` | Active TOC item, mobile and desktop (was gray/100; Vignesh 2026-10-26). Also the cover's loading placeholder |
+| `surface-hover` | `--gray-50` | Hover on TOC items, mobile and desktop (Vignesh 2026-10-26; was gray/100) |
+| `surface-caption` | `--multiply-50` | Card caption bar over a cover (Figma: grey, 50%, multiply, background blur; Vignesh 2026-10-26). White text 4.5:1 or better only over covers darker than ~70% grey |
+| `surface-caption-strong` | `--multiply-80` | The same fill at 80%, where the backdrop is pale: captions of covers marked **Light cover**, and the floating nav over the page (white text 4.6:1 on white) |
+| `surface-caption-boost` | `--multiply-80-boost` | Layer over `surface-caption` that makes it 80%; the floating nav fades it out over a cover |
 | `surface-scrim` | `--scrim-24` **(proposed)** | Behind About: the mobile sheet (fades in as the bottom sheet grows into it) and the desktop drawer |
 | `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |
 | `surface-glass` | `--glass-40` | Gallery Previous / Next buttons over photos (Figma 280:9431), with `backdrop-blur-glass`; white caret `fg-on-media` |
 | `fg-primary` | `--gray-900` | Primary text: name, headings, active TOC, hovered TOC rows (Figma 233:4518, 2026-10-22) |
 | `fg-strong` | `--gray-900` | Emphasis in About, timeline roles. Same value as `fg-primary` since 2026-10-22 |
 | `fg-secondary` | `--gray-600` | Secondary text, icons: 4.53:1 on `surface-page`, 5.02:1 on white. Fails on `surface-hover` (4.10:1), so hovered rows switch to `fg-primary` |
-| `fg-secondary-on-fill` | `--gray-700` | Secondary text on `surface-selected` (gray/100) fills: inactive case-study tabs, 5.29:1. Figma uses gray/500 there (3.0:1) and `fg-secondary` would be 4.10:1 |
+| `fg-secondary-on-fill` | `--gray-700` | Icon and label of the action buttons at rest (gray/700, 6.2:1 on gray/50; `fg-primary` on hover). The inactive case-study tabs use `fg-secondary` (gray/600, 4.53:1 on gray/50) since the tab bar became gray/50 |
 | `fg-tertiary` | `--gray-500` | Non-text only (fails 4.5:1 on `surface-page`). Footer credits and case-study eyebrows use `fg-secondary` |
 | `fg-on-media` | `--gray-white` | Card captions |
 | `line-subtle` | `--gray-100` | Desktop icon buttons |

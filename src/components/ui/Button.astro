@@ -5,6 +5,7 @@
  */
 import type { HTMLAttributes } from 'astro/types';
 import { isExternal } from '../../lib/links';
+import { actionSurface } from '../../lib/ui-classes';
 
 type IconComponent = (props: { class?: string }) => unknown;
 
@@ -18,10 +19,11 @@ interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
 const { href, external = isExternal(href), leadingIcon: Leading, trailingIcon: Trailing, class: className, ...rest } = Astro.props;
 
 const classes = [
-  'inline-flex items-center gap-2.5 p-4 rounded-button-sm border border-line-subtle bg-surface-raised',
-  'text-label-1 font-medium text-fg-secondary',
-  'transition-[border-color,color,scale] duration-(--duration-fast) ease-out',
-  'hover:border-line-strong hover:text-fg-primary active:scale-96',
+  'inline-flex items-center gap-2.5 p-4 rounded-button-sm border',
+  'text-label-1 font-medium',
+  'transition-[border-color,background-color,color,scale] duration-(--duration-fast) ease-out',
+  'active:scale-96',
+  actionSurface,
   className,
 ];
 ---

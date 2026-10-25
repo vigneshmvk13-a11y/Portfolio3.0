@@ -40,8 +40,8 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
 
     <div class="flex flex-col gap-10 desktop:gap-0">
       <div class="flex flex-col gap-6 desktop:gap-0">
-        <div class="overflow-hidden rounded-t-panel-inner desktop:rounded-none">
-          <div class="relative flex h-banner items-start justify-end overflow-hidden p-4 desktop:p-5" data-about-banner>
+        <div class="overflow-hidden rounded-t-panel-inner">
+          <div class="relative flex h-banner items-start justify-end overflow-hidden rounded-b-panel-inner p-4 desktop:p-5" data-about-banner>
             {
               about.banner && (
                 <Image src={about.banner} alt={about.bannerAlt} width={576} height={200} densities={[2]} fit="cover" class="absolute inset-0 size-full object-cover" />
@@ -71,13 +71,13 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
             {firstParagraph && <p class="text-label-1 font-regular desktop:text-body-2" set:html={renderInline(firstParagraph)} />}
             {otherParagraphs.map((paragraph) => <p class="text-body-2" set:html={renderInline(paragraph)} />)}
           </div>
-          <div class="flex gap-2 px-4 desktop:gap-3 desktop:px-5 desktop:pb-12">
+          <div class="flex gap-2 px-4 desktop:px-5 desktop:pb-12">
             {resume ? (
-              <IconButton icon={File} iconFill={FileFill} label={nav.resume} variant="lg-outlined" href={resume} />
+              <IconButton icon={File} iconFill={FileFill} label={nav.resume} variant="cta" href={resume} />
             ) : (
               <Todo class="self-center">resume link</Todo>
             )}
-            <IconButton icon={ChatCircleDots} iconFill={ChatCircleDotsFill} label={nav.contact} variant="lg-outlined" href={contact} />
+            <IconButton icon={ChatCircleDots} iconFill={ChatCircleDotsFill} label={nav.contact} variant="cta" href={contact} />
           </div>
         </div>
       </div>
@@ -258,7 +258,7 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
     .about-drawer__bar-light > span {
       position: absolute;
       inset: 0;
-      background: var(--color-surface-page);
+      background: var(--color-surface-subtle);
       transition: opacity var(--duration-fast) var(--ease-out);
     }
 

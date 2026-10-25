@@ -3,9 +3,11 @@
  * Floating project navigation (Figma 234:23100, mobile 234:10068). Previous · Home · Next, wrapping round
  * the homepage order. Always in full (no collapsed state since 2026-10-24): it sinks out of sight while the
  * page scrolls and rises back once scrolling stops or the finger lifts (src/scripts/case-study/nav.ts).
- * The surface blurs what scrolls under it (backdrop-blur-nav, 40px)
- * and is surface-caption, not Figma's 70% gray/600-ish fill: white text on that is 2.8:1
- * (design/rules.md → Accessibility).
+ * The surface blurs what scrolls under it (backdrop-blur-nav, 40px). Its fill is Figma's grey in multiply,
+ * 50% over a cover (surface-caption) and 80% over the pale page (surface-caption-strong): white text on
+ * 50% over white is 2.3:1, on 80% 4.6:1. The 80% is the 50% plus a boost layer that fades out while a
+ * [data-nav-media] element is under the nav (nav.ts sets data-over-media), so it only changes opacity.
+ * design/rules.md → Accessibility.
  */
 import HouseSimple from '../icons/HouseSimple.astro';
 import HouseSimpleFill from '../icons/HouseSimpleFill.astro';
@@ -26,7 +28,9 @@ const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
 
 <nav aria-label="Projects" class="case-nav pointer-events-none fixed inset-x-0 z-20 flex justify-center" data-case-nav>
   <div class="case-nav__bar pointer-events-auto relative flex items-center gap-1 p-1">
-    <span aria-hidden="true" class="case-nav__bg absolute inset-0 rounded-full bg-surface-caption backdrop-blur-nav"></span>
+    <span aria-hidden="true" class="case-nav__bg absolute inset-0 rounded-full bg-surface-caption backdrop-blur-nav">
+      <span class="case-nav__boost absolute inset-0 rounded-full bg-surface-caption-boost"></span>
+    </span>
     <a href={`/work/${previous.id}/`} rel="prev" class:list={[side, 'case-nav__item']} data-case-nav-prev>
       Previous<span class="sr-only">: {previous.data.tocLabel}</span>
     </a>
@@ -74,6 +78,19 @@ const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
   [data-case-nav][data-hidden]:not(:focus-within) :is(.case-nav__bg, .case-nav__item) {
     opacity: 0;
     transition-timing-function: var(--ease-in-out);
+  }
+
+  /* Over a cover the boost fades out (50% fill); over the page it stays (80%). */
+  .case-nav__boost {
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  [data-case-nav][data-over-media] .case-nav__boost {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .case-nav__boost {
+      transition: none;
+    }
   }
 
   /* Slow device (src/scripts/quality.ts): no backdrop blur. */

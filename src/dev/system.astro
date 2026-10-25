@@ -26,6 +26,7 @@ const studies = await getPublishedCaseStudies();
 
 const surfaces = [
   ['surface-page', 'bg-surface-page'],
+  ['surface-subtle', 'bg-surface-subtle'],
   ['surface-raised', 'bg-surface-raised'],
   ['surface-selected', 'bg-surface-selected'],
   ['surface-hover', 'bg-surface-hover'],
@@ -37,7 +38,7 @@ const foregrounds = [
   ['fg-primary', 'text-fg-primary'],
   ['fg-strong', 'text-fg-strong'],
   ['fg-secondary', 'text-fg-secondary'],
-  ['fg-secondary-on-fill (on surface-selected)', 'text-fg-secondary-on-fill'],
+  ['fg-secondary-on-fill (action buttons)', 'text-fg-secondary-on-fill'],
   ['fg-tertiary (non-text only)', 'text-fg-tertiary'],
 ];
 const lines = [
@@ -218,10 +219,10 @@ const caption = 'text-label-3 text-fg-secondary';
         </div>
         <div class="flex flex-col gap-2">
           <div class="flex gap-2">
-            <IconButton icon={File} label="Resume" variant="lg-outlined" />
-            <IconButton icon={ChatCircleDots} label="Contact" variant="lg-outlined" />
+            <IconButton icon={File} label="Resume" variant="cta" />
+            <IconButton icon={ChatCircleDots} label="Contact" variant="cta" />
           </div>
-          <span class={caption}>lg-outlined (drawer)</span>
+          <span class={caption}>cta (lg below desktop, sm from it; About)</span>
         </div>
         <div class="flex flex-col gap-2">
           <IconButton icon={X} label="Close" variant="close" />
