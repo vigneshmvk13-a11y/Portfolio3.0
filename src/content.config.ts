@@ -143,7 +143,7 @@ const siteSettings = defineCollection({
       description: z.string().max(160),
       defaultOgImage: image().optional(),
       // Paths under public/ ("/favicon.svg"), not astro:assets images: icons are served as uploaded.
-      favicon: z.string().default('/favicon.svg'),
+      favicon: z.string().optional(),
       appleTouchIcon: z.string().optional(),
       nav: z.object({ about: z.string(), resume: z.string(), contact: z.string() }),
       contact: z.string().regex(/^(mailto:|https:\/\/)/),

@@ -33,8 +33,15 @@ const robots = noindex || isPreview ? 'noindex, nofollow' : undefined;
 
 // Icons are set in Keystatic (Site settings); a favicon.ico dropped into public/ is linked too (design/assets.md → Favicon).
 const hasPublic = (file: string) => existsSync(new URL(`../../public/${file}`, import.meta.url));
-const iconTypes: Record<string, string> = { svg: 'image/svg+xml', png: 'image/png', ico: 'image/x-icon', webp: 'image/webp' };
-const faviconType = iconTypes[site.favicon.split('.').pop()?.toLowerCase() ?? ''];
+const iconTypes: Record<string, string> = {
+  svg: 'image/svg+xml',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  ico: 'image/x-icon',
+  webp: 'image/webp',
+};
+const faviconType = site.favicon && iconTypes[site.favicon.split('.').pop()?.toLowerCase() ?? ''];
 
 const og = ogImage ? await getImage({ src: ogImage, width: 1200, height: 630, format: 'jpg' }) : undefined;
 
@@ -54,7 +61,7 @@ const ogUrl = og ? new URL(og.src, Astro.site).href : undefined;
     {robots && <meta name="robots" content={robots} />}
     <link rel="preload" href="/fonts/GeneralSans-Medium.woff2" as="font" type="font/woff2" crossorigin />
     {hasPublic('favicon.ico') && <link rel="icon" href="/favicon.ico" sizes="32x32" />}
-    <link rel="icon" href={site.favicon} type={faviconType} />
+    {site.favicon && <link rel="icon" href={site.favicon} type={faviconType} />}
     {site.appleTouchIcon && <link rel="apple-touch-icon" href={site.appleTouchIcon} />}
     <link rel="sitemap" href="/sitemap-index.xml" />
 

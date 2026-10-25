@@ -344,13 +344,13 @@ export default config({
         }),
         favicon: fields.image({
           label: 'Favicon',
-          description: 'Browser tab icon. Square SVG (best) or PNG, at least 48×48. Keep it to one simple shape: it shows at 16px.',
+          description: 'Browser tab icon. Square SVG (best), PNG or JPG, at least 48×48. Keep it to one simple shape: it shows at 16px.',
           directory: 'public',
           publicPath: '/',
         }),
         appleTouchIcon: fields.image({
           label: 'Home-screen icon',
-          description: 'iPhone home screen and bookmarks. 180×180 PNG with a solid background (no transparency).',
+          description: 'iPhone home screen and bookmarks. 180×180 PNG or JPG with a solid background (no transparency).',
           directory: 'public',
           publicPath: '/',
         }),
