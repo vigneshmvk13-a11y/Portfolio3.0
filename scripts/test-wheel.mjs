@@ -94,8 +94,8 @@ try {
   check('mouse notch: next project in focus within 200ms (no pause)', s.active === 'kotak-fyn', JSON.stringify(s));
   await sleep(700);
   s = await d.state();
-  check('mouse wheel notch steps once to Fyn', s.index === '1' && s.hash === '#fyn' && s.toc?.startsWith('Fyn'), JSON.stringify(s));
-  check('live region announces', s.status === 'Fyn- Wholesale Banking app, 2 of 5', s.status);
+  check('mouse wheel notch steps once to Fyn', s.index === '1' && s.hash === '#kotak-fyn' && s.toc?.startsWith('Kotak Fyn'), JSON.stringify(s));
+  check('live region announces', s.status === 'Kotak Fyn, 2 of 5', s.status);
 
   // Trackpad flick with an inertia tail (765px in all): the wheel travels with it, ~1.9 cards → 2.
   for (let i = 0; i < 30; i++) { await d.wheel(Math.max(4, 40 - i)); await sleep(16); }
