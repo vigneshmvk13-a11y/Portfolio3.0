@@ -90,7 +90,7 @@ const path = () => 'location.pathname + location.hash';
 try {
   // Desktop: tabs, nav, and the card ⇄ cover transitions.
   const d = await page(1440, 1024);
-  await d.goto('/work/smart-mapping/');
+  await d.goto('/work/data-mapping/');
   const tabs = await d.eval(`[...document.querySelectorAll('[data-case-tab]')].map((t) => t.textContent.trim()).join(', ')`);
   check('tabs follow page order', tabs === 'Overview, Solution, Final designs, Outcome, Reflection', tabs);
 
@@ -121,7 +121,7 @@ try {
   check('nav shows at the page end', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`)));
 
   const more = await d.eval(`[...document.querySelectorAll('[aria-labelledby="more-projects"] [data-card-link]')].map((a) => a.dataset.cardLink).join(', ')`);
-  check('More projects: the next three', more === 'fyn, nova, prime-compass', more);
+  check('More projects: the next three', more === 'kotak-fyn, nova-design-system, prime-compass', more);
 
   // Home → card (collapse), then card → cover (expand).
   await d.eval('window.scrollTo(0, 0)'); await sleep(300);
@@ -140,14 +140,14 @@ try {
   await d.click('[data-wheel-card][data-offset="0"] [data-card-link]');
   await arrived; await sleep(800); // the transition takes 0.5s and blocks input meanwhile
   vt = await d.eval('window.__vt');
-  check('card → case study', (await d.eval(path())) === '/work/smart-mapping/', await d.eval(path()));
+  check('card → case study', (await d.eval(path())) === '/work/data-mapping/', await d.eval(path()));
   check('card: expand transition, card → cover', vt?.transition && vt.type === 'expand' && vt.named === 1, JSON.stringify(vt));
 
   arrived = d.loaded();
   await d.click('[data-case-nav-next]');
   await arrived; await sleep(800); // the transition takes 0.5s and blocks input meanwhile
   vt = await d.eval('window.__vt');
-  check('Next → next project', (await d.eval(path())) === '/work/fyn/', await d.eval(path()));
+  check('Next → next project', (await d.eval(path())) === '/work/kotak-fyn/', await d.eval(path()));
   check('Next: slide transition, nothing morphs', vt?.transition && vt.type === 'next' && vt.named === 0, JSON.stringify(vt));
 
   arrived = d.loaded();
@@ -166,11 +166,11 @@ try {
   vt = await d.eval('window.__vt');
   check('Home from Fyn → /#fyn', (await d.eval(path())) === '/#fyn', await d.eval(path()));
   check('Home from Fyn: collapse into the Fyn card', vt?.transition && vt.type === 'collapse' && vt.named === 1, JSON.stringify(vt));
-  check('wheel rests on Fyn', (await d.eval(`document.querySelector('[data-wheel-card][data-offset="0"]').dataset.slug`)) === 'fyn');
+  check('wheel rests on Fyn', (await d.eval(`document.querySelector('[data-wheel-card][data-offset="0"]').dataset.slug`)) === 'kotak-fyn');
 
   // Home from the end of a case study (cover off screen) crossfades and the card settles in place:
   // morphing from the off-screen cover made the card fall in from above the screen.
-  await d.goto('/work/smart-mapping/'); // a full case study: Fyn (NDA) is short enough to keep its cover on screen
+  await d.goto('/work/data-mapping/'); // a full case study: Fyn (NDA) is short enough to keep its cover on screen
   await d.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
   await sleep(600);
   arrived = d.loaded();
@@ -189,11 +189,11 @@ try {
   await d.click('[data-system-link]');
   await arrived; await sleep(800);
   vt = await d.eval('window.__vt');
-  check('System image → Nova case study', (await d.eval(path())) === '/work/nova/', await d.eval(path()));
+  check('System image → Nova case study', (await d.eval(path())) === '/work/nova-design-system/', await d.eval(path()));
   check('System image: fade, nothing morphs', vt?.transition && vt.type === 'fade' && vt.named === 0, JSON.stringify(vt));
 
   // Floating nav at rest: blurred backdrop (a view-transition-name would make it a backdrop root).
-  await d.goto('/work/smart-mapping/');
+  await d.goto('/work/data-mapping/');
   const navStyle = await d.eval(`(() => { const nav = document.querySelector('[data-case-nav]'); return { name: getComputedStyle(nav).viewTransitionName, blur: getComputedStyle(nav.querySelector('.case-nav__bg')).backdropFilter }; })()`);
   check('nav blur 40px, no transition name at rest', navStyle.name === 'none' && navStyle.blur === 'blur(40px)', JSON.stringify(navStyle));
   await d.eval('window.scrollTo(0, 0)');
@@ -209,14 +209,14 @@ try {
 
   // Mobile: swipe left goes to the next project; a short drag springs back; the tab row doesn't swipe.
   const m = await page(393, 852);
-  await m.goto('/work/smart-mapping/');
+  await m.goto('/work/data-mapping/');
   await m.swipe(300, 260, 500);
   await sleep(500);
-  check('short drag springs back', (await m.eval(path())) === '/work/smart-mapping/' && (await m.eval(`getComputedStyle(document.querySelector('[data-case-page]')).transform`)) === 'none');
+  check('short drag springs back', (await m.eval(path())) === '/work/data-mapping/' && (await m.eval(`getComputedStyle(document.querySelector('[data-case-page]')).transform`)) === 'none');
   const tabY = await m.eval(`Math.round(document.querySelector('[data-case-tabs]').getBoundingClientRect().top + 25)`);
   await m.swipe(300, 60, tabY);
   await sleep(700);
-  check('swipe on the tab row stays on the page', (await m.eval(path())).startsWith('/work/smart-mapping/'), await m.eval(path()));
+  check('swipe on the tab row stays on the page', (await m.eval(path())).startsWith('/work/data-mapping/'), await m.eval(path()));
 
   // A committed swipe whose next page is slow to arrive must not leave this page pushed aside
   // (Vignesh, 2026-10-23: the page stayed shifted on the dev server). Every request for the next page,
@@ -242,28 +242,28 @@ try {
   await released; await sleep(300);
   const shifted = await m.eval(`sessionStorage.getItem('__shift')`);
   check('slow next page: this page springs back meanwhile', shifted === 'none' && heldIds.length > 0, `transform ${shifted} after 0.7s, ${heldIds.length} request(s) held`);
-  await m.goto('/work/smart-mapping/');
+  await m.goto('/work/data-mapping/');
   let landed = m.loaded();
   await m.swipe(330, 60, 500);
   await landed; await sleep(800);
   vt = await m.eval('window.__vt');
-  check('swipe left → next project', (await m.eval(path())) === '/work/fyn/', await m.eval(path()));
+  check('swipe left → next project', (await m.eval(path())) === '/work/kotak-fyn/', await m.eval(path()));
   check('swipe: slide transition', vt?.transition && vt.type === 'next', JSON.stringify(vt));
   landed = m.loaded();
   await m.swipe(60, 330, 500);
   await landed; await sleep(800);
-  check('swipe right → previous project', (await m.eval(path())) === '/work/smart-mapping/', await m.eval(path()));
+  check('swipe right → previous project', (await m.eval(path())) === '/work/data-mapping/', await m.eval(path()));
   await m.close();
 
   // Reduced motion: navigation is instant (no view transition).
   const r = await page(1440, 1024);
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }, sessionId);
-  await r.goto('/work/smart-mapping/');
+  await r.goto('/work/data-mapping/');
   arrived = r.loaded();
   await r.click('[data-case-nav-next]');
   await arrived; await sleep(800);
   vt = await r.eval('window.__vt');
-  check('reduced motion: Next is instant', (await r.eval(path())) === '/work/fyn/' && !vt?.transition, JSON.stringify(vt));
+  check('reduced motion: Next is instant', (await r.eval(path())) === '/work/kotak-fyn/' && !vt?.transition, JSON.stringify(vt));
 } finally {
   ws.close(); chrome.kill(); await rm(profile, { recursive: true, force: true }).catch(() => {});
 }

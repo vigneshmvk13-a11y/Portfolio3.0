@@ -171,7 +171,7 @@ try {
 
   // Case study (design/layout-and-motion.md → Case study).
   const c = await page(1440, 1024);
-  await c.goto('/work/smart-mapping/');
+  await c.goto('/work/data-mapping/');
   await sleep(600);
   report('case desktop: nav hides (scroll down)', await c.measure(async () => { for (let i = 0; i < 6; i++) { await c.wheel(100); await sleep(40); } }, 900));
   report('case desktop: nav returns (scroll up)', await c.measure(() => c.wheel(-120), 900));
@@ -179,7 +179,7 @@ try {
   await c.close();
 
   const cm = await page(393, 852);
-  await cm.goto('/work/smart-mapping/');
+  await cm.goto('/work/data-mapping/');
   await sleep(600);
   report('case mobile: swipe follow + spring back', await cm.measure(() => cm.swipeX(300, 220, 500), 600));
   await cm.close();
@@ -194,7 +194,7 @@ try {
   await sleep(300);
   report('transition: Home from Fyn (cover → Fyn card)', await t.transition(() => t.click('[data-case-nav-home]'), 700));
   await sleep(300);
-  await t.goto('/work/smart-mapping/');
+  await t.goto('/work/data-mapping/');
   await sleep(600);
   await t.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
   await sleep(600);

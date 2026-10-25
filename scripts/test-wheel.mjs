@@ -91,7 +91,7 @@ try {
   await d.shot('mid-step-1440.png');
   await sleep(100);
   s = await d.state();
-  check('mouse notch: next project in focus within 200ms (no pause)', s.active === 'fyn', JSON.stringify(s));
+  check('mouse notch: next project in focus within 200ms (no pause)', s.active === 'kotak-fyn', JSON.stringify(s));
   await sleep(700);
   s = await d.state();
   check('mouse wheel notch steps once to Fyn', s.index === '1' && s.hash === '#fyn' && s.toc?.startsWith('Fyn'), JSON.stringify(s));
@@ -141,7 +141,7 @@ try {
   // Keyboard focus follows: focus active card link, then ArrowDown.
   await d.eval(`document.querySelector('[data-wheel-card]:not([inert]) a').focus()`);
   await d.key('ArrowDown', 'ArrowDown', 40); await sleep(900);
-  s = await d.state(); check('focus moves to the new active card', s.index === '0' && s.focus === 'smart-mapping', JSON.stringify(s));
+  s = await d.state(); check('focus moves to the new active card', s.index === '0' && s.focus === 'data-mapping', JSON.stringify(s));
 
   // Drawer disables the wheel.
   await d.eval(`document.querySelector('[data-about-open]:not(.hidden *)')?.click() ?? document.querySelectorAll('[data-about-open]')[1].click()`);
@@ -166,10 +166,10 @@ try {
 
   // ---------- Deep link ----------
   const h = await page(1440, 1024);
-  await h.goto('/#nova');
+  await h.goto('/#nova-design-system');
   s = await h.state();
   const ready = await h.eval(`'wheelReady' in document.documentElement.dataset && getComputedStyle(document.querySelector('.wheel')).opacity`);
-  check('deep link /#nova restores Nova and reveals the wheel', s.index === '2' && s.active === 'nova' && ready === '1', `${JSON.stringify(s)} opacity=${ready}`);
+  check('deep link /#nova-design-system restores Nova and reveals the wheel', s.index === '2' && s.active === 'nova-design-system' && ready === '1', `${JSON.stringify(s)} opacity=${ready}`);
   await h.close();
 
   // ---------- Mobile touch ----------
@@ -493,7 +493,7 @@ try {
   await i3.close();
 
   const i4 = await page(1440, 1024, { intro: true });
-  await i4.goto('/#nova', 300);
+  await i4.goto('/#nova-design-system', 300);
   c = await i4.eval(chrome);
   check('intro: skipped for a deep link', c.intro === undefined, JSON.stringify(c));
   await i4.close();

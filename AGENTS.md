@@ -258,9 +258,9 @@ Card copy is from the Figma card variants (`228:4583`).
 
 | order | slug | tocLabel | subtitle (card) | cardMeta | status |
 |---|---|---|---|---|---|
-| 1 | `smart-mapping` | Data mapping | Simplifying data mapping for enterprise integrations | B2B • SAAS | live |
-| 2 | `fyn` | Fyn- Wholesale Banking app | Kotak FYN - Designing Enterprise Banking Experiences | Banking • NDA | nda |
-| 3 | `nova` | Nova Design system | Building an Enterprise Design System for Design-to-Code | Design system • B2B | placeholder |
+| 1 | `data-mapping` | Data mapping | Simplifying data mapping for enterprise integrations | B2B • SAAS | live |
+| 2 | `kotak-fyn` | Fyn- Wholesale Banking app | Kotak FYN - Designing Enterprise Banking Experiences | Banking • NDA | nda |
+| 3 | `nova-design-system` | Nova Design system | Building an Enterprise Design System for Design-to-Code | Design system • B2B | placeholder |
 | 4 | `prime-compass` | Prime compass | Designing an agentic quality intelligence platform | B2B • SAAS | placeholder |
 | 5 | `gyst` | Gyst - Productivity app | GYST - Designing Predictions People Can Trust | Personal project | coming-soon |
 

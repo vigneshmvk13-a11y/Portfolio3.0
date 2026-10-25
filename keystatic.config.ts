@@ -25,7 +25,7 @@ export default config({
       columns: ['title', 'order', 'status'],
       schema: {
         title: fields.slug({
-          name: { label: 'Project name', description: 'Sets the URL, e.g. "Smart Mapping" → /work/smart-mapping' },
+          name: { label: 'Project name', description: 'Sets the URL, e.g. "Data Mapping" → /work/data-mapping' },
         }),
         subtitle: fields.text({
           label: 'Title',

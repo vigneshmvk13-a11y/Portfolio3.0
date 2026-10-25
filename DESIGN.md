@@ -75,6 +75,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-25 · content · **Slugs renamed** in Keystatic: `smart-mapping` → `data-mapping`, `fyn` → `kotak-fyn`, `nova` → `nova-design-system`. No redirects from the old URLs (Vignesh). The rename dropped Data mapping's poster, cover MP4 and share image; restored from the previous version.
+
 - 2026-10-25 · content · **Homepage hero singleton:** the Intro's name, role, current work line and affiliations move out of About into Keystatic **Homepage hero** (`home.yaml`); "I'm" is now part of the editable `headline`. The About dialog's hidden heading reads "About me". Why: Vignesh wanted the hero editable in its own place.
 
 - 2026-10-25 · content · **Favicon in Keystatic:** Site settings gains Favicon (SVG or PNG) and Home-screen icon (180×180), saved to `public/` and linked from `Base.astro`; the placeholder `favicon.svg` is replaced by Vignesh's `favicon.jpg`. Why: Vignesh wanted to set it from the CMS.
