@@ -20,6 +20,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | Token | Figma | Value |
 |---|---|---|
 | `--gray-white` | `gray/white` | `#FFFFFF` |
+| `--gray-25` | `gray/25` (name is ours; set it in Figma) | `#F6F6F6` |
 | `--gray-50` | `gray/50` | `#F3F3F3` |
 | `--gray-100` | `gray/100` | `#E8E8E8` |
 | `--gray-200` | `gray/200` | `#DDDDDD` |
@@ -41,6 +42,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | Utility stem | → | Use |
 |---|---|---|
 | `surface-page` | `--gray-white` | Page background on every page and breakpoint: home, About, case studies (was gray/50; Vignesh 2026-10-26, Figma still draws gray/50) |
+| `surface-home-mobile` | `--gray-25` | Homepage background below the desktop breakpoint only (phone and tablet), so the white footer sheet doesn't blend into it (Vignesh 2026-10-26). The footer stays `surface-raised`; desktop stays `surface-page` |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
 | `surface-raised` | `--gray-white` | Buttons, drawer, sheet |
 | `surface-selected` | `--gray-50` | Active TOC item, mobile and desktop (was gray/100; Vignesh 2026-10-26). Also the cover's loading placeholder |

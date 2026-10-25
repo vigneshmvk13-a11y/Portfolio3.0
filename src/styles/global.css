@@ -12,6 +12,7 @@
 /* ---------- Primitives (no utilities) ---------- */
 :root {
   --gray-white: #ffffff;
+  --gray-25: #f6f6f6;
   --gray-50: #f3f3f3;
   --gray-100: #e8e8e8;
   --gray-200: #dddddd;
@@ -279,6 +280,7 @@
 /* ---------- Semantic colour (references primitives) ---------- */
 @theme inline {
   --color-surface-page: var(--gray-white);
+  --color-surface-home-mobile: var(--gray-25);
   --color-surface-subtle: var(--gray-50);
   --color-surface-raised: var(--gray-white);
   --color-surface-selected: var(--gray-50);
