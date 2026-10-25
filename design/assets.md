@@ -37,7 +37,7 @@ Raise `-crf` (24 → 28, 34 → 38) until each file is under 5 MB. HandBrake wor
 
 ## Favicon
 
-Set in **Keystatic → Site settings** (Favicon, Home-screen icon). Keystatic saves the upload into `public/` (`favicon.<ext>`, `appleTouchIcon.<ext>`; uploading a new one replaces the old file) and the build links it. Live: `favicon.jpg` (48×48), `appleTouchIcon.jpg` (180×180).
+Set in **Keystatic → Site settings** (Favicon, Home-screen icon). Keystatic saves the upload into `public/` (`favicon.<ext>`, `appleTouchIcon.<ext>`; uploading a new one replaces the old file) and the build links it. Live: `favicon.png` (48×48), `appleTouchIcon.png` (180×180).
 
 | Field / file | Size | Use |
 |---|---|---|
