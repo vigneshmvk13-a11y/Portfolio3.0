@@ -1,6 +1,11 @@
 siteName: Vignesh
-titleTemplate: '%s · Vignesh'
-description: I'm Vignesh, Design Leader. Currently leading the mobile experience for wholesale banking.
+titleTemplate: '%s · Vignesh MK | Portfolio'
+description: >-
+  I'm Vignesh, Design Leader. Currently leading the mobile experience for
+  wholesale banking.
+defaultOgImage: ../assets/og/defaultOgImage.png
+favicon: /favicon.jpg
+appleTouchIcon: /appleTouchIcon.jpg
 nav:
   about: About
   resume: Resume
