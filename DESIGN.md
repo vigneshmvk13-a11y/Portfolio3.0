@@ -75,6 +75,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-25 · content · **Favicon in Keystatic:** Site settings gains Favicon (SVG or PNG) and Home-screen icon (180×180 PNG), saved to `public/` and linked from `Base.astro`; the placeholder `favicon.svg` stays the default. Why: Vignesh wanted to set it from the CMS.
+
 - 2026-10-24 · components · **About gallery: photo cards** (Figma `311:68027` desktop, `311:68093` mobile): a 200px grey card per photo (190px photo, 12px corners) with a 14px title and a 12px "Place • Year" caption, the same at every width, 8px apart, 20px side padding; buttons centred on the photos. New `about.gallery` fields `title`, `caption` (Keystatic), filled from Figma. Tokens: `gallery-w` 200, `gallery-photo-h` 190, `rounded-photo` 12; `gallery-h`, `gallery-w-sm`, `gallery-h-sm` removed. Why: Vignesh's redesign.
 
 - 2026-10-24 · rules · **Media limit raised from 4 MB to 5 MB per file** (`check-media.mjs`, AGENTS.md, rules.md, assets.md). Why: Vignesh; two solution loops (4.6 and 4.96 MB) were just over.

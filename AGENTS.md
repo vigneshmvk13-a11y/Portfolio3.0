@@ -155,7 +155,7 @@ Long text is plain multiline text; a blank line starts a new paragraph. Each sec
 
 **`about`** — singleton: bio paragraphs (rich text, allows emphasis spans), avatar, banner, gallery (images + alt), journey (array of `{ role, years, place }`).
 
-**`siteSettings`** — singleton: nav labels, SEO defaults (title template, description, default OG), social links, contact (email or URL), resume file.
+**`siteSettings`** — singleton: nav labels, SEO defaults (title template, description, default OG), favicon and home-screen icon (saved to `public/`), social links, contact (email or URL), resume link.
 
 ### Keystatic and "static only"
 Keystatic's admin UI and its GitHub mode need server routes, which a static build can't serve. So: **local mode, admin in dev only.** Register the Keystatic integration only when `NODE_ENV=development` and keep `output: 'static'`. Editing flow: `pnpm dev` → `/keystatic` → save → commit → push → Cloudflare deploys. If Vignesh later wants to edit from a browser without the repo, that needs GitHub mode plus an adapter for the admin routes. That's a stack change; raise it, don't do it.

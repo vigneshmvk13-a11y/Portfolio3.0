@@ -37,13 +37,13 @@ Raise `-crf` (24 → 28, 34 → 38) until each file is under 5 MB. HandBrake wor
 
 ## Favicon
 
-Already present: `public/favicon.svg` (placeholder dot). Add any of these to `public/`; the build links the ones that exist:
+Set in **Keystatic → Site settings** (Favicon, Home-screen icon). Keystatic saves the upload into `public/` (`favicon.svg` or `favicon.png`, `appleTouchIcon.png`) and the build links it. Until one is uploaded, `public/favicon.svg` (placeholder dot) is used.
 
-| File | Size | Use |
+| Field / file | Size | Use |
 |---|---|---|
-| `favicon.svg` | vector, square viewBox | Modern browsers (already linked) |
-| `favicon.ico` | 32×32 (or 16/32/48 in one file) | Older browsers, some crawlers |
-| `apple-touch-icon.png` | **180×180**, opaque background, no transparency | iOS home screen |
+| Favicon | SVG with a square viewBox (best), or PNG ≥ 48×48 | Browser tab |
+| Home-screen icon | **180×180** PNG, opaque background, no transparency | iOS home screen, bookmarks |
+| `favicon.ico` (drop into `public/`) | 32×32 (or 16/32/48 in one file) | Older browsers, some crawlers; linked if present |
 | `icon-192.png`, `icon-512.png` | 192×192, 512×512 | Android / PWA, only if a manifest is added later (not wired) |
 
 Design it for 16px: one simple shape, no thin lines. The SVG can use `prefers-color-scheme` in an inline `<style>` for a dark tab bar.

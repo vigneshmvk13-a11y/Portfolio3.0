@@ -342,6 +342,18 @@ export default config({
           directory: 'src/assets/og',
           publicPath: '../assets/og/',
         }),
+        favicon: fields.image({
+          label: 'Favicon',
+          description: 'Browser tab icon. Square SVG (best) or PNG, at least 48×48. Keep it to one simple shape: it shows at 16px.',
+          directory: 'public',
+          publicPath: '/',
+        }),
+        appleTouchIcon: fields.image({
+          label: 'Home-screen icon',
+          description: 'iPhone home screen and bookmarks. 180×180 PNG with a solid background (no transparency).',
+          directory: 'public',
+          publicPath: '/',
+        }),
         nav: fields.object(
           {
             about: fields.text({ label: 'About label' }),
