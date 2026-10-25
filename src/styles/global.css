@@ -282,6 +282,7 @@
   --color-surface-page: var(--gray-white);
   --color-surface-home-mobile: var(--gray-25);
   --color-surface-subtle: var(--gray-50);
+  --color-surface-track: var(--gray-100);
   --color-surface-raised: var(--gray-white);
   --color-surface-selected: var(--gray-50);
   --color-surface-hover: var(--gray-50);

@@ -40,8 +40,8 @@ const [firstParagraph, ...otherParagraphs] = about.bio;
 
     <div class="flex flex-col gap-10 desktop:gap-0">
       <div class="flex flex-col gap-6 desktop:gap-0">
-        <div class="overflow-hidden rounded-t-panel-inner">
-          <div class="relative flex h-banner items-start justify-end overflow-hidden rounded-b-panel-inner p-4 desktop:p-5" data-about-banner>
+        <div class="overflow-hidden rounded-t-panel-inner desktop:rounded-none">
+          <div class="relative flex h-banner items-start justify-end overflow-hidden rounded-b-panel-inner p-4 desktop:rounded-none desktop:p-5" data-about-banner>
             {
               about.banner && (
                 <Image src={about.banner} alt={about.bannerAlt} width={576} height={200} densities={[2]} fit="cover" class="absolute inset-0 size-full object-cover" />

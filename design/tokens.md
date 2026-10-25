@@ -43,6 +43,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 |---|---|---|
 | `surface-page` | `--gray-white` | Page background on every page and breakpoint: home, About, case studies (was gray/50; Vignesh 2026-10-26, Figma still draws gray/50) |
 | `surface-home-mobile` | `--gray-25` | Homepage background below the desktop breakpoint only (phone and tablet), so the white footer sheet doesn't blend into it (Vignesh 2026-10-26). The footer stays `surface-raised`; desktop stays `surface-page` |
+| `surface-track` | `--gray-100` | The case-study tab bar: gray/50 blended into the gray/50 cards beside it (Vignesh 2026-10-26) |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
 | `surface-raised` | `--gray-white` | Buttons, drawer, sheet |
 | `surface-selected` | `--gray-50` | Active TOC item, mobile and desktop (was gray/100; Vignesh 2026-10-26). Also the cover's loading placeholder |
@@ -56,7 +57,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `fg-primary` | `--gray-900` | Primary text: name, headings, active TOC, hovered TOC rows (Figma 233:4518, 2026-10-22) |
 | `fg-strong` | `--gray-900` | Emphasis in About, timeline roles. Same value as `fg-primary` since 2026-10-22 |
 | `fg-secondary` | `--gray-600` | Secondary text, icons: 4.53:1 on `surface-page`, 5.02:1 on white. Fails on `surface-hover` (4.10:1), so hovered rows switch to `fg-primary` |
-| `fg-secondary-on-fill` | `--gray-700` | Icon and label of the action buttons at rest (gray/700, 6.2:1 on gray/50; `fg-primary` on hover). The inactive case-study tabs use `fg-secondary` (gray/600, 4.53:1 on gray/50) since the tab bar became gray/50 |
+| `fg-secondary-on-fill` | `--gray-700` | Icon and label of the action buttons at rest (gray/700, 6.2:1 on gray/50; `fg-primary` on hover). Also the inactive case-study tabs on `surface-track` (gray/100): 5.29:1 |
 | `fg-tertiary` | `--gray-500` | Non-text only (fails 4.5:1 on `surface-page`). Footer credits and case-study eyebrows use `fg-secondary` |
 | `fg-on-media` | `--gray-white` | Card captions |
 | `line-subtle` | `--gray-100` | Desktop icon buttons |
