@@ -49,7 +49,7 @@ The case-study template is built from the Data mapping design; every case study 
 | Content in Astro | Astro content collections with `glob` loaders over the Keystatic folders | Zod schemas mirror `keystatic.config.ts` |
 | Icons | Phosphor (`User`, `File`, `ChatCircleDots`, `X`, arrows), regular weight | Copied into `src/components/icons/` as SVG components. No icon package |
 | Font | General Sans (Fontshare), self-hosted `woff2`, 400 + 500 | `font-display: swap`, preload 500, metric-matched fallback to avoid CLS |
-| Hosting | Cloudflare Pages, Git integration, deploy on push to `main`, preview per branch | Custom domain later |
+| Hosting | Cloudflare Pages, Git integration, deploy on push to `main`, preview per branch | Custom domain `vigneshdesigns.com` (bought and managed in Cloudflare; the `pages.dev` address still works) |
 | Package manager | pnpm (via `corepack`; on this machine the shims live in `~/.local/bin`, because `C:\Program Files` isn't writable) | |
 
 ### Dependency rule
