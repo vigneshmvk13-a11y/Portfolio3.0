@@ -1,36 +1,35 @@
 bio:
-  - >-
-    **I’m Vignesh**, a multidisciplinary designer blending **UX, motion, and
-    storytelling** to craft intuitive digital experiences. Currently leading
-    design **@DNEG for Kotak Mahindra’s corporate banking app, Fyn**.
-  - >-
+  - >
+    I'm Vignesh, a **product designer** and **design lead** working across
+    enterprise software, fintech, and AI products. Currently leading design for
+    **Kotak Mahindra's FYN** wholesale banking app at **DNEG.**
+  - >
     When I’m not wireframing workflows, I’m probably making music, lifting at
     the gym, or storytelling through cinematic videos.
 avatar: ../assets/about/avatar.jpg
 avatarAlt: Portrait of Vignesh
 banner: ../assets/about/banner.jpg
-bannerAlt: ''
 gallery:
   - image: ../assets/about/gallery/0/image.jpg
     alt: Vignesh in front of a large illuminated red sign at a night festival
-    title: "Avenged sevenfold live"
-    caption: "Bandland, Bangalore • Circa 2024"
+    title: Avenged sevenfold live
+    caption: Bandland, Bangalore • Circa 2024
   - image: ../assets/about/gallery/1/image.jpg
     alt: Vignesh playing an acoustic guitar on stage
-    title: "Performing on stage for a corporate event"
-    caption: "Hycinth, Trivandrum • Circa 2025"
+    title: Performing on stage for a corporate event
+    caption: Hycinth, Trivandrum • Circa 2025
   - image: ../assets/about/gallery/2/image.jpg
     alt: Two mirrorless cameras with lenses on a table under blue light
-    title: "My filmmaking gear"
-    caption: "Home studio • Circa 2025"
+    title: My filmmaking gear
+    caption: Home studio • Circa 2025
   - image: ../assets/about/gallery/3/image.jpg
     alt: Vignesh in sunglasses and a white shirt, looking out from an auto-rickshaw
-    title: "Travel diaries"
-    caption: "Somewhere around the world • Circa 2025"
+    title: Travel diaries
+    caption: Somewhere around the world • Circa 2025
   - image: ../assets/about/gallery/4/image.jpg
     alt: 'Meme: a white kitten with a loading spinner above its head'
-    title: "When they say design is dead!"
-    caption: "N/A • N/A"
+    title: When they say design is dead!
+    caption: N/A • N/A
 journey:
   - role: Design Lead
     years: 2026-Present

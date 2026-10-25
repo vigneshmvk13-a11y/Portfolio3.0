@@ -1,7 +1,7 @@
 title: Prime compass
-subtitle: Designing an agentic quality intelligence platform
+subtitle: Designing an Agentic Quality Intelligence Platform
 tocLabel: Prime compass
-cardMeta: B2B • SAAS
+cardMeta: B2B • Product design
 status: live
 order: 4
 draft: false
@@ -32,29 +32,26 @@ context:
   blocks: []
   facts: []
 overview:
-  heading: Designing a product around an autonomous AI
+  heading: Making autonomous AI behavior understandable
   intro: >-
-    Prime Compass began as an AI-powered testing platform. I worked closely with
-    the founders, principal architect, and engineering team to translate complex
-    AI and system behavior into a usable product.
+    PrimeCompass analyzes product behavior to uncover discrepancies between
+    expected and actual system behavior. The challenge was turning complex
+    AI-driven analysis into information teams could interpret and act on.
   challengeLabel: The challenge
   challenge:
-    - >-
-      Make autonomous AI activity visible without exposing unnecessary
-      complexity.
-    - >-
-      Help users understand what the AI discovered and how confident they should
-      be.
-    - Give users ways to correct mistakes and recover from failures.
-    - Turn large amounts of discovered behavior into something actionable
+    - Making system behavior observable and understandable.
+    - Helping users investigate deviations from expected behavior.
+    - Presenting complex analysis without overwhelming users.
   insightLabel: The key insight
-  insight: The AI is the explorer. The human remains the decision-maker.
+  insight: >-
+    AI-generated findings become more useful when users can see what changed,
+    understand why it matters, and trace the behavior behind the result.
 solution:
-  - heading: Making autonomous AI observable
+  - heading: Making autonomous behavior observable
     body: >-
-      Instead of hiding discovery behind a loading state, I designed the
-      experience to show where the AI was, what it was finding, and when it
-      needed help.
+      I designed interfaces that expose discovered behavior, highlight
+      deviations, and give users a clearer way to investigate how the product
+      behaves against an expected baseline.
     media:
       image: ../../assets/case-studies/prime-compass/solution/0/media/image.png
       alt: >-
@@ -73,16 +70,16 @@ solution:
         scenario counts, AI-generated insights, and the start of the Drift Orbit
       mp4: /media/prime-compass/solution/1/media/mp4.mp4
 system:
-  heading: Building the language behind the product
+  heading: Building a consistent language for the product
   intro: >-
-    As Prime Compass expanded across discovery, dashboards, graphs, comparison,
-    and configuration, I established a scalable design system instead of
-    designing each screen in isolation.
+    I established a reusable visual language for complex product states,
+    aligning interface patterns and components to support consistency across the
+    experience.
   image: ../../assets/case-studies/prime-compass/system/image.png
   alt: >-
     The Nova design system file in Figma: its primitive and component pages,
     open on Buttons with every size and state
-  link: nova
+  link: nova-design-system
   cards:
     - title: Brand primitives
       body: Color, typography, spacing, radius, elevation, and foundational tokens.
@@ -117,22 +114,16 @@ outcome:
     understood, supervised, and acted on an autonomous system.
   cards:
     - title: Observable AI
-      body: Made AI activity and discoveries visible at the right level of detail.
-    - title: Behavioral intelligence
-      body: Turned discovered behavior and drift into understandable visual models.
-    - title: Scalable foundation
+      body: System findings presented through visual product states.
+    - title: Traceable deviations
+      body: A clearer path from identifying drift to investigating its source.
+    - title: Scalable design system
       body: >-
         Established a design system that could support PrimeThoughts' broader
         product portfolio.
 reflection:
-  heading: AI products need observable behavior
+  heading: AI needs to make its behavior observable
   body: >-
-    When software makes decisions autonomously, hiding the process doesn't
-    necessarily make the experience simpler. Users need enough visibility to
-    understand what the system is doing and whether they should trust the
-    result.
-
-
-    This project also reinforced that failure is part of the UX, and that
-    complex data becomes useful when the interface gives people a clear mental
-    model of the relationships underneath it.
+    Designing AI products requires more than presenting generated results. Users
+    need enough visibility into system behavior to understand discrepancies,
+    question findings, and decide what to investigate next.

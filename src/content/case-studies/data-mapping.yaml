@@ -1,0 +1,118 @@
+title: Data Mapping
+subtitle: Making Enterprise Data Mapping Accessible
+tocLabel: Data mapping
+cardMeta: Enterprise SaaS • Feature
+status: live
+order: 1
+draft: false
+heroVideo:
+  poster: ../../assets/covers/data-mapping/heroVideo/poster.png
+  alt: >-
+    Motion-blurred landscape in amber and pale blue, with a text cursor blinking
+    in a white input box at the centre
+  mp4: /media/data-mapping/heroVideo/mp4.mp4
+  webm: /media/data-mapping/heroVideo/webm.webm
+ogImage: ../../assets/og/data-mapping/ogImage.png
+seoDescription: >-
+  Users didn’t need a more sophisticated mapping tool. They needed a clearer way
+  to understand what the transformation was doing.
+role: Product Designer
+timeline: 4 weeks
+team:
+  - name: Akhil Kooliyatt
+    role: Product Architect
+  - name: Harikrishnan AU
+    role: Product Manager
+  - name: Sumethan B
+    role: Engineer
+tools: []
+context:
+  blocks: []
+  facts: []
+overview:
+  heading: A technical workflow was blocking business users
+  intro: >-
+    The existing mapping experience relied on JSLT, making transformations
+    difficult for non-technical users to understand and configure.
+  challengeLabel: The challenge
+  challenge:
+    - Mapping configurations often required technical support.
+    - Errors could disrupt integrations and delay deployment.
+    - Transformation logic was difficult to interpret.
+  insightLabel: Key insight
+  insight: >-
+    The opportunity was to make transformation logic accessible through the
+    interface while preserving the control needed for complex configurations.
+solution:
+  - heading: Reframing how users configure transformations
+    body: >-
+      I redesigned the workflow around structured mapping rules, translating a
+      code-centric process into a configurable interface built around how users
+      inspect and manage transformations.
+    media:
+      image: ../../assets/case-studies/data-mapping/solution/0/media/image.png
+      alt: >-
+        Smart mapping for a purchase order as a table: each target field with
+        its type, an empty source column, and every row marked Unmapped
+      mp4: /media/data-mapping/solution/0/media/mp4.mp4
+      webm: /media/data-mapping/solution/0/media/webm.webm
+  - heading: Turning transformation logic into configurable rules
+    body: >-
+      I replaced direct JSLT editing with structured conditions and results,
+      making the logic behind each mapping easier to inspect and configure.
+    media:
+      image: ../../assets/case-studies/data-mapping/solution/1/media/image.png
+      alt: >-
+        The same table with Contract connected as a source: most fields now
+        mapped from contract fields, a few still unmapped, and the pointer on
+        Save
+      mp4: /media/data-mapping/solution/1/media/mp4.mp4
+      webm: /media/data-mapping/solution/1/media/webm.webm
+system:
+  cards: []
+finalDesigns:
+  - image: ../../assets/case-studies/data-mapping/finalDesigns/0/image.png
+    imageMobile: ../../assets/case-studies/data-mapping/finalDesigns/0/imageMobile.png
+    alt: >-
+      Completed purchase order mapping: every target field, including nested
+      customer and product fields, mapped from the contract
+    layout: full
+  - image: ../../assets/case-studies/data-mapping/finalDesigns/1/image.png
+    imageMobile: ../../assets/case-studies/data-mapping/finalDesigns/1/imageMobile.png
+    alt: >-
+      Source field picker: a searchable tree of contract fields with their
+      types, such as Order ID (Text) and Buyer (Object)
+    layout: half
+  - image: ../../assets/case-studies/data-mapping/finalDesigns/2/image.png
+    imageMobile: ../../assets/case-studies/data-mapping/finalDesigns/2/imageMobile.png
+    alt: >-
+      Connected sources bar with Contract added, above All, Mapped and Unmapped
+      filters
+    layout: half
+  - image: ../../assets/case-studies/data-mapping/finalDesigns/3/image.png
+    imageMobile: ../../assets/case-studies/data-mapping/finalDesigns/3/imageMobile.png
+    alt: >-
+      Rule builder for an if condition: if Customer type equals Corporate, the
+      result is Approved, otherwise Pending
+    layout: full
+outcome:
+  heading: A mapping workflow built around user control
+  intro: >-
+    The redesigned experience shifts configuration from raw transformation
+    syntax to structured rules, making mapping logic more visible within the
+    workflow.
+  cards:
+    - title: Independent configuration
+      body: A visual interface for managing mappings without directly editing JSLT.
+    - title: Inspectable logic
+      body: Transformation conditions and results presented in a structured format.
+    - title: Less engineering dependency
+      body: >-
+        A more understandable workflow reduced the need for repeated technical
+        intervention.
+reflection:
+  heading: Simplifying doesn't mean hiding complexity
+  body: >-
+    The challenge was deciding which parts of the underlying logic users needed
+    to see and control. Further validation would help establish how well the new
+    interaction model supports increasingly complex mapping scenarios.

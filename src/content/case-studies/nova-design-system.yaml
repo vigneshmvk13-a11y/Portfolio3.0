@@ -1,18 +1,18 @@
 title: Nova Design system
 subtitle: Building an Enterprise Design System for Design-to-Code
 tocLabel: Nova Design system
-cardMeta: Design system • B2B
+cardMeta: B2B • Design system
 status: live
 order: 3
 draft: false
 heroVideo:
-  poster: ../../assets/covers/nova/heroVideo/poster.png
+  poster: ../../assets/covers/nova-design-system/heroVideo/poster.png
   alt: >-
     Nova design system file showing colour primitives and semantic colour
     tokens, over a blurred sunset sea
-  mp4: /media/nova/heroVideo/mp4.mp4
-  webm: /media/nova/heroVideo/webm.webm
-ogImage: ../../assets/og/nova/ogImage.png
+  mp4: /media/nova-design-system/heroVideo/mp4.mp4
+  webm: /media/nova-design-system/heroVideo/webm.webm
+ogImage: ../../assets/og/nova-design-system/ogImage.png
 seoDescription: >-
   I built Nova, a token-driven design system that created a consistent
   foundation for design and engineering across Prime Compass.
@@ -34,36 +34,36 @@ context:
 overview:
   heading: A growing platform needed a shared visual language
   intro: >-
-    As Prime Compass expanded across discovery, drift analysis, comparison, and
-    configuration, inconsistent patterns made the product harder to maintain and
-    extend.
-
-
-    I built Nova, a token-driven design system that aligned brand expression
-    with behavioral intelligence and created a consistent foundation for design
-    and engineering.
+    As PrimeThoughts, the company behind Prime Compass, expanded its enterprise
+    platform, inconsistent UI patterns and disconnected design-to-code workflows
+    made it harder to maintain a cohesive product experience.
   challengeLabel: The challenge
   challenge:
-    - Reduce visual inconsistencies across product modules.
-    - Create reusable foundations for new features and products.
+    - Inconsistent patterns across product modules.
+    - Repeated design and development effort.
     - >-
       Keep semantic meaning consistent across complex states and data
       visualizations.
-    - Make design decisions easier to translate into implementation.
+    - Design decisions that were difficult to translate into code.
+  insightLabel: Key insight
+  insight: >-
+    The system needed to connect design decisions with implementation, giving
+    designers and AI-assisted coding workflows a consistent foundation to build
+    from.
 solution:
   - heading: Creating a three-tier token architecture
     body: >-
-      I separated raw visual values from semantic roles and component-specific
-      tokens, so teams could update the system at the right layer without
-      rebuilding every interface.
+      I structured the design system around primitive, semantic, and
+      component-level tokens, creating a consistent foundation for reusable UI
+      patterns and implementation.
     media:
-      image: ../../assets/case-studies/nova/solution/0/media/image.png
+      image: ../../assets/case-studies/nova-design-system/solution/0/media/image.png
       alt: >-
         Figma variables panel for Nova: primitive, semantic and component
         collections, open on the grey colour scale
-      mp4: /media/nova/solution/0/media/mp4.mp4
-      webm: /media/nova/solution/0/media/webm.webm
-  - heading: Making the system usable by AI-assisted coding workflows
+      mp4: /media/nova-design-system/solution/0/media/mp4.mp4
+      webm: /media/nova-design-system/solution/0/media/webm.webm
+  - heading: Making the system usable in AI-assisted workflows
     body: >-
       I structured the design system into modular Markdown files, separating
       components, design tokens, rules, screens, and references. Files like
@@ -71,47 +71,50 @@ solution:
       structured source of truth to reference when generating and modifying UI
       directly in code.
     media:
-      image: ../../assets/case-studies/nova/solution/1/media/image.png
+      image: ../../assets/case-studies/nova-design-system/solution/1/media/image.png
       alt: >-
         Code editor with the design system as Markdown files, open on the AI
         insight card's component spec
-      mp4: /media/nova/solution/1/media/mp4.mp4
-      webm: /media/nova/solution/1/media/webm.webm
+      mp4: /media/nova-design-system/solution/1/media/mp4.mp4
+      webm: /media/nova-design-system/solution/1/media/webm.webm
   - heading: Connecting design decisions to implementation
     body: >-
       I exported design tokens from Figma, versioned them through GitHub, and
       structured the outputs for platform use. This helped keep design and
       engineering aligned across environments.
     media:
-      image: ../../assets/case-studies/nova/solution/2/media/image.png
+      image: ../../assets/case-studies/nova-design-system/solution/2/media/image.png
       alt: >-
         The Nova design system file in Figma, open on the Buttons page with
         every size and state
-      mp4: /media/nova/solution/2/media/mp4.mp4
-      webm: /media/nova/solution/2/media/webm.webm
+      mp4: /media/nova-design-system/solution/2/media/mp4.mp4
+      webm: /media/nova-design-system/solution/2/media/webm.webm
 system:
   cards: []
 finalDesigns:
-  - image: ../../assets/case-studies/nova/finalDesigns/0/image.png
+  - image: ../../assets/case-studies/nova-design-system/finalDesigns/0/image.png
     alt: >-
       Nova components together: a button group, metric cards, a baseline picker,
       an alert card, a tooltip and a Label your application dialog
     layout: full
-  - image: ../../assets/case-studies/nova/finalDesigns/1/image.png
+  - image: ../../assets/case-studies/nova-design-system/finalDesigns/1/image.png
     alt: A large primary button and a toggle in Nova's burnt orange
     layout: half
-  - image: ../../assets/case-studies/nova/finalDesigns/2/image.png
+  - image: ../../assets/case-studies/nova-design-system/finalDesigns/2/image.png
     alt: >-
       Radio buttons and checkboxes in their default, hover, focus and disabled
       states
     layout: half
-  - image: ../../assets/case-studies/nova/finalDesigns/3/image.png
+  - image: ../../assets/case-studies/nova-design-system/finalDesigns/3/image.png
     alt: >-
       A discovery runs table with status badges, Compare and Run Discovery
       buttons, a Modules metric card and status tags
     layout: full
 outcome:
   heading: A system designed to scale across products and workflows
+  intro: >-
+    The design system established a shared foundation for product interfaces,
+    reusable components, and design-to-code workflows.
   cards:
     - title: More consistent interfaces
       body: Shared foundations and semantic rules reduced one-off styling decisions.
@@ -121,16 +124,11 @@ outcome:
         implementation.
     - title: AI-ready design context
       body: >-
-        Structured documentation gave Cursor a clearer reference for applying
+        Structured documentation gave AI agents a clearer reference for applying
         design decisions in code.
 reflection:
-  heading: A design system should be usable by more than designers
+  heading: A design system must work beyond Figma
   body: >-
-    Nova extended beyond visual consistency. By structuring tokens and
-    documenting how they should be used, I made the system easier to maintain,
-    implement, and reference in AI-assisted coding workflows.
-
-
-    The next step would be to strengthen the feedback loop between token
-    changes, generated code, and implemented UI, so the system remains reliable
-    as the product and its tooling evolve.
+    A design system creates value when its decisions carry through to
+    implementation. Connecting tokens, components, and coding workflows was
+    essential to making the system useful beyond the design team.

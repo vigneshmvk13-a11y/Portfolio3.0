@@ -1,0 +1,59 @@
+title: Kotak FYN
+subtitle: Kotak Fyn - Leading Design for Enterprise Banking
+tocLabel: Kotak Fyn
+cardMeta: Banking • NDA
+status: nda
+order: 2
+draft: false
+heroVideo:
+  poster: ../../assets/covers/kotak-fyn/heroVideo/poster.png
+  alt: Soft pastel gradient fading from grey-blue to peach
+  mp4: /media/kotak-fyn/heroVideo/mp4.mp4
+  webm: /media/kotak-fyn/heroVideo/webm.webm
+ogImage: ../../assets/og/kotak-fyn/ogImage.png
+seoDescription: >-
+  Kotak FYN is a unified enterprise banking platform for trade, payments,
+  account services and collections, with over 1 million users across India.
+team: []
+tools: []
+context:
+  blocks:
+    - heading: One platform. Complex business banking workflows.
+      body: >-
+        Kotak FYN is an enterprise banking platform supporting business-critical
+        journeys across trade, payments, accounts, loans, and deposits.
+
+
+        As Design Lead at DNEG, I lead a team of 10+ designers working on the
+        mobile banking experience, collaborating across product, engineering,
+        and a broader design organization.
+      items: []
+    - heading: Leading the mobile banking experience
+      body: >-
+        I guide design direction and execution across complex banking workflows,
+        aligning the team's work with product requirements, technical
+        constraints, and experience quality.
+      items: []
+    - heading: Across core business banking journeys
+      items:
+        - Trade
+        - Payments
+        - Accounts
+        - Loans
+        - Deposits
+    - heading: Confidentiality
+      body: >-
+        This project is protected under a non-disclosure agreement. Detailed
+        design decisions and workflow examples can be discussed during a private
+        portfolio walkthrough, subject to confidentiality restrictions.
+      items: []
+  facts: []
+overview:
+  challenge: []
+solution: []
+system:
+  cards: []
+finalDesigns: []
+outcome:
+  cards: []
+reflection: {}

@@ -1,5 +1,5 @@
 title: GYST
-subtitle: GYST - Designing Predictions People Can Trust
+subtitle: GYST - Designing More Trustworthy Time Predictions
 tocLabel: Gyst - Productivity app
 cardMeta: Personal project
 status: coming-soon
@@ -20,21 +20,22 @@ team: []
 tools: []
 context:
   blocks:
-    - heading: Turning personal time patterns into smarter, more trustworthy planning.
+    - heading: Planning around time you can actually trust
       body: >-
-        A productivity app that learns how long things actually take you and
-        tells you when to start. GYST turns the gap between estimated and actual
-        time into more reliable planning, with transparent predictions that
-        never pretend to know more than they do.
+        GYST is a productivity app exploring how personal time patterns can make
+        everyday planning more realistic. It estimates how long activities take
+        and helps users plan when to start.
+
+
+        I'm building GYST end to end, using Claude for product exploration and
+        specifications, Figma for design, and Cursor with Claude for
+        implementation.
       items: []
   facts:
     - label: Role
       value: Sole Designer & Developer
     - label: Status
       value: In progress
-  note: >-
-    Exploring how personal data and honest predictions can make everyday
-    planning more reliable.
 overview:
   challenge: []
 solution: []
