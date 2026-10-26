@@ -75,6 +75,7 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-26 · tokens · **Mobile footer open spacing is fixed at Figma's 24 / 32 / 48px** (hero → tags, tags → CTAs, below CTAs). It scaled down with viewport height (12–16 / 20–32 / 20–32), so on an iPhone 16 in Safari it was far tighter than designed, and the 852px maximum never reached 24 or 48. On short screens the wheel card now shrinks to clear the taller sheet. Why: Vignesh.
 - 2026-10-26 · components · **Mobile intro text** (expanded footer): name `text-h5` (was `h6`), subline `text-body-3` (was `body-4`), 4px apart (was 8; desktop stays 8). `--sheet-h` text allowance 64 → 74px (one-line name, two-line subline at 393). Why: Vignesh.
 - 2026-10-26 · tokens · **Mobile footer side padding 52 → 48px** (new `--sheet-inset`; the wheel card keeps `--wheel-inset` 52). Why: Vignesh.
 

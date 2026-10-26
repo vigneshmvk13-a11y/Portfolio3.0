@@ -77,11 +77,11 @@
  * (--sheet-handle-top-collapsed when collapsed; both 16px now); --sheet-top-gap (bar → intro, 24px)
  * open; --sheet-handle-gap (bar → buttons, 32px) collapsed. Buttons are 50×50. Side padding is
  * --sheet-inset (48px).
- * Scaled with the viewport height (phone browsers leave ~660px in iPhone Safari, not 852), linearly
- * from compact at 660px to Figma's at 852px, so the sheet stays near Figma's ~34% share and the wheel
- * stays the focus: --sheet-intro-gap (text → logos), --sheet-gap
- * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 74px text + gap +
- * 24px logos). The registered ones are read by sheet.ts in px.
+ * Open spacing is fixed at every height (Vignesh, 2026-10-26; it used to scale down on short screens,
+ * which made it too tight on his iPhone 16): --sheet-intro-gap (text → logos, 24px), --sheet-gap
+ * (logos → buttons, 32px), --sheet-pb (bottom, 48px). --sheet-h is the expanded height (intro: 74px
+ * text + gap + 24px logos); the wheel card shrinks to clear it on short screens. The registered ones
+ * are read by sheet.ts in px.
  */
 @property --sheet-pb {
   syntax: '<length>';
@@ -119,9 +119,9 @@
 :root {
   --sheet-handle-h: 6px;
   --sheet-top-gap: 24px;
-  --sheet-intro-gap: clamp(12px, 12px + 4 * (100dvh - 660px) / 192, 16px);
-  --sheet-gap: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
-  --sheet-pb: clamp(20px, 20px + 12 * (100dvh - 660px) / 192, 32px);
+  --sheet-intro-gap: 24px;
+  --sheet-gap: 32px;
+  --sheet-pb: 48px;
   --sheet-btn: 50px;
   /* Content starts below the 1px border, the handle and its gap. */
   --sheet-pt: calc(1px + var(--sheet-handle-top) + var(--sheet-handle-h) + var(--sheet-top-gap));
