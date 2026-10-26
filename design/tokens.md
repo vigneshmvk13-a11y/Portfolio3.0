@@ -208,15 +208,15 @@ JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Botto
 
 ### Mobile sheet spacing (CSS, `global.css`)
 
-Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. The open spacing used to scale linearly with the viewport height (compact at 660px, Figma's at 852px). Since 2026-10-26 it is fixed at Figma's values (24 / 32 / 48) at every height; on short screens the wheel card shrinks to clear the sheet instead (Vignesh).
+Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. The open spacing used to scale linearly with the viewport height (compact at 660px, Figma's at 852px). Since 2026-10-26 it is fixed at 16 / 24 / 48 at every height (Figma's 24 / 32 / 48 felt too loose on his phone); on short screens the wheel card shrinks to clear the sheet instead (Vignesh).
 
 | Token | 660px tall → 852px | Meaning |
 |---|---|---|
 | `--sheet-handle-top` | 16px (open) / `--sheet-handle-top-collapsed` 16px | Handle bar (40×6, `line-strong`) below the 1px top border (Figma 260:6906 / 260:6936) |
 | `--sheet-top-gap` | 24px (not scaled) | Handle bar → intro (open) (Figma 260:6906) |
 | `--sheet-pt` | derived | 1 + handle-top + 6 + top-gap: where the intro starts |
-| `--sheet-intro-gap` | 24px (not scaled) | Name/role block → logos (name → subline is a fixed 4px on mobile, 8px on desktop) |
-| `--sheet-gap` | 32px (not scaled) | Logos → buttons |
+| `--sheet-intro-gap` | 16px (not scaled) | Name/role block → logos (name → subline is a fixed 4px on mobile, 8px on desktop) |
+| `--sheet-gap` | 24px (not scaled) | Logos → buttons |
 | `--sheet-pb` | 48px (not scaled) | Bottom padding (plus the safe-area inset) |
 | `--sheet-handle-gap` | 32px (not scaled) | Collapsed: handle bar → buttons (Figma 260:6936; collapsed sheet 137px at 852). Registered with `@property` so JS reads it in px |
 | `--sheet-btn` | 50px | Sheet buttons 50×50: 16px padding, 16px icon (`icon-xs`), radius `button-lg` 16px (Figma 246:2317) |

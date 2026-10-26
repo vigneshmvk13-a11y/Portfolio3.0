@@ -78,8 +78,8 @@
  * open; --sheet-handle-gap (bar → buttons, 32px) collapsed. Buttons are 50×50. Side padding is
  * --sheet-inset (48px).
  * Open spacing is fixed at every height (Vignesh, 2026-10-26; it used to scale down on short screens,
- * which made it too tight on his iPhone 16): --sheet-intro-gap (text → logos, 24px), --sheet-gap
- * (logos → buttons, 32px), --sheet-pb (bottom, 48px). --sheet-h is the expanded height (intro: 74px
+ * which made it too tight on his iPhone 16): --sheet-intro-gap (text → logos, 16px), --sheet-gap
+ * (logos → buttons, 24px), --sheet-pb (bottom, 48px). --sheet-h is the expanded height (intro: 74px
  * text + gap + 24px logos); the wheel card shrinks to clear it on short screens. The registered ones
  * are read by sheet.ts in px.
  */
@@ -119,8 +119,8 @@
 :root {
   --sheet-handle-h: 6px;
   --sheet-top-gap: 24px;
-  --sheet-intro-gap: 24px;
-  --sheet-gap: 32px;
+  --sheet-intro-gap: 16px;
+  --sheet-gap: 24px;
   --sheet-pb: 48px;
   --sheet-btn: 50px;
   /* Content starts below the 1px border, the handle and its gap. */

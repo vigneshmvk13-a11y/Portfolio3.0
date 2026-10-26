@@ -260,7 +260,7 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 - It's a real `<button>` (`aria-expanded`, "Show / Hide introduction", `aria-controls` the intro). Its 96px-wide hit area reaches 12px above the edge.
 - That gives dragging a single-tap and keyboard alternative (WCAG 2.5.7).
 
-**Fixed spacing (Vignesh, 2026-10-26).** The open sheet no longer compacts on short screens: hero → tags 24, tags → buttons 32, below the buttons 48 (`tokens.md → Mobile sheet spacing`). It used to scale down with viewport height, which was too tight on an iPhone 16. The sheet is ~299px plus the safe-area inset at every height; on short screens the wheel card shrinks to clear it.
+**Fixed spacing (Vignesh, 2026-10-26).** The open sheet no longer compacts on short screens: hero → tags 16, tags → buttons 24, below the buttons 48 (`tokens.md → Mobile sheet spacing`). It used to scale down with viewport height, which was too tight on an iPhone 16. The sheet is ~283px plus the safe-area inset at every height; on short screens the wheel card shrinks to clear it.
 
 **Collapsed** (Figma 260:6936): the buttons sit `--sheet-handle-gap` (32px) below the handle bar, at every screen height: 137px tall at 852. Open, the intro sits 24px below the bar (`--sheet-top-gap`).
 
