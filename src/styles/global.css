@@ -55,6 +55,8 @@
   /* Mobile: card → neighbour gap and the card's side inset, both 52px (Figma 230:4858). */
   --wheel-gap: 52px;
   --wheel-inset: 52px;
+  /* Mobile bottom sheet's side padding (Vignesh, 2026-10-26; was the card's 52px). */
+  --sheet-inset: 48px;
   --wheel-card-h-desktop: min(400px, 39dvh);
 }
 
@@ -74,11 +76,11 @@
  * Fixed by Figma at every height: the handle bar (40×6) sits --sheet-handle-top below the top border
  * (--sheet-handle-top-collapsed when collapsed; both 16px now); --sheet-top-gap (bar → intro, 24px)
  * open; --sheet-handle-gap (bar → buttons, 32px) collapsed. Buttons are 50×50. Side padding is
- * --wheel-inset, so the text column lines up with the card.
+ * --sheet-inset (48px).
  * Scaled with the viewport height (phone browsers leave ~660px in iPhone Safari, not 852), linearly
  * from compact at 660px to Figma's at 852px, so the sheet stays near Figma's ~34% share and the wheel
  * stays the focus: --sheet-intro-gap (text → logos), --sheet-gap
- * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 64px text + gap +
+ * (intro → buttons), --sheet-pb (bottom). --sheet-h is the expanded height (intro: 74px text + gap +
  * 24px logos). The registered ones are read by sheet.ts in px.
  */
 @property --sheet-pb {
@@ -123,7 +125,7 @@
   --sheet-btn: 50px;
   /* Content starts below the 1px border, the handle and its gap. */
   --sheet-pt: calc(1px + var(--sheet-handle-top) + var(--sheet-handle-h) + var(--sheet-top-gap));
-  --sheet-h: calc(var(--sheet-pt) + 88px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb));
+  --sheet-h: calc(var(--sheet-pt) + 98px + var(--sheet-intro-gap) + var(--sheet-gap) + var(--sheet-btn) + var(--sheet-pb));
 }
 
 :root {

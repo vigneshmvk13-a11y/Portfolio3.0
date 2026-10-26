@@ -73,7 +73,7 @@ Content: Keystatic **Homepage hero** (`src/content/home.yaml`): `headline`, `rol
 3. Affiliations: "@" (`text-label-1 text-fg-secondary`) + DNEG pill, "&" + Kotak pill; `gap-2` between groups, `gap-1` inside.
 4. Desktop only: IconButton row (`sm`), `gap-2`. On mobile the buttons live in BottomSheet.
 
-Gaps: name↔subline `gap-1` mobile / `gap-2` desktop; text↔affiliations `gap-5` / `gap-6`; block↔buttons `gap-12`. Text from `about`/`siteSettings`, not hardcoded.
+Gaps: name (`text-h5`, desktop `h4`) ↔ subline (`text-body-3`) `gap-1` mobile / `gap-2` desktop; text↔affiliations `gap-5` / `gap-6`; block↔buttons `gap-12`. Text from `about`/`siteSettings`, not hardcoded.
 
 ### ProjectCard
 **Figma:** component set `228:4583` (desktop variants 553×400, mobile 362×262), e.g. `228:4582` · **Status:** built

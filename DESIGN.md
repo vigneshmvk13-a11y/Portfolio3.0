@@ -75,6 +75,9 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-26 · components · **Mobile intro text** (expanded footer): name `text-h5` (was `h6`), subline `text-body-3` (was `body-4`), 4px apart (was 8; desktop stays 8). `--sheet-h` text allowance 64 → 74px (one-line name, two-line subline at 393). Why: Vignesh.
+- 2026-10-26 · tokens · **Mobile footer side padding 52 → 48px** (new `--sheet-inset`; the wheel card keeps `--wheel-inset` 52). Why: Vignesh.
+
 - 2026-10-26 · all · **Live on vigneshdesigns.com** (bought in Cloudflare, attached to the Pages project). `astro.config.mjs` `site` and `public/robots.txt` use it, so canonical, OG and sitemap URLs do. `SITE_URL` still overrides it for previews. Why: Vignesh.
 
 - 2026-10-26 · tokens · **Case-study tab bar is gray/100 again** (new `surface-track`) with gray/700 inactive text (`fg-secondary-on-fill`, 5.29:1): at gray/50 it blended into the gray/50 cards. Replaces the gray/50 bar and gray/600 text of earlier today. Why: Vignesh.

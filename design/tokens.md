@@ -77,12 +77,12 @@ Tailwind v4 text tokens carry line height, tracking and default weight, so `text
 | Utility | Size / line (px) | Tracking | Default weight | Use |
 |---|---|---|---|---|
 | `text-h4` | 32 / 38 | -1% (-0.01em) | 500 | Desktop intro name |
-| `text-h5` | 24 / 30 | -0.5% (-0.005em) | 500 | Mobile case-study title (placeholder) |
-| `text-h6` | 20 / 24 | 0 | 500 | Mobile intro name (Figma 260:6911) |
+| `text-h5` | 24 / 30 | -0.5% (-0.005em) | 500 | Mobile intro name, mobile case-study title |
+| `text-h6` | 20 / 24 | 0 | 500 | Case-study section headings (mobile) |
 | `text-body-1` | 18 / 28 | 0 | 400 | "Journey so far" (500) |
 | `text-body-2` | 16 / 24 | 0 | 400 | About paragraphs |
-| `text-body-3` | 14 / 20 | 0 | 400 | Desktop intro subline, TOC (500) |
-| `text-body-4` | 12 / 16 | 0 | 400 | Mobile intro subline (Figma 260:6912) |
+| `text-body-3` | 14 / 20 | 0 | 400 | Intro subline (mobile and desktop), TOC (500) |
+| `text-body-4` | 12 / 16 | 0 | 400 | Mobile footer subline text |
 | `text-label-1` | 16 / 22 | -0.18px | 500 | "@" / "&" |
 | `text-label-2` | 14 / 20 | -0.16px | 400 | Captions, timeline |
 | `text-label-3` | 12 / 16 | -0.12px | 400 | Footer, mobile meta, roles (500) |
@@ -215,7 +215,7 @@ Figma 246:2305 is designed at 852px tall; phone browsers leave ~660–790px. Eac
 | `--sheet-handle-top` | 16px (open) / `--sheet-handle-top-collapsed` 16px | Handle bar (40×6, `line-strong`) below the 1px top border (Figma 260:6906 / 260:6936) |
 | `--sheet-top-gap` | 24px (not scaled) | Handle bar → intro (open) (Figma 260:6906) |
 | `--sheet-pt` | derived | 1 + handle-top + 6 + top-gap: where the intro starts |
-| `--sheet-intro-gap` | 12 → 16px | Name/role block → logos (name → subline is a fixed 8px) |
+| `--sheet-intro-gap` | 12 → 16px | Name/role block → logos (name → subline is a fixed 4px on mobile, 8px on desktop) |
 | `--sheet-gap` | 20 → 32px | Intro → buttons |
 | `--sheet-pb` | 20 → 32px | Bottom padding |
 | `--sheet-handle-gap` | 32px (not scaled) | Collapsed: handle bar → buttons (Figma 260:6936; collapsed sheet 137px at 852). Registered with `@property` so JS reads it in px |
@@ -267,7 +267,8 @@ Geometry derived in `layout-and-motion.md → Project wheel`. `h` is the measure
 | `--wheel-reach` | `0.289` | `wheel.reach = 0.289` | Far edge of a ±1 neighbour beyond its centre, × h (positions the mobile stage) |
 | `--wheel-fade` | `0.2` | `wheel.fade = 0.2` | Opacity at ±1 step; 0 by ±1.5 |
 | `--wheel-gap` | `52px` mobile / `60px` desktop | read from CSS | Gap between the active card and a neighbour's near edge; on short screens also the card's clearance above the expanded sheet (Figma 230:4858 / 233:4518) |
-| `--wheel-inset` | `52px` | — | Mobile card's side inset (card width = viewport − 2 × inset, Figma 230:4858) and the bottom sheet's side padding (Figma 260:6906). Not `gutter-mobile`, which stays the 20px page padding elsewhere |
+| `--wheel-inset` | `52px` | — | Mobile card's side inset (card width = viewport − 2 × inset, Figma 230:4858). Not `gutter-mobile`, which stays the 20px page padding elsewhere |
+| `--sheet-inset` | `48px` | — | Mobile bottom sheet's side padding (was `--wheel-inset`, 52px; Vignesh 2026-10-26) |
 | `--wheel-card-h-desktop` | `min(400px, 39dvh)` | — | Desktop card height |
 | — | — | `wheel.stepThreshold = 80` | One wheel event this big is a mouse notch (steps at once); a trackpad gesture must travel this far to commit (reduced motion: per step) |
 | — | — | `wheel.inputQuiet = 0.15` | s of wheel silence that ends a gesture (snap; reduced motion: unlock) |

@@ -1,7 +1,7 @@
 ---
 /**
  * Who block: name, role, current work, affiliations (Figma 233:4522 desktop, 233:4587 mobile).
- * Mobile: centred, one-line h6 and body-4 (Figma 260:6910). Desktop: left-aligned h4 with a break
+ * Mobile: centred, one-line h5 and body-3, 4px apart (Figma 260:6910, revised by Vignesh 2026-10-26). Desktop: left-aligned h4 with a break
  * after the comma, body-3.
  */
 import LogoPill from '../ui/LogoPill.astro';
@@ -11,11 +11,11 @@ const { headline, role, currently, affiliations } = await getHome();
 ---
 
 <div class="flex flex-col items-center gap-(--sheet-intro-gap) text-center desktop:items-start desktop:gap-6 desktop:text-left">
-  <div class="flex flex-col gap-2">
-    <h1 class="text-h6 text-fg-primary desktop:text-h4">
+  <div class="flex flex-col gap-1 desktop:gap-2">
+    <h1 class="text-h5 text-fg-primary desktop:text-h4">
       {headline} <span class="text-fg-secondary desktop:block">{role}</span>
     </h1>
-    <p class="text-body-4 desktop:text-body-3">{currently}</p>
+    <p class="text-body-3">{currently}</p>
   </div>
   {
     affiliations.length > 0 && (
