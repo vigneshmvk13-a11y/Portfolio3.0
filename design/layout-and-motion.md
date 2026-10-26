@@ -260,9 +260,9 @@ Decided by Vignesh, 2026-10-22, after checking it against UX principles: content
 - It's a real `<button>` (`aria-expanded`, "Show / Hide introduction", `aria-controls` the intro). Its 96px-wide hit area reaches 12px above the edge.
 - That gives dragging a single-tap and keyboard alternative (WCAG 2.5.7).
 
-**Fixed spacing (Vignesh, 2026-10-26).** The open sheet no longer compacts on short screens: hero → tags 16, tags → buttons 24, below the buttons 48 (`tokens.md → Mobile sheet spacing`). It used to scale down with viewport height, which was too tight on an iPhone 16. The sheet is ~283px plus the safe-area inset at every height; on short screens the wheel card shrinks to clear it.
+**Fixed spacing (Vignesh, 2026-10-26).** The open sheet no longer compacts on short screens: hero → tags 16, tags → buttons 24, below the buttons 32 (open and collapsed) (`tokens.md → Mobile sheet spacing`). It used to scale down with viewport height, which was too tight on an iPhone 16. The sheet is ~267px (collapsed ~125px) plus the safe-area inset at every height; on short screens the wheel card shrinks to clear it.
 
-**Collapsed** (Figma 260:6936): the buttons sit `--sheet-handle-gap` (32px) below the handle bar, at every screen height: 137px tall at 852. Open, the intro sits 24px below the bar (`--sheet-top-gap`).
+**Collapsed** (Vignesh, 2026-10-26; Figma 260:6936 drew 32px below the bar): the bar sits 12px below the sheet's top edge, the buttons `--sheet-handle-gap` (24px) under it, and 32px above the bottom: 125px tall at every screen height. Open, the intro sits 24px below the bar (`--sheet-top-gap`).
 
 **Motion** (Vignesh, 2026-10-22: "blur and fade out slowly … gone by halfway"):
 - One openness value (1 open, 0 collapsed) drives every frame (`src/scripts/sheet.ts`). Taps, the handle and scroll animate it with an even ease-in-out over `duration.slow` (0.5s). A drag follows the finger and, on release, a spring (`spring.sheet`) carries the release speed. The settle takes as long as that speed needs to cover the rest of the way, between 0.25s (`sheet.flickMin`, a quick swipe) and 0.5s (a slow drag), so a flick doesn't drag on (Vignesh, 2026-10-22).

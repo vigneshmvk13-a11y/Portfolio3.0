@@ -74,12 +74,13 @@
 /*
  * Mobile bottom sheet (Figma 260:6906 open, 260:6936 collapsed; designed at 852px tall).
  * Fixed by Figma at every height: the handle bar (40×6) sits --sheet-handle-top below the top border
- * (--sheet-handle-top-collapsed when collapsed; both 16px now); --sheet-top-gap (bar → intro, 24px)
- * open; --sheet-handle-gap (bar → buttons, 32px) collapsed. Buttons are 50×50. Side padding is
+ * (16px open, --sheet-handle-top-collapsed 12px when collapsed); --sheet-top-gap (bar → intro, 24px)
+ * open; --sheet-handle-gap (bar → buttons, 24px) collapsed, so the buttons sit 43px below the top edge
+ * (1 border + 12 + 6 bar + 24; Vignesh, 2026-10-26). Buttons are 50×50. Side padding is
  * --sheet-inset (48px).
  * Open spacing is fixed at every height (Vignesh, 2026-10-26; it used to scale down on short screens,
  * which made it too tight on his iPhone 16): --sheet-intro-gap (text → logos, 16px), --sheet-gap
- * (logos → buttons, 24px), --sheet-pb (bottom, 48px). --sheet-h is the expanded height (intro: 74px
+ * (logos → buttons, 24px), --sheet-pb (bottom, 32px, open and collapsed). --sheet-h is the expanded height (intro: 74px
  * text + gap + 24px logos); the wheel card shrinks to clear it on short screens. The registered ones
  * are read by sheet.ts in px.
  */
@@ -91,7 +92,7 @@
 @property --sheet-handle-gap {
   syntax: '<length>';
   inherits: true;
-  initial-value: 32px;
+  initial-value: 24px;
 }
 @property --sheet-handle-top {
   syntax: '<length>';
@@ -101,7 +102,7 @@
 @property --sheet-handle-top-collapsed {
   syntax: '<length>';
   inherits: true;
-  initial-value: 16px;
+  initial-value: 12px;
 }
 /* The sheet opened into About stops this far below the top of the screen (Vignesh, 2026-10-24). */
 @property --about-top {
@@ -121,7 +122,7 @@
   --sheet-top-gap: 24px;
   --sheet-intro-gap: 16px;
   --sheet-gap: 24px;
-  --sheet-pb: 48px;
+  --sheet-pb: 32px;
   --sheet-btn: 50px;
   /* Content starts below the 1px border, the handle and its gap. */
   --sheet-pt: calc(1px + var(--sheet-handle-top) + var(--sheet-handle-h) + var(--sheet-top-gap));
