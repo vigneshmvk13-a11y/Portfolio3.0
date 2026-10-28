@@ -113,9 +113,16 @@ try {
   check('nav hides while scrolling', await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`));
   await sleep(500);
   check('nav stays hidden when scrolling stops', await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`));
+  // iOS 26 Safari tints its toolbar from fixed elements at the bottom edge: once sunk, the nav is gone.
+  check('hidden nav leaves the page (visibility)', (await d.eval(`getComputedStyle(document.querySelector('[data-case-nav]')).visibility`)) === 'hidden');
   await d.scroll(-120);
   await sleep(300);
   check('nav returns on scroll up', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`)));
+  check('shown nav is visible', (await d.eval(`getComputedStyle(document.querySelector('[data-case-nav]')).visibility`)) === 'visible');
+  const navWidth = await d.eval(
+    `(() => { const n = document.querySelector('[data-case-nav]'); return n.offsetWidth + '/' + n.querySelector('.case-nav__bar').offsetWidth; })()`,
+  );
+  check('nav box is pill-wide, not full-width', navWidth.split('/')[0] === navWidth.split('/')[1], navWidth);
   await d.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
   await sleep(300);
   check('nav shows at the page end', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`)));
@@ -164,7 +171,7 @@ try {
   await d.click('[data-case-nav-home]');
   await arrived; await sleep(800);
   vt = await d.eval('window.__vt');
-  check('Home from Fyn → /#fyn', (await d.eval(path())) === '/#fyn', await d.eval(path()));
+  check('Home from Fyn → /#kotak-fyn', (await d.eval(path())) === '/#kotak-fyn', await d.eval(path()));
   check('Home from Fyn: collapse into the Fyn card', vt?.transition && vt.type === 'collapse' && vt.named === 1, JSON.stringify(vt));
   check('wheel rests on Fyn', (await d.eval(`document.querySelector('[data-wheel-card][data-offset="0"]').dataset.slug`)) === 'kotak-fyn');
 

@@ -75,6 +75,8 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-10-28 · layout-and-motion · **Floating nav vs iOS 26 Safari:** the nav's fixed box is pill-wide (was full-width) and goes `visibility: hidden` once it has sunk. Why: with Safari's toolbar minimised, a white strip covered the bottom of case studies on Vignesh's iPhone. Safari 26 tints its toolbar from a fixed element near the bottom edge and fills the gap to the edge solid. On a preview branch until confirmed on the phone.
+
 - 2026-10-26 · tokens · **Mobile footer bottom spacing 48 → 32px** (open and collapsed), and **collapsed handle spacing**: bar 12px below the edge (was 16), 24px from the bar to the buttons (was 32). Open sheet ~267px, collapsed ~125px (was 137). Why: Vignesh, after the 16 / 24 / 48 version felt too loose on his phone.
 - 2026-10-26 · tokens · **Mobile footer open spacing is fixed at 16 / 24 / 48px** (Vignesh trimmed the first two from Figma's 24 / 32 after seeing it on his iPhone 16; sheet ~283px) (hero → tags, tags → CTAs, below CTAs). It scaled down with viewport height (12–16 / 20–32 / 20–32), so on an iPhone 16 in Safari it was far tighter than designed, and the 852px maximum never reached 24 or 48. On short screens the wheel card now shrinks to clear the taller sheet. Why: Vignesh.
 - 2026-10-26 · components · **Mobile intro text** (expanded footer): name `text-h5` (was `h6`), subline `text-body-3` (was `body-4`), 4px apart (was 8; desktop stays 8). `--sheet-h` text allowance 64 → 74px (one-line name, two-line subline at 393). Why: Vignesh.

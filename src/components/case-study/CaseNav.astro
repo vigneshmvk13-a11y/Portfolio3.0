@@ -7,7 +7,7 @@
  * 50% over a cover (surface-caption) and 80% over the pale page (surface-caption-strong): white text on
  * 50% over white is 2.3:1, on 80% 4.6:1. The 80% is the 50% plus a boost layer that fades out while a
  * [data-nav-media] element is under the nav (nav.ts sets data-over-media), so it only changes opacity.
- * design/rules.md → Accessibility.
+ * design/rules.md → Accessibility. Pill-wide and hidden (visibility) once sunk: iOS 26 Safari's toolbar tint.
  */
 import HouseSimple from '../icons/HouseSimple.astro';
 import HouseSimpleFill from '../icons/HouseSimpleFill.astro';
@@ -26,8 +26,8 @@ const pill =
 const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
 ---
 
-<nav aria-label="Projects" class="case-nav pointer-events-none fixed inset-x-0 z-20 flex justify-center" data-case-nav>
-  <div class="case-nav__bar pointer-events-auto relative flex items-center gap-1 p-1">
+<nav aria-label="Projects" class="case-nav fixed inset-x-0 z-20 mx-auto w-fit" data-case-nav>
+  <div class="case-nav__bar relative flex items-center gap-1 p-1">
     <span aria-hidden="true" class="case-nav__bg absolute inset-0 rounded-full bg-surface-caption backdrop-blur-nav">
       <span class="case-nav__boost absolute inset-0 rounded-full bg-surface-caption-boost"></span>
     </span>
@@ -51,6 +51,17 @@ const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
      * No view-transition-name here: it would make the nav a backdrop root, and the blur would see nothing
      * behind it. page-transition.js names it (case-nav) only while the page slides, so it stays put.
      */
+    transition: visibility var(--duration-base) allow-discrete;
+  }
+
+  /*
+   * iOS 26 Safari tints its floating toolbar from a fixed element near the bottom edge and paints the gap
+   * between that element and the edge solid, covering the page (Vignesh's iPhone, 2026-10-28). So the nav
+   * is only as wide as the pill, and once it has sunk out of sight it leaves the page (visibility, after
+   * the sink), so there's nothing at the bottom edge to sample while Safari's toolbar is minimised.
+   */
+  [data-case-nav][data-hidden]:not(:focus-within) {
+    visibility: hidden;
   }
 
   /*
