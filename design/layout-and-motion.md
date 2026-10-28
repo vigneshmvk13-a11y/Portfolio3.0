@@ -5,9 +5,9 @@ Written mobile-first, matching how the CSS is authored. All durations, easings, 
 ## Mobile home (base, designed at 393×852; check 360 and 412 too)
 
 - `bg-surface-page` (gray/50, as on desktop). One viewport-height composition (`h-dvh`). The document doesn't scroll; vertical swipes step the project wheel.
-- Wheel stage: full width. The card always fills the width inside `--wheel-inset` (52px each side): viewport − 104px, height from `aspect-card` (553:400). At 393 that's 289 × 209 (Figma 230:4858: 288 × 208). Neighbours sit `--wheel-gap` (52px) from the card.
+- Wheel stage: full width. The card always fills the width inside `--wheel-inset` (52px each side): viewport − 104px, height from `aspect-card` (553:400). At 393 that's 289 × 209 (Figma 230:4858: 288 × 208). Neighbours sit `--wheel-gap` (40px, Vignesh 2026-10-29) from the card.
 - Its centre (`--wheel-centre-y`, global.css) is Figma's placement, `pt-10 + (spread + reach) × h + gap`: the top neighbour's far edge at 40px and the card's centre at y ≈ 334, at 393×852.
-- On shorter screens the centre **rises** so the card clears the expanded sheet by `--wheel-gap`: `min(figma, 100dvh − --sheet-h − safe-area − gap − h/2)`. The top neighbour then shows as a slice.
+- On shorter screens the centre **rises** so the card clears the expanded sheet by `--wheel-clearance` (52px): `min(figma, 100dvh − --sheet-h − safe-area − gap − h/2)`. The top neighbour then shows as a slice.
   - Why: real phone browsers leave ~660px (iPhone Safari with its bars) to ~790px, not Figma's 852. The old rule shrank the card to fit (about ⅔ size at 660). Vignesh chose a full-size card with a cropped top neighbour (2026-10-21).
   - The height still caps when even the card alone can't fit between `pt-10` and the sheet (landscape phones).
 - BottomSheet fixed at the bottom, overlapping the lower neighbour (as drawn). Collapsed, it reveals the lower neighbour (`233:4621`).
@@ -187,7 +187,7 @@ The nudge and the peek run once per session and never with reduced motion. 60fps
 
 ### Phone held sideways (Vignesh, 2026-10-24)
 
-In landscape under 520px tall (and narrower than 75rem) the expanded sheet would fill the screen and the cards shrank to slivers. The sheet now **starts collapsed** (`sheet.ts`), `--sheet-h` is its collapsed height (125px) and `--wheel-gap` 16px, so the card is ~210px tall above it (global.css). Tap or drag the handle for the intro.
+In landscape under 520px tall (and narrower than 75rem) the expanded sheet would fill the screen and the cards shrank to slivers. The sheet now **starts collapsed** (`sheet.ts`), `--sheet-h` is its collapsed height (125px) and `--wheel-gap` / `--wheel-clearance` 16px, so the card is ~210px tall above it (global.css). Tap or drag the handle for the intro.
 
 ## About
 

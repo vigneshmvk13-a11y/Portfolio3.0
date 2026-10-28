@@ -52,8 +52,10 @@
   --wheel-spread: 0.8695;
   --wheel-reach: 0.289;
   --wheel-fade: 0.2;
-  /* Mobile: card → neighbour gap and the card's side inset, both 52px (Figma 230:4858). */
-  --wheel-gap: 52px;
+  /* Mobile: card → neighbour gap 40px (Vignesh, 2026-10-29); the card's side inset and its clearance above
+     the expanded sheet on short screens stay 52px (Figma 230:4858). */
+  --wheel-gap: 40px;
+  --wheel-clearance: 52px;
   --wheel-inset: 52px;
   /* Mobile bottom sheet's side padding (Vignesh, 2026-10-26; was the card's 52px). */
   --sheet-inset: 48px;
@@ -132,12 +134,12 @@
 :root {
   /* The wheel card's frame: square below the desktop breakpoint (Figma 348:10069), 553 × 400 from it. */
   --card-aspect: var(--aspect-card-sm);
-  --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
+  --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - var(--wheel-gap) - var(--wheel-clearance));
   --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--card-aspect))), var(--wheel-room));
   --card-w: calc(var(--card-h) * (var(--card-aspect)));
   --wheel-centre-y: min(
     calc(var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)),
-    calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--wheel-gap) - var(--card-h) / 2)
+    calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--wheel-clearance) - var(--card-h) / 2)
   );
 }
 
@@ -171,6 +173,7 @@
 @media (orientation: landscape) and (max-height: 520px) and (width < 75rem) {
   :root {
     --wheel-gap: 16px;
+    --wheel-clearance: 16px;
     --sheet-h: 125px;
   }
 }
