@@ -515,21 +515,21 @@ try {
   await r.close();
 
   // ---------- Adaptive quality ----------
-  const blur = `(() => ({ quality: document.documentElement.dataset.quality }))()`;
+  const blur = `(() => ({ quality: document.documentElement.dataset.quality, blur: getComputedStyle(document.querySelector('[data-card-caption]')).backdropFilter }))()`;
   const q1 = await page(1440, 1024);
   await q1.goto('/');
   for (let i = 0; i < 4; i++) { await q1.wheel(100); await sleep(700); }
   let q = await q1.eval(blur);
-  check('quality: a fast device stays full', q.quality === undefined, JSON.stringify(q));
+  check('quality: a fast device stays full (caption blur on)', q.quality === undefined && q.blur !== 'none', JSON.stringify(q));
   // Simulate a slow device: every frame burns ~25ms of main thread.
   await q1.eval(`(function burn() { const t = performance.now(); while (performance.now() - t < 25); requestAnimationFrame(burn); })()`);
   for (let i = 0; i < 4; i++) { await q1.wheel(100); await sleep(900); }
   q = await q1.eval(blur);
   s = await q1.state();
-  check('quality: slow frames switch to lite, wheel still works', q.quality === 'lite' && s.index === '3', `${JSON.stringify(q)} ${JSON.stringify(s)}`);
+  check('quality: slow frames switch to lite (no caption blur), wheel still works', q.quality === 'lite' && q.blur === 'none' && s.index === '3', `${JSON.stringify(q)} ${JSON.stringify(s)}`);
   await q1.goto('/');
   q = await q1.eval(blur);
-  check('quality: lite is applied before paint on the next load', q.quality === 'lite', JSON.stringify(q));
+  check('quality: lite is applied before paint on the next load', q.quality === 'lite' && q.blur === 'none', JSON.stringify(q));
   check('no JS errors (quality)', q1.errors.length === 0, q1.errors.join(' | '));
   await q1.close();
 } finally {

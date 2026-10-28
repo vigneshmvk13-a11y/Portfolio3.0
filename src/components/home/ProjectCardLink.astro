@@ -1,9 +1,8 @@
 ---
 /**
- * The face of a project card (Figma 348:14015): a link to /work/[slug], a grey frame holding the cover
- * (with the status badge) and the caption below it. Used by the homepage wheel (ProjectCard) and the
- * case-study More projects grid, whose compact card is a row on mobile (Figma 351:9956).
- * design/components.md → ProjectCard.
+ * The face of a project card (Figma 348:14015): a link to /work/[slug], a grey frame holding the cover, with
+ * the status badge and the caption over it. Used by the homepage wheel (ProjectCard) and the case-study More
+ * projects grid, whose compact card is a row on mobile (Figma 351:9956). design/components.md → ProjectCard.
  */
 import MotionCover from '../media/MotionCover.astro';
 import Badge from '../ui/Badge.astro';
@@ -13,7 +12,7 @@ interface Props {
   entry: CaseStudy;
   /**
    * Small card (More projects). Mobile: a row, thumbnail left, the whole title and "Year • Tags" right, no badge.
-   * Desktop: the cover sets the height, title only.
+   * Desktop: the cover with the title over it.
    */
   compact?: boolean;
   priority?: boolean;
@@ -40,15 +39,15 @@ const showMeta = year || cardMeta;
   data-card-link={entry.id}
 >
   <!--
-    The page transition morphs only the cover (data-vt-cover): it grows into the case-study cover while the
-    frame and caption go with the page. Clipped here, so the hover zoom (scale 1.03) stays inside.
-    src/scripts/page-transition.js.
+    The page transition morphs the cover (data-vt-cover) into the case-study cover; the caption and badge on it
+    are hidden first so they don't grow with it, and fade in as it lands on the way back. The frame goes with
+    the page. Clipped here, so the hover zoom (scale 1.03) stays inside. src/scripts/page-transition.js.
   -->
   <div
     class:list={[
       'relative overflow-hidden',
       compact
-        ? 'min-h-22 w-card-thumb shrink-0 rounded-photo desktop:aspect-card-cover desktop:min-h-0 desktop:w-auto desktop:rounded-card-inner'
+        ? 'min-h-22 w-card-thumb shrink-0 rounded-photo desktop:h-50 desktop:min-h-0 desktop:w-auto desktop:rounded-card-inner'
         : 'min-h-0 flex-1 rounded-card-inner',
     ]}
     data-vt-cover
@@ -69,40 +68,49 @@ const showMeta = year || cardMeta;
       class:list={['absolute top-2 right-2 desktop:top-3 desktop:right-3', compact && 'max-desktop:hidden']}
       data-card-badge
     />
-  </div>
-  <div
-    class:list={[
-      'flex min-w-0',
-      compact
-        ? 'flex-1 flex-col gap-3 py-2 pr-3 pl-5 desktop:gap-0 desktop:pt-4 desktop:pr-5 desktop:pb-5'
-        : 'shrink-0 items-start px-5 pt-4 pb-5 desktop:gap-6',
-    ]}
-    data-card-caption
-  >
-    <p
+    <div
       class:list={[
-        'min-h-10 min-w-0 flex-1 text-label-2 font-medium text-fg-primary',
-        compact ? 'desktop:line-clamp-2' : 'line-clamp-2 desktop:min-h-0 desktop:text-label-1',
+        'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 px-5 pt-4 pb-5 text-fg-on-media backdrop-blur-caption',
+        compact ? 'max-desktop:hidden' : 'desktop:p-6',
       ]}
+      data-card-caption
     >
-      {subtitle}
-    </p>
-    {
-      showMeta && compact && (
-        <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary desktop:hidden">
-          {year && <span class="shrink-0">{year}</span>}
-          {year && cardMeta && <span class="shrink-0" aria-hidden="true">•</span>}
-          {cardMeta && <span class="truncate">{cardMeta}</span>}
-        </p>
-      )
-    }
-    {
-      showMeta && !compact && (
-        <p class="hidden min-w-0 flex-1 flex-col text-right text-label-1 font-regular text-fg-secondary desktop:flex">
-          {year && <span class="truncate font-medium">{year}</span>}
-          {cardMeta && <span class="truncate">{cardMeta}</span>}
-        </p>
-      )
-    }
+      <p class:list={['line-clamp-2 min-w-0 flex-1 text-label-3 font-medium', !compact && 'desktop:text-label-1']}>
+        {subtitle}
+      </p>
+      {
+        showMeta && !compact && (
+          <p class="hidden min-w-0 flex-1 flex-col text-right text-label-1 desktop:flex">
+            {year && <span class="truncate font-medium text-fg-on-media-soft">{year}</span>}
+            {cardMeta && <span class="truncate font-regular text-fg-on-media-muted">{cardMeta}</span>}
+          </p>
+        )
+      }
+    </div>
   </div>
+  {
+    compact && (
+      <div class="flex min-w-0 flex-1 flex-col gap-3 py-2 pr-3 pl-5 desktop:hidden">
+        <p class="min-h-10 min-w-0 flex-1 text-label-2 font-medium text-fg-primary">{subtitle}</p>
+        {showMeta && (
+          <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary">
+            {year && <span class="shrink-0">{year}</span>}
+            {year && cardMeta && (
+              <span class="shrink-0" aria-hidden="true">
+                •
+              </span>
+            )}
+            {cardMeta && <span class="truncate">{cardMeta}</span>}
+          </p>
+        )}
+      </div>
+    )
+  }
 </a>
+
+<style>
+  /* Figma 348:14015: a light grey wash rising from the bottom edge, under the blur. */
+  .card-caption {
+    background-image: var(--gradient-caption);
+  }
+</style>

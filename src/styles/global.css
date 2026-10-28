@@ -57,6 +57,8 @@
   --wheel-gap: 40px;
   --wheel-clearance: 52px;
   --wheel-inset: 52px;
+  /* Project card caption wash (Figma 348:14015): 20% grey at the bottom edge fading out, under the blur. */
+  --gradient-caption: linear-gradient(to top, color-mix(in srgb, var(--gray-100) 20%, transparent), transparent);
   /* Mobile bottom sheet's side padding (Vignesh, 2026-10-26; was the card's 52px). */
   --sheet-inset: 48px;
   --wheel-card-h-desktop: min(400px, 39dvh);
@@ -132,11 +134,9 @@
 }
 
 :root {
-  /* The wheel card's frame: square below the desktop breakpoint (Figma 348:10069), 553 × 400 from it. */
-  --card-aspect: var(--aspect-card-sm);
   --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - var(--wheel-gap) - var(--wheel-clearance));
-  --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--card-aspect))), var(--wheel-room));
-  --card-w: calc(var(--card-h) * (var(--card-aspect)));
+  --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))), var(--wheel-room));
+  --card-w: calc(var(--card-h) * (var(--aspect-card)));
   --wheel-centre-y: min(
     calc(var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)),
     calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--wheel-clearance) - var(--card-h) / 2)
@@ -146,7 +146,7 @@
 @media (min-width: 48rem) {
   :root {
     --card-h: min(
-      calc(min(var(--spacing-card-w), 100vw - 2 * var(--wheel-inset)) / (var(--card-aspect))),
+      calc(min(var(--spacing-card-w), 100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))),
       var(--wheel-room)
     );
   }
@@ -155,7 +155,7 @@
 @media (min-width: 75rem) {
   :root {
     --wheel-gap: 60px;
-    --card-aspect: var(--aspect-card);
+    --gradient-caption: linear-gradient(to top, color-mix(in srgb, var(--gray-500) 20%, transparent), transparent);
     --card-h: var(--wheel-card-h-desktop);
     --wheel-centre-y: 50%;
     /* Intro ↔ card ↔ index, always 80px; the group's width, and the page edge it keeps clear (40px). */
@@ -255,7 +255,7 @@
   --spacing-icon-sm: 18px;
   --spacing-icon-md: 20px;
   --spacing-icon-lg: 22px;
-  --spacing-icon-badge: 16px;
+  --spacing-icon-badge: 14px;
   --spacing-meta-col: 176px;
   --spacing-card-thumb: 134px; /* More projects row card thumbnail, mobile (Figma 351:9957) */
   --spacing-nav-btn: 97px;
@@ -270,14 +270,11 @@
   --container-case-text: 668px;
 
   --aspect-card: 553 / 400;
-  /* Project card below the desktop breakpoint (frame, Figma 348:10069) and its cover alone (348:10070). */
-  --aspect-card-sm: 1;
-  --aspect-card-cover: 280 / 216;
   --aspect-cover: 846 / 556;
   --aspect-media: 846 / 476;
   --aspect-media-sm: 354 / 219;
 
-  --blur-caption: 12.5px;
+  --blur-caption: 20px;
   --blur-nav: 40px;
   --blur-glass: 20px;
   --shadow-panel: 0 24px 64px rgb(0 0 0 / 0.12);
@@ -315,6 +312,9 @@
   --color-fg-secondary-on-fill: var(--gray-700);
   --color-fg-tertiary: var(--gray-500);
   --color-fg-on-media: var(--gray-white);
+  /* Project card caption, desktop: the year and the tags (Figma 348:10061 / 348:10062). */
+  --color-fg-on-media-soft: var(--gray-50);
+  --color-fg-on-media-muted: var(--gray-100);
   --color-line-subtle: var(--gray-100);
   --color-line-default: var(--gray-200);
   --color-line-strong: var(--gray-300);
@@ -376,11 +376,11 @@
 }
 
 /*
- * expand / collapse: the project card's cover (with its badge) and the case-study cover are one image at
- * two sizes and ratios; the card's frame and caption go with the page. It moves on the CSS spring. The old
+ * expand / collapse: the project card's cover (with its badge and caption) and the case-study cover are one
+ * image at two sizes and ratios; the card's frame goes with the page. It moves on the CSS spring. The old
  * snapshot stays opaque throughout (no see-through midpoint) and the new one fades in over it:
- * - expand: early (within duration-base); the card's badge is left out of its snapshot;
- * - collapse: in the second half, so the badge arrives in place as the card lands, on top.
+ * - expand: early (within duration-base); the card's caption and badge are left out of its snapshot;
+ * - collapse: in the second half, so the caption and badge arrive in place as the card lands, on top.
  * If the new image isn't loaded yet (data-vt-cover-wait), the old snapshot carries the whole morph.
  * The rest of the page dissolves quickly underneath.
  */

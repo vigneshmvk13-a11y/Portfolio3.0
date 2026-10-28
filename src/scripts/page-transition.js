@@ -51,9 +51,9 @@
   };
   // The floating nav holds still while the page slides. Named only now: a permanent name would make it
   // a backdrop root and break its blur.
-  // Opening a project: the card's badge is hidden before the old page is captured, so only the image grows
-  // (inside the cover snapshot it would grow with it). The caption sits below the cover and fades with the page.
-  const LABELS = '[data-card-badge]';
+  // Opening a project: the card's caption and badge are hidden before the old page is captured, so only the
+  // image grows. Inside the cover snapshot they'd grow with it.
+  const LABELS = '[data-card-caption], [data-card-badge]';
   const hideLabels = (card) => {
     for (const el of card.querySelectorAll(LABELS)) el.style.visibility = 'hidden';
   };

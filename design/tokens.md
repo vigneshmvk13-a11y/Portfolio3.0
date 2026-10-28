@@ -44,6 +44,9 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-page` | `--gray-white` | Page background on every page and breakpoint: home, About, case studies (was gray/50; Vignesh 2026-10-26, Figma still draws gray/50) |
 | `surface-home-mobile` | `--gray-25` | Homepage background below the desktop breakpoint only (phone and tablet), so the white footer sheet doesn't blend into it (Vignesh 2026-10-26). The footer stays `surface-raised`; desktop stays `surface-page` |
 | `surface-card` | `--gray-50` | Project card frame on desktop (Figma 348:14015) |
+| `fg-on-media-soft` | `--gray-50` | Project card caption, desktop: the year (Figma 348:10061) |
+| `fg-on-media-muted` | `--gray-100` | Project card caption, desktop: the tags (Figma 348:10062) |
+| `--gradient-caption` | 20% `--gray-100` (mobile) / `--gray-500` (desktop) → transparent, to top | Project card caption wash under the blur (Figma 348:14015); `:root`, not a utility |
 | `surface-card-mobile` | `--gray-100` | Project card frame below the desktop breakpoint, so it stands off the gray/25 mobile home (Vignesh 2026-10-28) |
 | `surface-track` | `--gray-100` | The case-study tab bar: gray/50 blended into the gray/50 cards beside it (Vignesh 2026-10-26) |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
@@ -128,15 +131,13 @@ Named spacing:
 | `--spacing-system-media` | 521px | The System section image on desktop (Figma 279:6711); the cards take the rest of the 846 column |
 | `--spacing-icon-lg` | 22px | Home icon in the floating nav |
 | `--spacing-card-w` / `--spacing-card-h` | 553px / 400px | Active desktop card (Figma size) |
-| `--aspect-card` | 553 / 400 | Desktop project card (frame) and the mobile case-study cover |
-| `--aspect-card-sm` | 1 | Project card frame below the desktop breakpoint (Figma 348:10069, 288×288); the wheel reads it through `--card-aspect` |
+| `--aspect-card` | 553 / 400 | Every project card frame (Figma 348:14015: 553×400 desktop, 288×208 mobile) and the mobile case-study cover |
 | `--spacing-card-thumb` | 134px | More projects row card thumbnail on mobile (Figma 351:9957) |
-| `--aspect-card-cover` | 280 / 216 | The cover alone inside a compact card (More projects), Figma 348:10070 |
 | `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills (desktop) |
 | `--spacing-logo-w-sm` / `--spacing-logo-h-sm` | 64px / 24px | Logo pills (mobile, Figma 246:2313) |
 | `--spacing-avatar` | 140px | About avatar |
 | `--spacing-icon-xs` / `--spacing-icon-sm` / `--spacing-icon-md` | 16px / 18px / 20px | Icon glyphs (xs: mobile sheet buttons) |
-| `--spacing-icon-badge` | 16px | Lock icon in the NDA badge |
+| `--spacing-icon-badge` | 14px | Lock icon in the NDA badge (Figma 349:14020, 2026-10-29; was 16) |
 | `--spacing-avatar-overlap` | 73px | How far the avatar overlaps the banner (140 − 67) |
 | `--spacing-banner` | 200px | About banner height |
 | `--spacing-gallery-w` | 200px | About gallery card, mobile and desktop (Figma `311:68027` / `311:68093`) |
@@ -168,7 +169,7 @@ Named spacing:
 
 | Token | Value | Use |
 |---|---|---|
-| `--blur-caption` | 12.5px | `backdrop-blur-caption` on the card caption |
+| `--blur-caption` | 20px | `backdrop-blur-caption` on the card caption (Figma 348:14015, 2026-10-29; was 12.5) |
 | `--blur-nav` | 40px | `backdrop-blur-nav` on the floating case-study nav (Vignesh, 2026-10-23; Figma drew 20) |
 | `--blur-glass` | 20px | `backdrop-blur-glass` on the gallery buttons (Figma 280:9431) |
 | `--wheel-fade` | 0.2 | Neighbour card opacity (see Wheel) |

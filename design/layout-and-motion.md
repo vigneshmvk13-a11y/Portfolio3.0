@@ -120,7 +120,7 @@ Separate from reduced motion: the setting is normal, but the device can't hold 6
 
 - `src/scripts/quality.ts` samples frame intervals **only while the wheel moves** (`wheel:start` → `wheel:settle`), over a rolling window of the last 40 motion frames (`quality.sampleFrames`), judged at each settle. If ≥ 20% (`quality.slowShare`) are slower than 20ms (`quality.slowFrameMs`, below ~50fps), it sets `html[data-quality="lite"]`. It's rolling, so a device that slows down later (heat, battery saver) still switches.
 - Save-Data starts in lite.
-- Lite: a running or later intro plays at `quality.introSpeed` (2×). (It also dropped the card caption's blur until the 2026-10-28 card redesign took the caption off the cover.)
+- Lite: the card caption drops its `backdrop-filter` blur (it re-renders every frame a card moves) and keeps its grey wash. A running or later intro plays at `quality.introSpeed` (2×).
 - The verdict is kept for the session (`sessionStorage` `quality-lite`); the head script in `index.astro` applies it before first paint on the next load.
 - Verified in `test-wheel.mjs`: a normal device stays full; a main thread burning ~25ms per frame switches to lite while the wheel keeps stepping; lite is applied before paint on reload.
 
