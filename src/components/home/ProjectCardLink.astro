@@ -32,8 +32,8 @@ const showMeta = year || cardMeta;
 <a
   href={`/work/${entry.id}/`}
   class:list={[
-    'group flex overflow-hidden bg-surface-card-mobile p-1 desktop:flex-col desktop:rounded-card desktop:bg-surface-card',
-    compact ? 'rounded-media-sm' : 'size-full flex-col rounded-card',
+    'group flex overflow-hidden p-1 desktop:flex-col desktop:rounded-card',
+    compact ? 'rounded-media-sm bg-surface-card' : 'size-full flex-col rounded-card bg-surface-card-mobile desktop:bg-surface-card',
     className,
   ]}
   data-focus-offset="lg"
@@ -48,7 +48,7 @@ const showMeta = year || cardMeta;
     class:list={[
       'relative overflow-hidden',
       compact
-        ? 'w-card-thumb shrink-0 rounded-photo desktop:aspect-card-cover desktop:w-auto desktop:rounded-card-inner'
+        ? 'min-h-22 w-card-thumb shrink-0 rounded-photo desktop:aspect-card-cover desktop:min-h-0 desktop:w-auto desktop:rounded-card-inner'
         : 'min-h-0 flex-1 rounded-card-inner',
     ]}
     data-vt-cover
@@ -66,14 +66,16 @@ const showMeta = year || cardMeta;
     />
     <Badge
       status={status}
-      class:list={['absolute top-3 right-3 desktop:top-4 desktop:right-4', compact && 'max-desktop:hidden']}
+      class:list={['absolute top-2 right-2 desktop:top-3 desktop:right-3', compact && 'max-desktop:hidden']}
       data-card-badge
     />
   </div>
   <div
     class:list={[
       'flex min-w-0',
-      compact ? 'flex-1 flex-col gap-1 px-3 py-1 desktop:p-3' : 'shrink-0 items-start p-3 desktop:gap-6 desktop:p-4',
+      compact
+        ? 'flex-1 flex-col gap-3 py-2 pr-3 pl-5 desktop:gap-0 desktop:pt-4 desktop:pr-5 desktop:pb-5'
+        : 'shrink-0 items-start px-5 pt-4 pb-5 desktop:gap-6',
     ]}
     data-card-caption
   >
@@ -87,7 +89,7 @@ const showMeta = year || cardMeta;
     </p>
     {
       showMeta && compact && (
-        <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary-on-fill desktop:hidden">
+        <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary desktop:hidden">
           {year && <span class="shrink-0">{year}</span>}
           {year && cardMeta && <span class="shrink-0" aria-hidden="true">•</span>}
           {cardMeta && <span class="truncate">{cardMeta}</span>}
