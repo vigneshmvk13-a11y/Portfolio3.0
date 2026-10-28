@@ -2,7 +2,8 @@
 /**
  * The face of a project card (Figma 348:14015): a link to /work/[slug], a grey frame holding the cover
  * (with the status badge) and the caption below it. Used by the homepage wheel (ProjectCard) and the
- * case-study More projects grid. design/components.md → ProjectCard.
+ * case-study More projects grid, whose compact card is a row on mobile (Figma 351:9956).
+ * design/components.md → ProjectCard.
  */
 import MotionCover from '../media/MotionCover.astro';
 import Badge from '../ui/Badge.astro';
@@ -10,7 +11,10 @@ import type { CaseStudy } from '../../lib/content';
 
 interface Props {
   entry: CaseStudy;
-  /** Small card (More projects): title only at every width, the cover sets the height. */
+  /**
+   * Small card (More projects). Mobile: a row, thumbnail left, title and "Year • Tags" right, no badge.
+   * Desktop: the cover sets the height, title only.
+   */
   compact?: boolean;
   priority?: boolean;
   active?: boolean;
@@ -22,14 +26,14 @@ interface Props {
 
 const { entry, compact = false, priority = false, active = false, autoplay = false, sizes, class: className } = Astro.props;
 const { subtitle, cardMeta, year, status, heroVideo } = entry.data;
-const showMeta = !compact && (year || cardMeta);
+const showMeta = year || cardMeta;
 ---
 
 <a
   href={`/work/${entry.id}/`}
   class:list={[
-    'group flex flex-col overflow-hidden rounded-card bg-surface-card-mobile p-1 desktop:bg-surface-card',
-    !compact && 'size-full',
+    'group flex overflow-hidden bg-surface-card-mobile p-1 desktop:flex-col desktop:rounded-card desktop:bg-surface-card',
+    compact ? 'rounded-media-sm' : 'size-full flex-col rounded-card',
     className,
   ]}
   data-focus-offset="lg"
@@ -42,8 +46,10 @@ const showMeta = !compact && (year || cardMeta);
   -->
   <div
     class:list={[
-      'relative overflow-hidden rounded-card-inner',
-      compact ? 'aspect-card-cover' : 'min-h-0 flex-1',
+      'relative overflow-hidden',
+      compact
+        ? 'w-card-thumb shrink-0 rounded-photo desktop:aspect-card-cover desktop:w-auto desktop:rounded-card-inner'
+        : 'min-h-0 flex-1 rounded-card-inner',
     ]}
     data-vt-cover
   >
@@ -58,10 +64,17 @@ const showMeta = !compact && (year || cardMeta);
       autoplay={autoplay}
       sizes={sizes}
     />
-    <Badge status={status} class="absolute top-3 right-3 desktop:top-4 desktop:right-4" data-card-badge />
+    <Badge
+      status={status}
+      class:list={['absolute top-3 right-3 desktop:top-4 desktop:right-4', compact && 'max-desktop:hidden']}
+      data-card-badge
+    />
   </div>
   <div
-    class:list={['flex shrink-0 items-start p-3', !compact && 'desktop:gap-6 desktop:p-4']}
+    class:list={[
+      'flex min-w-0',
+      compact ? 'flex-1 flex-col gap-1 px-3 py-1 desktop:p-3' : 'shrink-0 items-start p-3 desktop:gap-6 desktop:p-4',
+    ]}
     data-card-caption
   >
     <p
@@ -73,7 +86,16 @@ const showMeta = !compact && (year || cardMeta);
       {subtitle}
     </p>
     {
-      showMeta && (
+      showMeta && compact && (
+        <p class="flex min-w-0 gap-0.5 text-label-1 font-regular whitespace-nowrap text-fg-secondary-on-fill desktop:hidden">
+          {year && <span class="shrink-0 font-medium">{year}</span>}
+          {year && cardMeta && <span class="shrink-0" aria-hidden="true">•</span>}
+          {cardMeta && <span class="truncate">{cardMeta}</span>}
+        </p>
+      )
+    }
+    {
+      showMeta && !compact && (
         <p class="hidden min-w-0 flex-1 flex-col text-right text-label-1 font-regular text-fg-secondary desktop:flex">
           {year && <span class="truncate font-medium">{year}</span>}
           {cardMeta && <span class="truncate">{cardMeta}</span>}

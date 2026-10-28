@@ -254,6 +254,7 @@
   --spacing-icon-lg: 22px;
   --spacing-icon-badge: 16px;
   --spacing-meta-col: 176px;
+  --spacing-card-thumb: 134px; /* More projects row card thumbnail, mobile (Figma 351:9957) */
   --spacing-nav-btn: 97px;
   --spacing-system-media: 521px;
 

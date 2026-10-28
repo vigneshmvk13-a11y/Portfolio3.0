@@ -130,6 +130,7 @@ Named spacing:
 | `--spacing-card-w` / `--spacing-card-h` | 553px / 400px | Active desktop card (Figma size) |
 | `--aspect-card` | 553 / 400 | Desktop project card (frame) and the mobile case-study cover |
 | `--aspect-card-sm` | 1 | Project card frame below the desktop breakpoint (Figma 348:10069, 288×288); the wheel reads it through `--card-aspect` |
+| `--spacing-card-thumb` | 134px | More projects row card thumbnail on mobile (Figma 351:9957) |
 | `--aspect-card-cover` | 280 / 216 | The cover alone inside a compact card (More projects), Figma 348:10070 |
 | `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills (desktop) |
 | `--spacing-logo-w-sm` / `--spacing-logo-h-sm` | 64px / 24px | Logo pills (mobile, Figma 246:2313) |
