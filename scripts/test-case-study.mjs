@@ -106,6 +106,14 @@ try {
   await d.eval(`document.getElementById('solution').scrollIntoView()`);
   await sleep(300);
   check('active tab follows scroll', (await d.eval(`document.querySelector('[aria-current="location"]').dataset.caseTab`)) === 'solution');
+  const tabsPosition = `(() => { const t = document.querySelector('[data-case-tabs]'); return getComputedStyle(t).position + (t.hasAttribute('data-unstuck') ? ' unstuck' : ''); })()`;
+  check('tabs stick at the top', (await d.eval(tabsPosition)) === 'sticky', await d.eval(tabsPosition));
+  // iOS 26 Safari slices a sticky bar resting in its toolbar zone: in the bottom quarter the tabs aren't sticky.
+  await d.eval(
+    `(() => { const t = document.querySelector('[data-case-tabs]'); window.scrollTo(0, 0); window.scrollBy(0, t.getBoundingClientRect().top - innerHeight * 0.9); })()`,
+  );
+  await sleep(300);
+  check('tabs not sticky in the bottom quarter', (await d.eval(tabsPosition)) === 'relative unstuck', await d.eval(tabsPosition));
 
   await d.eval('window.scrollTo(0, 0)');
   await sleep(200);

@@ -299,6 +299,7 @@ Tablet (768–1199, not designed): the mobile layout in the 846 column.
 
 - Built from the sections that have content; no tabs with fewer than two. Order = page order: Overview, Solution, Final designs, Outcome, Reflection.
 - Sticky 20px from the top (`top-5`; Vignesh, 2026-10-23, Figma `234:27448` draws 40) from where they sit until the end of Reflection; then they scroll away with it, before More projects.
+- **Not sticky while resting in the bottom quarter of the screen** (2026-10-28; `data-unstuck`, one `IntersectionObserver`). iOS 26 Safari treats a sticky element in its toolbar zone as the page's toolbar and paints over it solid, slicing the tabs at the top of the page (Vignesh's iPhone). They only ever stick at the top, so nothing moves.
 - **Active follows the scroll:** the last section whose top has passed 35% of the viewport height.
 - **Tap:** smooth-scrolls the section to 100px below the top (`scroll-mt-25`, ~30px clear of the stuck tabs), holds that tab active until the scroll ends (`scrollend`, 1.2s fallback), and puts `#section` in the URL (`replaceState`). Reduced motion: instant scroll.
 - The pill slides to the active tab (`translate` + `width`, `duration-base`, `ease-out`). Mobile: the row scrolls sideways to keep the active tab in view.

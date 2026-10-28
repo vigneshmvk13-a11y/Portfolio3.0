@@ -4,6 +4,7 @@
  * - A tap scrolls to the section (respecting scroll-margin) and holds that tab until the scroll ends.
  * - The white pill slides to the active tab (CSS transition on translate and width).
  * - Phones: the row scrolls sideways to keep the active tab in view.
+ * - Not sticky while it rests in the bottom of the screen (bindStickiness).
  */
 import { prefersReducedMotion } from '../../lib/reduced-motion';
 
@@ -11,6 +12,20 @@ import { prefersReducedMotion } from '../../lib/reduced-motion';
 const READING_LINE = 0.35;
 /** Fallback for browsers without `scrollend`: release a tap's hold after this long, ms. */
 const HOLD_FALLBACK = 1200;
+/** The bottom share of the viewport where the tabs aren't sticky (bindStickiness). */
+const UNSTICK_ZONE = 0.25;
+
+/**
+ * iOS 26 Safari treats a sticky or fixed element near the bottom edge as the page's own toolbar and paints
+ * the part inside its toolbar zone solid (page white), slicing the tab bar at the top of the page (Vignesh's
+ * iPhone, 2026-10-28). So the tabs drop `sticky` while they're in the bottom quarter. They can only stick at
+ * the top, so there they're never stuck, and losing `sticky` moves nothing.
+ */
+function bindStickiness(nav: HTMLElement): void {
+  new IntersectionObserver(([entry]) => nav.toggleAttribute('data-unstuck', entry.isIntersecting), {
+    rootMargin: `${-(1 - UNSTICK_ZONE) * 100}% 0px 0px 0px`,
+  }).observe(nav);
+}
 
 export function bindTabs(): void {
   const nav = document.querySelector<HTMLElement>('[data-case-tabs]');
@@ -20,6 +35,7 @@ export function bindTabs(): void {
   const tabs = [...nav.querySelectorAll<HTMLAnchorElement>('[data-case-tab]')];
   const sections = tabs.map((tab) => document.getElementById(tab.dataset.caseTab ?? ''));
   if (!list || !pill || sections.some((s) => !s)) return;
+  bindStickiness(nav);
 
   let active = 0;
   let holding = false;

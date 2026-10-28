@@ -57,6 +57,10 @@ const { sections } = Astro.props;
   .case-tabs__tab[aria-current='location'] {
     color: var(--color-fg-primary);
   }
+  /* Resting in the bottom of the screen, not sticky: iOS 26 Safari would slice it with its toolbar (tabs.ts → bindStickiness). */
+  [data-case-tabs][data-unstuck] {
+    position: relative;
+  }
   /* Without JS, the active tab carries its own pill; with JS the shared pill slides under it. */
   .case-tabs__pill {
     display: none;
