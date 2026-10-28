@@ -39,4 +39,8 @@ export function initCaseStudy(): void {
   bindTabs();
   bindNav();
   bindSwipe();
+  // TEMPORARY (preview branch only): viewport readout for the iOS 26 Safari nav spacing. Remove before merging.
+  if (new URLSearchParams(location.search).has('debug')) {
+    import('./case-study/debug-viewport').then((m) => m.showViewportDebug());
+  }
 }
