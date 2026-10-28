@@ -46,7 +46,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-card` | `--gray-50` | Project card frame on desktop (Figma 348:14015) |
 | `fg-on-media-soft` | `--gray-50` | Project card caption, desktop: the year (Figma 348:10061) |
 | `fg-on-media-muted` | `--gray-100` | Project card caption, desktop: the tags (Figma 348:10062) |
-| `--gradient-caption` | 20% `--gray-100` (mobile) / `--gray-500` (desktop) → transparent, to top | Project card caption wash under the blur (Figma 348:14015); `:root`, not a utility |
+| `--gradient-caption` | `--multiply-80` (black 53.6%) over the bottom 70%, fading out at the top | Project card caption wash under the blur; `:root`, not a utility. Figma 348:14015 draws 20% grey in multiply (~10% darker), which left white text at 1.1–3:1 on the pale covers; this is the lightest that reaches 4.5:1 on all five (Vignesh 2026-10-29) |
 | `surface-card-mobile` | `--gray-100` | Project card frame below the desktop breakpoint, so it stands off the gray/25 mobile home (Vignesh 2026-10-28) |
 | `surface-track` | `--gray-100` | The case-study tab bar: gray/50 blended into the gray/50 cards beside it (Vignesh 2026-10-26) |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
