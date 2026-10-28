@@ -12,7 +12,7 @@ import type { CaseStudy } from '../../lib/content';
 interface Props {
   entry: CaseStudy;
   /**
-   * Small card (More projects). Mobile: a row, thumbnail left, title and "Year • Tags" right, no badge.
+   * Small card (More projects). Mobile: a row, thumbnail left, the whole title and "Year • Tags" right, no badge.
    * Desktop: the cover sets the height, title only.
    */
   compact?: boolean;
@@ -79,15 +79,15 @@ const showMeta = year || cardMeta;
   >
     <p
       class:list={[
-        'line-clamp-2 min-h-10 min-w-0 flex-1 text-label-2 font-medium text-fg-primary',
-        !compact && 'desktop:min-h-0 desktop:text-label-1',
+        'min-h-10 min-w-0 flex-1 text-label-2 font-medium text-fg-primary',
+        compact ? 'desktop:line-clamp-2' : 'line-clamp-2 desktop:min-h-0 desktop:text-label-1',
       ]}
     >
       {subtitle}
     </p>
     {
       showMeta && compact && (
-        <p class="flex min-w-0 gap-0.5 text-label-1 font-regular whitespace-nowrap text-fg-secondary-on-fill desktop:hidden">
+        <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary-on-fill desktop:hidden">
           {year && <span class="shrink-0 font-medium">{year}</span>}
           {year && cardMeta && <span class="shrink-0" aria-hidden="true">•</span>}
           {cardMeta && <span class="truncate">{cardMeta}</span>}
