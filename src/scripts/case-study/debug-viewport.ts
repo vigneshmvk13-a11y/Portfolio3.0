@@ -33,7 +33,7 @@ export function showViewportDebug(): void {
     const r = nav?.getBoundingClientRect();
     const px = (n: number | undefined) => (n === undefined ? '–' : `${Math.round(n * 10) / 10}`);
     box.textContent = [
-      `browser        ${browser}`,
+      `browser        ${browser}  ios-safari flag ${document.documentElement.hasAttribute('data-ios-safari')}`,
       `screen.height  ${screen.height}`,
       `innerHeight    ${window.innerHeight}`,
       `clientHeight   ${document.documentElement.clientHeight}`,
