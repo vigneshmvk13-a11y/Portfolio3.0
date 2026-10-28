@@ -113,7 +113,11 @@ try {
     `(() => { const t = document.querySelector('[data-case-tabs]'); window.scrollTo(0, 0); window.scrollBy(0, t.getBoundingClientRect().top - innerHeight * 0.9); })()`,
   );
   await sleep(300);
-  check('tabs not sticky in the bottom quarter', (await d.eval(tabsPosition)) === 'relative unstuck', await d.eval(tabsPosition));
+  check('tabs not sticky in the bottom quarter', (await d.eval(tabsPosition)) === 'static unstuck', await d.eval(tabsPosition));
+  const tabsShift = await d.eval(
+    `(() => { const t = document.querySelector('[data-case-tabs]'); const a = t.getBoundingClientRect().top; t.removeAttribute('data-unstuck'); const b = t.getBoundingClientRect().top; t.setAttribute('data-unstuck', ''); return b - a; })()`,
+  );
+  check('dropping sticky moves nothing', tabsShift === 0, `${tabsShift}px`);
 
   await d.eval('window.scrollTo(0, 0)');
   await sleep(200);

@@ -16,10 +16,10 @@ const HOLD_FALLBACK = 1200;
 const UNSTICK_ZONE = 0.25;
 
 /**
- * iOS 26 Safari treats a sticky or fixed element near the bottom edge as the page's own toolbar and paints
- * the part inside its toolbar zone solid (page white), slicing the tab bar at the top of the page (Vignesh's
- * iPhone, 2026-10-28). So the tabs drop `sticky` while they're in the bottom quarter. They can only stick at
- * the top, so there they're never stuck, and losing `sticky` moves nothing.
+ * iOS 26 Safari draws the page on under its floating toolbar but cuts sticky and fixed elements off at the
+ * layout viewport's bottom edge (innerHeight, ~18pt above the toolbar), slicing the tab bar at the top of
+ * the page (Vignesh's iPhone, 2026-10-28). So the tabs drop `sticky` while they're in the bottom quarter.
+ * They can only stick at the top, so there they're never stuck, and losing `sticky` moves nothing.
  */
 function bindStickiness(nav: HTMLElement): void {
   new IntersectionObserver(([entry]) => nav.toggleAttribute('data-unstuck', entry.isIntersecting), {
