@@ -43,6 +43,8 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 |---|---|---|
 | `surface-page` | `--gray-white` | Page background on every page and breakpoint: home, About, case studies (was gray/50; Vignesh 2026-10-26, Figma still draws gray/50) |
 | `surface-home-mobile` | `--gray-25` | Homepage background below the desktop breakpoint only (phone and tablet), so the white footer sheet doesn't blend into it (Vignesh 2026-10-26). The footer stays `surface-raised`; desktop stays `surface-page` |
+| `surface-card` | `--gray-50` | Project card frame on desktop (Figma 348:14015) |
+| `surface-card-mobile` | `--gray-100` | Project card frame below the desktop breakpoint, so it stands off the gray/25 mobile home (Vignesh 2026-10-28) |
 | `surface-track` | `--gray-100` | The case-study tab bar: gray/50 blended into the gray/50 cards beside it (Vignesh 2026-10-26) |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
 | `surface-raised` | `--gray-white` | Buttons, drawer, sheet |
@@ -126,7 +128,9 @@ Named spacing:
 | `--spacing-system-media` | 521px | The System section image on desktop (Figma 279:6711); the cards take the rest of the 846 column |
 | `--spacing-icon-lg` | 22px | Home icon in the floating nav |
 | `--spacing-card-w` / `--spacing-card-h` | 553px / 400px | Active desktop card (Figma size) |
-| `--aspect-card` | 553 / 400 | Every card. Mobile Figma (352×254.4) is the same ratio, so one token |
+| `--aspect-card` | 553 / 400 | Desktop project card (frame) and the mobile case-study cover |
+| `--aspect-card-sm` | 1 | Project card frame below the desktop breakpoint (Figma 348:10069, 288×288); the wheel reads it through `--card-aspect` |
+| `--aspect-card-cover` | 280 / 216 | The cover alone inside a compact card (More projects), Figma 348:10070 |
 | `--spacing-logo-w` / `--spacing-logo-h` | 80px / 30px | Logo pills (desktop) |
 | `--spacing-logo-w-sm` / `--spacing-logo-h-sm` | 64px / 24px | Logo pills (mobile, Figma 246:2313) |
 | `--spacing-avatar` | 140px | About avatar |
@@ -154,6 +158,7 @@ Named spacing:
 | `rounded-button-lg` | 16px | Mobile sheet and drawer icon buttons (Vignesh, 2026-10-22: 16px, plain circular corners; Figma drew 20) |
 | `rounded-card` | 24px | Project card, logo pills |
 | `rounded-panel` | 32px | Drawer, sheet top |
+| `rounded-card-inner` | 20px | The cover inside the project card's `p-1` frame (24 − 4) |
 | `rounded-panel-inner` | 28px | Inside a `p-1` panel (32 − 4): mobile drawer banner |
 | `rounded-section` | 48px | Desktop case-study Overview and Reflection cards (mobile: `rounded-panel`) |
 | `rounded-full` | 9999px | Avatar |

@@ -47,7 +47,7 @@ Inline text link inside prose. `text-fg-strong`, underline `decoration-line-stro
 ### Badge
 **Figma:** `230:4637` (NDA, with Lock), `230:4652` (Coming soon) · **Status:** built
 
-Pill top-right on ProjectCard, inset from the card corner by 16px (`top-4 right-4`) on mobile and tablet (Figma 256:6791) and 24px (`top-6 right-6`) on desktop. `bg-surface-badge rounded-full py-2`, `text-label-3 font-medium text-fg-strong`. Without icon: `px-4`. With icon (16px Phosphor Lock, fill weight): `pl-3 pr-4 gap-1`. Variants come from `status`: `nda` → Lock + "NDA protected"; `coming-soon` → "Coming soon". Other statuses render nothing. It's the one colour in the chrome (confirmed).
+Pill top-right on the ProjectCard cover, inset from the cover's corner by 12px (`top-3 right-3`) below the desktop breakpoint and 16px (`top-4 right-4`) on desktop, compact cards included (Vignesh 2026-10-28). `bg-surface-badge rounded-full py-2`, `text-label-3 font-medium text-fg-strong`. Without icon: `px-4`. With icon (16px Phosphor Lock, fill weight): `pl-3 pr-4 gap-1`. Variants come from `status`: `nda` → Lock + "NDA protected"; `coming-soon` → "Coming soon". Other statuses render nothing. It's the one colour in the chrome (confirmed).
 
 ### MotionCover
 **Figma:** card covers · **Status:** built (video playback untested: no cover videos exist yet)
@@ -76,15 +76,18 @@ Content: Keystatic **Homepage hero** (`src/content/home.yaml`): `headline`, `rol
 Gaps: name (`text-h5`, desktop `h4`) ↔ subline (`text-body-3`) `gap-1` mobile / `gap-2` desktop; text↔affiliations `gap-5` / `gap-6`; block↔buttons `gap-12`. Text from `about`/`siteSettings`, not hardcoded.
 
 ### ProjectCard
-**Figma:** component set `228:4583` (desktop variants 553×400, mobile 362×262), e.g. `228:4582` · **Status:** built
+**Figma:** `348:14015` (desktop `348:10056` 553×400, mobile `348:10069` 288×288; redesign 2026-10-28, replaces `228:4583`) · **Status:** built
 
-A link to `/work/[slug]` for every status (`rules.md → Content states`). `rounded-card overflow-hidden aspect-card`. The face (link, cover, badge, caption) is `ProjectCardLink`, shared with the case-study More projects grid; its `compact` variant is title-only at every width with the badge 16px in. The page transition morphs the whole link (`data-vt-cover`): cover, badge and caption as one clipped card, so the hover zoom (1.03) stays inside and the caption never shows up behind the cover on the way back. Opening a project, the caption (`data-card-caption`) and badge (`data-card-badge`) are hidden before the old page is captured, so they neither grow with the card nor float over the growing cover. Coming back from a case study whose cover is off screen, the card doesn't morph; it settles in place (`card-settle`, scale 0.96 → 1 with a fade).
+A link to `/work/[slug]` for every status (`rules.md → Content states`). The face is `ProjectCardLink`, shared with the case-study More projects grid. A grey frame (`rounded-card p-1`, `bg-surface-card-mobile` below desktop, `bg-surface-card` from it) holds the cover on top and the caption below it, on the grey.
 
-1. **MotionCover** fills the card (`object-cover`). The small white square in the Smart Mapping cover is part of the cover image, not UI.
-2. **Badge** (by `status`) top-right.
-3. **Caption bar**: bottom, `bg-surface-caption backdrop-blur-caption` (`bg-surface-caption-strong` when the case study has **Light cover**; `rules.md → Accessibility`), `text-fg-on-media`. Subtitle left (`text-label-2 font-medium`; one line + ellipsis on desktop, two lines on mobile). Meta right (`text-label-2`), **desktop only**: the mobile caption is the title alone (Figma 260:6971–260:6975). Mobile and tablet: `p-4` (Figma 256:6791, 2026-10-22). Desktop: `px-8 py-4`, `gap-5`.
+1. **Cover** (`rounded-card-inner overflow-hidden`, `data-vt-cover`): MotionCover (`object-cover`) and the Badge. In the wheel it takes what the caption leaves (`flex-1`); in a `compact` card it's `aspect-card-cover` and sets the card's height.
+2. **Caption**: title `text-label-2 font-medium text-fg-primary`, two lines then ellipsis, `min-h-10` so every cover in the wheel is the same height; `p-3`. **Desktop** (not `compact`): `p-4 gap-6`, title `text-label-1`, and a right-aligned meta column in `text-fg-secondary`: **Year** (`year`, medium) over the **Tags** (`cardMeta`, regular), each one line + ellipsis. `compact` is the mobile caption at every width.
 
-States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03, proposed) · focus-visible ring with 4px offset. · lite (`html[data-quality="lite"]`, slow device): caption `[data-card-caption]` without the backdrop blur.
+The wheel card's frame is square below desktop (`--card-aspect` → `aspect-card-sm`) and 553 × 400 from it, so the mobile card is taller than before; on short screens the existing rule shrinks it to clear the expanded sheet. **Light cover** and the caption blur are no longer used by the card (the caption isn't over the image); the field stays in Keystatic.
+
+**Page transition:** only the cover morphs (`data-vt-cover` on the cover box, inside the link): it grows into the case-study cover while the frame and caption fade with the page, and shrinks back into the card's cover. The badge is hidden before the old page is captured. Coming back from a case study whose cover is off screen, the whole card settles in place (`card-settle` on the link, scale 0.96 → 1 with a fade).
+
+States: `active` (flat, playing) · neighbour (tilted, `--wheel-fade`, `inert` + `aria-hidden`, video off) · hover on active (cover scales to 1.03 inside its clip) · focus-visible ring with 4px offset.
 
 ### ProjectWheel
 **Figma:** `233:4539` (desktop), `233:4582` (mobile) · **Status:** built (interactive, scroll-linked, with the intro)

@@ -130,9 +130,11 @@
 }
 
 :root {
+  /* The wheel card's frame: square below the desktop breakpoint (Figma 348:10069), 553 × 400 from it. */
+  --card-aspect: var(--aspect-card-sm);
   --wheel-room: calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--spacing) * 10 - 2 * var(--wheel-gap));
-  --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))), var(--wheel-room));
-  --card-w: calc(var(--card-h) * (var(--aspect-card)));
+  --card-h: min(calc((100vw - 2 * var(--wheel-inset)) / (var(--card-aspect))), var(--wheel-room));
+  --card-w: calc(var(--card-h) * (var(--card-aspect)));
   --wheel-centre-y: min(
     calc(var(--spacing) * 10 + (var(--wheel-spread) + var(--wheel-reach)) * var(--card-h) + var(--wheel-gap)),
     calc(100dvh - var(--sheet-h) - env(safe-area-inset-bottom) - var(--wheel-gap) - var(--card-h) / 2)
@@ -142,7 +144,7 @@
 @media (min-width: 48rem) {
   :root {
     --card-h: min(
-      calc(min(var(--spacing-card-w), 100vw - 2 * var(--wheel-inset)) / (var(--aspect-card))),
+      calc(min(var(--spacing-card-w), 100vw - 2 * var(--wheel-inset)) / (var(--card-aspect))),
       var(--wheel-room)
     );
   }
@@ -151,6 +153,7 @@
 @media (min-width: 75rem) {
   :root {
     --wheel-gap: 60px;
+    --card-aspect: var(--aspect-card);
     --card-h: var(--wheel-card-h-desktop);
     --wheel-centre-y: 50%;
     /* Intro ↔ card ↔ index, always 80px; the group's width, and the page edge it keeps clear (40px). */
@@ -227,6 +230,7 @@
   --radius-card: 24px;
   --radius-panel: 32px;
   --radius-panel-inner: 28px;
+  --radius-card-inner: 20px; /* the cover inside the project card's 4px frame */
   --radius-section: 48px;
   --radius-full: 9999px;
 
@@ -262,6 +266,9 @@
   --container-case-text: 668px;
 
   --aspect-card: 553 / 400;
+  /* Project card below the desktop breakpoint (frame, Figma 348:10069) and its cover alone (348:10070). */
+  --aspect-card-sm: 1;
+  --aspect-card-cover: 280 / 216;
   --aspect-cover: 846 / 556;
   --aspect-media: 846 / 476;
   --aspect-media-sm: 354 / 219;
@@ -286,6 +293,9 @@
   --color-surface-home-mobile: var(--gray-25);
   --color-surface-subtle: var(--gray-50);
   --color-surface-track: var(--gray-100);
+  /* Project card frame (Figma 348:14015); gray/100 below desktop to stand off the gray/25 mobile home. */
+  --color-surface-card: var(--gray-50);
+  --color-surface-card-mobile: var(--gray-100);
   --color-surface-raised: var(--gray-white);
   --color-surface-selected: var(--gray-50);
   --color-surface-hover: var(--gray-50);
@@ -362,11 +372,11 @@
 }
 
 /*
- * expand / collapse: the whole project card (cover, badge, caption) and the case-study cover are one
- * image at two sizes and ratios. It moves on the CSS spring. The old snapshot stays opaque throughout (no
- * see-through midpoint) and the new one fades in over it:
- * - expand: early (within duration-base); the card's caption and badge are left out of its snapshot;
- * - collapse: in the second half, so the caption and badge arrive in place as the card lands, on top.
+ * expand / collapse: the project card's cover (with its badge) and the case-study cover are one image at
+ * two sizes and ratios; the card's frame and caption go with the page. It moves on the CSS spring. The old
+ * snapshot stays opaque throughout (no see-through midpoint) and the new one fades in over it:
+ * - expand: early (within duration-base); the card's badge is left out of its snapshot;
+ * - collapse: in the second half, so the badge arrives in place as the card lands, on top.
  * If the new image isn't loaded yet (data-vt-cover-wait), the old snapshot carries the whole morph.
  * The rest of the page dissolves quickly underneath.
  */

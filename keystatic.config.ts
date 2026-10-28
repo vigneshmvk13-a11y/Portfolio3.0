@@ -41,6 +41,10 @@ export default config({
           label: 'Tags',
           description: 'Desktop card and above the case-study title, e.g. "B2B • SAAS"',
         }),
+        year: fields.text({
+          label: 'Year',
+          description: 'Desktop card, above the tags, e.g. "2025"',
+        }),
         status: fields.select({ label: 'Status', options: STATUS, defaultValue: 'placeholder' }),
         order: fields.integer({
           label: 'Homepage order',

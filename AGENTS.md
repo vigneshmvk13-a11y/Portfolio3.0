@@ -133,6 +133,7 @@ Astro ignores page files that start with `_`, so dev-only pages live in `src/dev
 | `subtitle` | text | Labelled **Title** in Keystatic. The full title: homepage card (desktop and mobile) and the case-study page heading ("Simplifying data mapping for enterprise integrations") |
 | `tocLabel` | text | Labelled **Short title**. TOC on mobile and desktop, and the browser tab / share title ("Data mapping") |
 | `cardMeta` | text | Labelled **Tags**. "B2B • SAAS": desktop card and above the case-study title (the only tag field) |
+| `year` | text | Labelled **Year**. "2025": desktop card, above the tags |
 | `status` | select | `live` · `nda` · `coming-soon` · `placeholder`. Drives the card badge, and the case-study status line when there are no sections |
 | `order` | integer | Homepage order; also Previous / Next and More projects |
 | `draft` | checkbox | Draft entries never build to production |
@@ -179,7 +180,7 @@ Keystatic's admin UI and its GitHub mode need server routes, which a static buil
 - **One exception: the homepage intro choreography** (`design/layout-and-motion.md → Intro choreography`). At most ~2s, once per session, skipped by any input, absent under reduced motion. It never delays the LCP card. No other load or ambient animation.
 - Durations, easings and springs come from tokens (`design/tokens.md → Motion`), mirrored in `src/lib/motion.ts`. No magic numbers.
 - **Reduced motion:** no scroll-triggered or scroll-linked animation, no parallax, no intro, no page transitions. Other state changes are instant. **One exception, Vignesh's call (2026-10-21):** a homepage wheel step plays as a short turn (`wheel.reducedTurn`, 0.2s ease-out, one project per gesture, no overshoot or momentum). Why: Windows "best performance" mode reports reduced motion too, and the wheel turn is the site's identity. The cost (motion-sensitive visitors see a brief 3D turn; WCAG 2.3.3, AAA) was raised and accepted. Don't extend the exception without asking. The wheel's resting layout (tilted, faded neighbours) is a still image and stays.
-- **Slow devices:** keep the motion, drop the extras. `src/scripts/quality.ts` samples frames while the wheel moves; too many slow frames (or Save-Data) switch the page to `html[data-quality="lite"]` (no caption blur, faster intro) for the session.
+- **Slow devices:** keep the motion, drop the extras. `src/scripts/quality.ts` samples frames while the wheel moves; too many slow frames (or Save-Data) switch the page to `html[data-quality="lite"]` (faster intro) for the session.
 - Load Motion only in the scripts/islands that animate. Check the bundle: the homepage JS should stay small (target < 30 KB gzipped total).
 - **Every motion holds 60fps** (Vignesh, 2026-10-21), including under 4× CPU throttling. Animate `transform` and `opacity`; anything else (layout, filters, `grid-template-rows`) only if `scripts/perf-motion.mjs` shows no missed frames. Prepare before moving, never in the first moving frame (decode images, make layers exist). Add each new motion to `perf-motion.mjs` and report the table.
 

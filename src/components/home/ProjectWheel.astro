@@ -118,14 +118,6 @@ const offsetOf = (index: number) => {
     will-change: transform, opacity;
   }
 
-  /*
-   * Slow device (src/scripts/quality.ts): the caption blur re-renders every frame a card moves, so lite
-   * drops it. The caption keeps its translucent surface-caption fill; text contrast is unchanged.
-   */
-  html[data-quality='lite'] .wheel-card [data-card-caption] {
-    backdrop-filter: none;
-  }
-
   /* Touch drags move the wheel, not the page (stage only; the sheet and drawer scroll natively). */
   .wheel {
     touch-action: none;

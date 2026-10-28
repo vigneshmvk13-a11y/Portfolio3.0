@@ -29,8 +29,8 @@ const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 const RECORDER = `addEventListener('pageswap', (e) => sessionStorage.setItem('__swap', String(Boolean(e.viewTransition))));
 addEventListener('pagereveal', (e) => requestAnimationFrame(() => {
   window.__vt = { transition: Boolean(e.viewTransition), type: document.documentElement.dataset.vt ?? null,
-    named: [...document.querySelectorAll('[data-vt-cover]')].filter((el) => el.style.viewTransitionName).length,
-    names: [...document.querySelectorAll('[data-vt-cover]')].map((el) => el.style.viewTransitionName).filter(Boolean).join(','),
+    named: [...document.querySelectorAll('[data-vt-cover], [data-card-link]')].filter((el) => el.style.viewTransitionName).length,
+    names: [...document.querySelectorAll('[data-vt-cover], [data-card-link]')].map((el) => el.style.viewTransitionName).filter(Boolean).join(','),
     swap: sessionStorage.getItem('__swap') };
 }));
 sessionStorage.setItem('intro-seen', '1');`;

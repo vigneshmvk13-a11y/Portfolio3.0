@@ -1,7 +1,7 @@
 ---
 /**
  * More projects (Figma 234:23083 desktop, 234:10050 mobile): the next three case studies in homepage
- * order, as small project cards (posters only). "See all" goes home: right of the heading on desktop,
+ * order, as small project cards (posters only; the card's cover sets its height, Figma 348:14015). "See all" goes home: right of the heading on desktop,
  * under the cards on mobile.
  */
 import ProjectCardLink from '../home/ProjectCardLink.astro';
@@ -26,7 +26,7 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
   <ul class="grid gap-4 desktop:grid-cols-3 desktop:gap-6">
     {
       entries.map((entry) => (
-        <li class="aspect-card desktop:aspect-auto desktop:h-50" data-nav-media>
+        <li data-nav-media>
           <ProjectCardLink entry={entry} compact autoplay sizes="(min-width: 75rem) 207px, min(calc(100vw - 48px), 846px)" />
         </li>
       ))

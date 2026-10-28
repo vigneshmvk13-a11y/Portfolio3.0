@@ -19,6 +19,7 @@ const caseStudies = defineCollection({
       subtitle: z.string(),
       tocLabel: z.string(),
       cardMeta: text(),
+      year: text(),
       status: z.enum(STATUS).default('placeholder'),
       order: z.number().int().min(1),
       draft: z.boolean().default(false),

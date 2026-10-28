@@ -31,8 +31,9 @@
     const match = /^\/work\/([^/]+)\/?$/.exec(pathOf(url));
     return match ? decodeURIComponent(match[1]) : null;
   };
-  // A project card is morphed whole (its link carries data-vt-cover): cover, badge and caption together.
-  const cardCover = (slug) => document.querySelector(`[data-card-link="${CSS.escape(slug)}"][data-vt-cover]`);
+  // A project card morphs by its cover (data-vt-cover inside the link); its frame and caption go with the page.
+  const cardLink = (slug) => document.querySelector(`[data-card-link="${CSS.escape(slug)}"]`);
+  const coverIn = (card) => card?.querySelector('[data-vt-cover]') ?? null;
   const pageCover = () => document.querySelector('#case-cover [data-vt-cover]');
   const name = (el, value = NAME) => {
     if (el) el.style.viewTransitionName = value;
@@ -50,10 +51,9 @@
   };
   // The floating nav holds still while the page slides. Named only now: a permanent name would make it
   // a backdrop root and break its blur.
-  // Opening a project: the card's caption and badge are hidden before the old page is captured, so only the
-  // image grows. Captured on their own, they stayed where the card was (nothing on the new page matches
-  // them) and their frosted bar floated over the growing cover; inside the card snapshot they'd grow with it.
-  const LABELS = '[data-card-caption], [data-card-badge]';
+  // Opening a project: the card's badge is hidden before the old page is captured, so only the image grows
+  // (inside the cover snapshot it would grow with it). The caption sits below the cover and fades with the page.
+  const LABELS = '[data-card-badge]';
   const hideLabels = (card) => {
     for (const el of card.querySelectorAll(LABELS)) el.style.visibility = 'hidden';
   };
@@ -89,7 +89,7 @@
 
     if (intent === 'next' || intent === 'prev') type = intent;
     else if (trigger?.matches('[data-card-link]')) {
-      type = name(trigger) ? 'expand' : null;
+      type = name(coverIn(trigger)) ? 'expand' : null;
       hideLabels(trigger);
     }
     else if (trigger?.matches('[data-case-nav-next]')) type = 'next';
@@ -123,8 +123,8 @@
       const card = document.querySelector(
         slug ? `[data-wheel-card][data-slug="${CSS.escape(slug)}"]` : '[data-wheel-card]',
       );
-      const face = card?.getAttribute('data-offset') === '0' ? cardCover(card.getAttribute('data-slug')) : null;
-      if (type === 'collapse') cover = name(face);
+      const face = card?.getAttribute('data-offset') === '0' ? cardLink(card.getAttribute('data-slug')) : null;
+      if (type === 'collapse') cover = name(coverIn(face));
       else {
         // Settle only a card that can show its image now; otherwise it just fades in with the page.
         const img = face?.querySelector('img');
