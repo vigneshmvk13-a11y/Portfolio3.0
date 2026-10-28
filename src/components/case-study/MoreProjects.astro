@@ -43,6 +43,10 @@ const seeAll = 'text-label-1 font-medium text-fg-secondary transition-colors dur
   .more-projects {
     padding-bottom: calc(var(--spacing) * 37 + env(safe-area-inset-bottom));
   }
+  /* iPhone Safari 26: the nav sits 16px up instead of 32 (CaseNav), so the 60px clearance needs 16px less. */
+  :global(html[data-ios-safari]) .more-projects {
+    padding-bottom: calc(var(--spacing) * 33 + env(safe-area-inset-bottom));
+  }
   @media (min-width: 75rem) {
     .more-projects {
       padding-bottom: calc(var(--spacing) * 42);

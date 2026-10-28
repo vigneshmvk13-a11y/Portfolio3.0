@@ -63,6 +63,19 @@ const speculation = JSON.stringify({
     <script type="speculationrules" is:inline set:html={speculation} />
     <!-- The page transition names the cover before the first frame; wait until it's parsed. -->
     <link rel="expect" href="#case-cover" blocking="render" />
+    <!--
+      iPhone Safari 26+ (floating toolbar): CaseNav and MoreProjects tighten their bottom spacing. Set before
+      paint. Chrome, Firefox, Edge, Opera and the Google app on iOS carry their own tokens and keep the default.
+    -->
+    <script is:inline>
+      (() => {
+        const ua = navigator.userAgent;
+        const safari = /iPhone.*Version\/(\d+).*Mobile\/.*Safari\//.exec(ua);
+        if (safari && Number(safari[1]) >= 26 && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua)) {
+          document.documentElement.setAttribute('data-ios-safari', '');
+        }
+      })();
+    </script>
   </Fragment>
 
   <div

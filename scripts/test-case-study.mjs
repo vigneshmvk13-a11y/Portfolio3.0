@@ -135,6 +135,10 @@ try {
     `(() => { const n = document.querySelector('[data-case-nav]'); return n.offsetWidth + '/' + n.querySelector('.case-nav__bar').offsetWidth; })()`,
   );
   check('nav box is pill-wide, not full-width', navWidth.split('/')[0] === navWidth.split('/')[1], navWidth);
+  const navBottoms = await d.eval(
+    `(() => { const n = document.querySelector('[data-case-nav]'); const h = document.documentElement; const a = getComputedStyle(n).bottom; h.setAttribute('data-ios-safari', ''); const b = getComputedStyle(n).bottom; h.removeAttribute('data-ios-safari'); return a + '/' + b; })()`,
+  );
+  check('nav 32px up, 16px in iPhone Safari 26', navBottoms === '32px/16px', navBottoms);
   await d.eval('window.scrollTo(0, document.documentElement.scrollHeight)');
   await sleep(300);
   check('nav shows at the page end', !(await d.eval(`document.querySelector('[data-case-nav]').hasAttribute('data-hidden')`)));

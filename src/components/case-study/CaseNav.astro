@@ -46,7 +46,8 @@ const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
 
 <style>
   .case-nav {
-    bottom: calc(var(--spacing) * 8 + env(safe-area-inset-bottom));
+    --nav-offset: calc(var(--spacing) * 8);
+    bottom: calc(var(--nav-offset) + env(safe-area-inset-bottom));
     /*
      * No view-transition-name here: it would make the nav a backdrop root, and the blur would see nothing
      * behind it. page-transition.js names it (case-nav) only while the page slides, so it stays put.
@@ -65,6 +66,15 @@ const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
   }
 
   /*
+   * iPhone Safari 26 ends the layout viewport ~18pt above its floating toolbar, and nothing fixed can sit
+   * below that line, so 32px read as ~50 to the toolbar (measured on Vignesh's iPhone 16; Chrome's opaque
+   * toolbar starts at the viewport's edge). 16px there reads as ~34, like Chrome. CaseStudy.astro sets the flag.
+   */
+  :global(html[data-ios-safari]) .case-nav {
+    --nav-offset: calc(var(--spacing) * 4);
+  }
+
+  /*
    * Scrolling down hides it (Vignesh, 2026-10-24): the bar sinks below the screen edge and fades out;
    * scrolling up, it rises back and fades in, in full (duration-base each way; ease-in-out out, ease-out in).
    *
@@ -74,7 +84,7 @@ const side = `${pill} w-nav-btn px-4 py-3 text-label-1 font-medium`;
    * backdrop root). Keyboard focus inside always shows it.
    */
   .case-nav__bar {
-    --nav-drop: calc(100% + var(--spacing) * 8 + env(safe-area-inset-bottom));
+    --nav-drop: calc(100% + var(--nav-offset) + env(safe-area-inset-bottom));
     transition: translate var(--duration-base) var(--ease-out);
   }
   .case-nav__bg,
