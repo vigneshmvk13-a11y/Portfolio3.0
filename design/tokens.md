@@ -43,7 +43,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 |---|---|---|
 | `surface-page` | `--gray-white` | Page background on every page and breakpoint: home, About, case studies (was gray/50; Vignesh 2026-10-26, Figma still draws gray/50) |
 | `surface-home-mobile` | `--gray-25` | Homepage background below the desktop breakpoint only (phone and tablet), so the white footer sheet doesn't blend into it (Vignesh 2026-10-26). The footer stays `surface-raised`; desktop stays `surface-page` |
-| `surface-card` | `--gray-50` | More projects card frame (Figma 348:14015, 351:9956). The homepage wheel card has no frame (2026-10-30) |
+| `surface-card` | `--gray-50` | More projects row frame on mobile (Figma 351:9956). Project cards have no frame (2026-10-30) |
 | `fg-on-media-soft` | `--gray-50` | Project card caption, desktop: the year (Figma 348:10061) |
 | `fg-on-media-muted` | `--gray-100` | Project card caption, desktop: the tags (Figma 348:10062) |
 | `--backdrop-caption-tone` | `brightness(0.75) saturate(1.15)` | Project card caption on dark covers: darkens the cover in its own colour, only as far as white text needs (worst pixel 6.2:1, tags 5.0:1 on Gyst). `:root`, not a utility (Vignesh 2026-10-29) |
@@ -165,7 +165,6 @@ Named spacing:
 | `rounded-button-lg` | 16px | Mobile sheet and drawer icon buttons (Vignesh, 2026-10-22: 16px, plain circular corners; Figma drew 20) |
 | `rounded-card` | 24px | Project card, logo pills |
 | `rounded-panel` | 32px | Drawer, sheet top |
-| `rounded-card-inner` | 20px | The cover inside the compact More projects card's `p-1` frame on desktop (24 − 4) |
 | `rounded-panel-inner` | 28px | Inside a `p-1` panel (32 − 4): mobile drawer banner |
 | `rounded-section` | 48px | Desktop case-study Overview and Reflection cards (mobile: `rounded-panel`) |
 | `rounded-full` | 9999px | Avatar |

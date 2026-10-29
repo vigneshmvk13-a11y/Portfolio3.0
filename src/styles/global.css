@@ -266,7 +266,6 @@
   --radius-card: 24px;
   --radius-panel: 32px;
   --radius-panel-inner: 28px;
-  --radius-card-inner: 20px; /* the cover inside the More projects card's 4px frame, desktop */
   --radius-section: 48px;
   --radius-full: 9999px;
 
@@ -327,7 +326,7 @@
   --color-surface-home-mobile: var(--gray-25);
   --color-surface-subtle: var(--gray-50);
   --color-surface-track: var(--gray-100);
-  /* More projects card frame (Figma 348:14015, 351:9956). The homepage wheel card has none. */
+  /* More projects row frame on mobile (Figma 351:9956). Project cards have none. */
   --color-surface-card: var(--gray-50);
   --color-surface-raised: var(--gray-white);
   --color-surface-selected: var(--gray-50);
