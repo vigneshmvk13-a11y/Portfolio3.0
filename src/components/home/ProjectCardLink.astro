@@ -24,7 +24,7 @@ interface Props {
 }
 
 const { entry, compact = false, priority = false, active = false, autoplay = false, sizes, class: className } = Astro.props;
-const { subtitle, cardMeta, year, status, heroVideo } = entry.data;
+const { subtitle, cardMeta, year, status, heroVideo, lightCover } = entry.data;
 const showMeta = year || cardMeta;
 ---
 
@@ -72,6 +72,7 @@ const showMeta = year || cardMeta;
       class:list={[
         'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 px-5 pt-4 pb-5 text-fg-on-media',
         compact ? 'max-desktop:hidden' : 'card-caption--lg desktop:p-6',
+        lightCover && 'card-caption--light',
       ]}
       data-card-caption
     >
@@ -128,9 +129,10 @@ const showMeta = year || cardMeta;
   }
 
   /*
-   * The cover behind the text, blurred and darkened in its own colour (global.css --backdrop-caption). The
-   * layer rises so it reaches full strength exactly at the text (the caption's top padding, --caption-inset)
-   * after its clear guard and eased fade (--mask-caption): no top edge, no band.
+   * The cover behind the text, blurred and darkened in its own colour (global.css --backdrop-caption-tone). The
+   * layers rise so they reach full strength exactly at the text (the caption's top padding, --caption-inset)
+   * after a clear guard and a long eased ramp: no top edge, no band. Two mask layers: the ramp, sized to the
+   * card's fade, then solid from its end down (1px of overlap, so no seam).
    */
   .card-caption {
     --caption-inset: calc(var(--spacing) * 4);
@@ -138,21 +140,32 @@ const showMeta = year || cardMeta;
   @media (width >= 75rem) {
     .card-caption--lg {
       --caption-inset: calc(var(--spacing) * 6);
+      --caption-fade: var(--caption-fade-lg);
     }
   }
   .card-caption__scrim {
     top: calc(var(--caption-inset) - var(--caption-guard) - var(--caption-fade));
-    mask-image: var(--mask-caption);
+    mask-image: var(--mask-caption-ramp), var(--mask-solid);
+    mask-size:
+      100% var(--caption-fade),
+      100% 100%;
+    mask-position:
+      0 var(--caption-guard),
+      0 calc(var(--caption-guard) + var(--caption-fade) - 1px);
+    mask-repeat: no-repeat;
   }
   /*
    * Two layers: a blur goes see-through near the cover's sides (it pulls in the nothing beyond them), so a
    * darkening in the same filter would fade there and leave lighter strips. The tone layer is per-pixel and
-   * stays even to the edges.
+   * stays even to the edges. Pale covers (Light cover) need the strong tone; dark ones read on the soft one.
    */
   .card-caption__scrim--blur {
     backdrop-filter: blur(var(--blur-caption));
   }
   .card-caption__scrim--tone {
     backdrop-filter: var(--backdrop-caption-tone);
+  }
+  .card-caption--light .card-caption__scrim--tone {
+    backdrop-filter: var(--backdrop-caption-tone-strong);
   }
 </style>

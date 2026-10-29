@@ -46,10 +46,13 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-card` | `--gray-50` | Project card frame on desktop (Figma 348:14015) |
 | `fg-on-media-soft` | `--gray-50` | Project card caption, desktop: the year (Figma 348:10061) |
 | `fg-on-media-muted` | `--gray-100` | Project card caption, desktop: the tags (Figma 348:10062) |
-| `--backdrop-caption-tone` | `brightness(0.464) saturate(1.4)` | Project card caption: darkens the cover in its own colour. 0.464 is exactly `--multiply-80` (black 53.6%): Figma 348:14015 draws 20% grey in multiply (~10% darker), which left white text at 1.1–3:1 on the pale covers; 80% is the lightest that reaches 4.5:1 on all five. `:root`, not a utility (Vignesh 2026-10-29) |
+| `--backdrop-caption-tone` | `brightness(0.75) saturate(1.15)` | Project card caption on dark covers: darkens the cover in its own colour, only as far as white text needs (worst pixel 6.2:1, tags 5.0:1 on Gyst). `:root`, not a utility (Vignesh 2026-10-29) |
+| `--backdrop-caption-tone-strong` | `brightness(0.464) saturate(1.15)` | The same on covers marked **Light cover**. 0.464 is exactly `--multiply-80` (black 53.6%), the lightest that reaches 4.5:1 on Fyn, Nova and Prime compass. Figma 348:14015 draws 20% grey in multiply (~10% darker): 1.1–3:1 there |
 | `--caption-guard` | 16px | Clear top of the caption's blur and tone layers (a blur smears at its own edge) |
-| `--caption-fade` | 64px | Eased fade of those layers below the guard; they reach full strength at the text |
-| `--mask-caption` | transparent for `--caption-guard`, then 16 scrim (ease-in-out) stops over `--caption-fade` | `mask-image` on both caption layers. Eased so no straight-line knee reads as a band |
+| `--caption-fade` | 88px | Eased ramp of those layers below the guard, mobile cards and More projects; they reach full strength at the text |
+| `--caption-fade-lg` | 140px | The same ramp on the desktop wheel card |
+| `--mask-caption-ramp` | transparent → black over 16 scrim (ease-in-out) stops, in % | First `mask-image` layer on both caption layers, sized to the card's fade (`mask-size`) and placed below the guard. Eased so no straight-line knee reads as a band |
+| `--mask-solid` | `linear-gradient(black, black)` | Second mask layer: solid from the end of the ramp down |
 | `surface-card-mobile` | `--gray-100` | Project card frame below the desktop breakpoint, so it stands off the gray/25 mobile home (Vignesh 2026-10-28) |
 | `surface-track` | `--gray-100` | The case-study tab bar: gray/50 blended into the gray/50 cards beside it (Vignesh 2026-10-26) |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |

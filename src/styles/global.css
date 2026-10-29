@@ -58,37 +58,41 @@
   --wheel-clearance: 52px;
   --wheel-inset: 52px;
   /*
-   * Project card caption (Vignesh, 2026-10-29): the cover behind the text is blurred and darkened in one
-   * backdrop filter, so it keeps its own colour instead of going grey under a black wash. brightness(0.464)
-   * darkens exactly as much as Figma's grey 80% in multiply (black 53.6%, --multiply-80): Figma's 20% left white
-   * text at 1.1–3:1 on the pale covers, 80% is the lightest that reaches 4.5:1 on all five. saturate() puts back
-   * the colour that darkening drains.
-   * The layer rises above the caption and fades in down an eased curve (scrim stops, no straight-line knee to
-   * read as a band), reaching full strength at the text. Its top --caption-guard stays clear: the blur only
-   * samples inside the layer, so its own top edge smears into a streak.
+   * Project card caption (Vignesh, 2026-10-29): the cover behind the text is blurred and darkened in its own
+   * colour, never washed grey. Each cover gets only the darkening it needs for white text at 4.5:1: dark covers
+   * the soft tone, covers marked Light cover (Keystatic) the strong one, which darkens exactly as much as
+   * Figma's grey 80% in multiply (black 53.6%, --multiply-80). saturate() puts back a little of the colour that
+   * darkening drains; more than that turns bright objects into heavy blobs.
+   * The layers rise above the caption: a clear --caption-guard (the blur only samples inside the layer, so its
+   * own top edge smears into a streak), then a long eased ramp (scrim stops, no straight-line knee to read as a
+   * band) that reaches full strength at the text, like light falling off rather than a panel. The ramp is
+   * mask-sized per card (--caption-fade, --caption-fade-lg), so the stops are percentages.
    */
-  --backdrop-caption-tone: brightness(0.464) saturate(1.4);
+  --backdrop-caption-tone: brightness(0.75) saturate(1.15);
+  --backdrop-caption-tone-strong: brightness(0.464) saturate(1.15);
   --caption-guard: 16px;
-  --caption-fade: 64px;
-  --mask-caption: linear-gradient(
+  --caption-fade: 88px;
+  --caption-fade-lg: 140px;
+  --mask-caption-ramp: linear-gradient(
     to bottom,
-    transparent var(--caption-guard),
-    rgb(0 0 0 / 0.013) calc(var(--caption-guard) + var(--caption-fade) * 0.081),
-    rgb(0 0 0 / 0.049) calc(var(--caption-guard) + var(--caption-fade) * 0.155),
-    rgb(0 0 0 / 0.104) calc(var(--caption-guard) + var(--caption-fade) * 0.225),
-    rgb(0 0 0 / 0.175) calc(var(--caption-guard) + var(--caption-fade) * 0.29),
-    rgb(0 0 0 / 0.259) calc(var(--caption-guard) + var(--caption-fade) * 0.353),
-    rgb(0 0 0 / 0.352) calc(var(--caption-guard) + var(--caption-fade) * 0.412),
-    rgb(0 0 0 / 0.45) calc(var(--caption-guard) + var(--caption-fade) * 0.471),
-    rgb(0 0 0 / 0.55) calc(var(--caption-guard) + var(--caption-fade) * 0.529),
-    rgb(0 0 0 / 0.648) calc(var(--caption-guard) + var(--caption-fade) * 0.588),
-    rgb(0 0 0 / 0.741) calc(var(--caption-guard) + var(--caption-fade) * 0.647),
-    rgb(0 0 0 / 0.825) calc(var(--caption-guard) + var(--caption-fade) * 0.71),
-    rgb(0 0 0 / 0.896) calc(var(--caption-guard) + var(--caption-fade) * 0.775),
-    rgb(0 0 0 / 0.951) calc(var(--caption-guard) + var(--caption-fade) * 0.845),
-    rgb(0 0 0 / 0.987) calc(var(--caption-guard) + var(--caption-fade) * 0.919),
-    black calc(var(--caption-guard) + var(--caption-fade))
+    transparent,
+    rgb(0 0 0 / 0.013) 8.1%,
+    rgb(0 0 0 / 0.049) 15.5%,
+    rgb(0 0 0 / 0.104) 22.5%,
+    rgb(0 0 0 / 0.175) 29%,
+    rgb(0 0 0 / 0.259) 35.3%,
+    rgb(0 0 0 / 0.352) 41.2%,
+    rgb(0 0 0 / 0.45) 47.1%,
+    rgb(0 0 0 / 0.55) 52.9%,
+    rgb(0 0 0 / 0.648) 58.8%,
+    rgb(0 0 0 / 0.741) 64.7%,
+    rgb(0 0 0 / 0.825) 71%,
+    rgb(0 0 0 / 0.896) 77.5%,
+    rgb(0 0 0 / 0.951) 84.5%,
+    rgb(0 0 0 / 0.987) 91.9%,
+    black
   );
+  --mask-solid: linear-gradient(black, black);
   /* Mobile bottom sheet's side padding (Vignesh, 2026-10-26; was the card's 52px). */
   --sheet-inset: 48px;
   --wheel-card-h-desktop: min(400px, 39dvh);
