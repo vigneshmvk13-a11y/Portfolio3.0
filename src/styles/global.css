@@ -24,6 +24,9 @@
   --gray-900: #282828;
   --gray-black: #000000;
   --lime-200: #cae6a0;
+  --lime-900: #1b2d00;
+  --amber-200: #ffd5a1;
+  --amber-900: #401e04;
   /*
    * Grey #545454 in multiply mode over a blurred backdrop. A neutral grey in multiply only scales the
    * backdrop by 1 - a + a * 84/255, so it is the same pixels as black at alpha 1 - that factor, in normal mode:
@@ -335,7 +338,11 @@
   --color-surface-caption-strong: var(--multiply-80);
   --color-surface-caption-boost: var(--multiply-80-boost);
   --color-surface-scrim: var(--scrim-24);
+  /* Card badges (Figma 375:10315): NDA in lime, Coming soon in amber, each with its own dark text. */
   --color-surface-badge: var(--lime-200);
+  --color-fg-badge: var(--lime-900);
+  --color-surface-badge-soon: var(--amber-200);
+  --color-fg-badge-soon: var(--amber-900);
   --color-surface-glass: var(--glass-40);
   --color-fg-primary: var(--gray-900);
   --color-fg-strong: var(--gray-900);
@@ -349,6 +356,7 @@
   --color-line-subtle: var(--gray-100);
   --color-line-default: var(--gray-200);
   --color-line-strong: var(--gray-300);
+  --color-line-on-media: var(--gray-white);
   --color-indicator: var(--gray-900);
   --color-focus: var(--gray-900);
   --color-transparent: transparent;

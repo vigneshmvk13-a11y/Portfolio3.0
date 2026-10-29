@@ -31,6 +31,9 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `--gray-900` | `gray/900` | `#282828` |
 | `--gray-black` | `gray/black` | `#000000` |
 | `--lime-200` | `lime/200` | `#CAE6A0` |
+| `--lime-900` | `lime/900` | `#1B2D00` |
+| `--amber-200` | `amber/200` | `#FFD5A1` |
+| `--amber-900` | `amber/900` | `#401E04` |
 | `--multiply-50` | grey `#545454` at 50%, multiply | `rgb(0 0 0 / 0.335)`: a neutral grey in multiply scales the backdrop by `1 − a + a·84/255`, so it equals black at `1 −` that factor in normal mode (no `mix-blend-mode`) |
 | `--multiply-80` | the same grey at 80% | `rgb(0 0 0 / 0.536)` |
 | `--multiply-80-boost` | what turns 50% into 80% | `rgb(0 0 0 / 0.302)` |
@@ -62,7 +65,10 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-caption-strong` | `--multiply-80` | The same fill at 80%, where the backdrop is pale: captions of covers marked **Light cover**, and the floating nav over the page (white text 4.6:1 on white) |
 | `surface-caption-boost` | `--multiply-80-boost` | Layer over `surface-caption` that makes it 80%; the floating nav fades it out over a cover |
 | `surface-scrim` | `--scrim-24` **(proposed)** | Behind About: the mobile sheet (fades in as the bottom sheet grows into it) and the desktop drawer |
-| `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |
+| `surface-badge` | `--lime-200` | "NDA protected" badge (Figma 375:10315); also the dev TODO marker |
+| `fg-badge` | `--lime-900` | Its text and lock (10.8:1) |
+| `surface-badge-soon` | `--amber-200` | "Coming soon" badge (Figma 375:10315) |
+| `fg-badge-soon` | `--amber-900` | Its text (10.9:1) |
 | `surface-glass` | `--glass-40` | Gallery Previous / Next buttons over photos (Figma 280:9431), with `backdrop-blur-glass`; white caret `fg-on-media` |
 | `fg-primary` | `--gray-900` | Primary text: name, headings, active TOC, hovered TOC rows (Figma 233:4518, 2026-10-22) |
 | `fg-strong` | `--gray-900` | Emphasis in About, timeline roles. Same value as `fg-primary` since 2026-10-22 |
@@ -73,6 +79,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `line-subtle` | `--gray-100` | Desktop icon buttons |
 | `line-default` | `--gray-200` | Drawer buttons, dividers, sheet edge |
 | `line-strong` | `--gray-300` **(proposed)** | Button hover border |
+| `line-on-media` | `--gray-white` | 1px outline of the card badges, over covers (Figma 375:10315) |
 | `indicator` | `--gray-900` | TOC active dash |
 | `focus` | `--gray-900` **(proposed)** | Focus ring |
 
@@ -107,7 +114,7 @@ Case study (Figma `234:33903`), mobile → desktop: title (`<h1>`) `h5` → `h4`
 
 ## Spacing
 
-Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 22, 25, 30, 40, 50** (= 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80, 88, 100, 120, 160, 200px). 22 is the case study's section padding (Figma 89); 25 is the case-study sections' scroll margin (tabs stuck at 20 + their ~50 height + ~30 clear); 30 and 40 were its bottom padding above the floating nav (the page end now sets that itself, MoreProjects.astro); 50 is the More projects card height (Figma 307:67837). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
+Tailwind's `--spacing: 4px` base matches Figma's 4px grid, so `p-4` = 16px, `gap-15` = 60px. Use only these steps (values seen in Figma): **0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 15, 20, 22, 25, 30, 40, 50** (= 2, 4, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 60, 80, 88, 100, 120, 160, 200px). 22 is the case study's section padding (Figma 89); 25 is the case-study sections' scroll margin (tabs stuck at 20 + their ~50 height + ~30 clear); 30 and 40 were its bottom padding above the floating nav (the page end now sets that itself, MoreProjects.astro); 50 is the More projects card height (Figma 307:67837). 2.5 is the Figma button's icon-label gap. `check-tokens.mjs` flags other steps.
 
 Named spacing:
 

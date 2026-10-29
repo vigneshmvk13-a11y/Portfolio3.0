@@ -1,5 +1,5 @@
 ---
-/** Card status pill (Figma 230:4637 / 230:4652). Renders nothing for statuses without a badge. */
+/** Card status pill (Figma 375:10315). Renders nothing for statuses without a badge. */
 import type { HTMLAttributes } from 'astro/types';
 import Lock from '../icons/Lock.astro';
 
@@ -17,9 +17,9 @@ const label = status === 'nda' ? 'NDA protected' : status === 'coming-soon' ? 'C
     <span
       {...rest}
       class:list={[
-        'inline-flex items-center gap-1 py-2 rounded-full bg-surface-badge',
-        'text-label-3 font-medium text-fg-strong whitespace-nowrap',
-        status === 'nda' ? 'pl-3 pr-4' : 'px-4',
+        'inline-flex items-center gap-1 rounded-full border border-line-on-media py-1.5 pr-3 pl-2.5',
+        'text-label-3 font-medium whitespace-nowrap',
+        status === 'nda' ? 'bg-surface-badge text-fg-badge' : 'bg-surface-badge-soon text-fg-badge-soon',
         className,
       ]}
     >
