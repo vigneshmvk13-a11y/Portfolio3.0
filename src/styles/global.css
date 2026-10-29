@@ -58,12 +58,14 @@
   --wheel-clearance: 52px;
   --wheel-inset: 52px;
   /*
-   * Project card caption wash, under the blur. Figma 348:14015 draws 20% grey in multiply, which darkens by
-   * ~10% and left white text at 1.1–3:1 on the pale covers. This is Figma's grey 80% in multiply (black
-   * 53.6%, --multiply-80) over the bottom 70%, fading out above: the lightest that reaches 4.5:1 on every
-   * cover (Vignesh, 2026-10-29).
+   * Project card caption: Figma's grey 80% in multiply (black 53.6%, surface-caption-strong) with the blur, on
+   * one layer that starts 32px above the caption and fades out over its top 48px, so the text (16px or more
+   * inside the caption) sits on the full wash and blur, and there is no top edge (Vignesh, 2026-10-29).
+   * Figma 348:14015 draws 20% grey in multiply, which darkens by ~10% and left white text at 1.1–3:1 on the
+   * pale covers; 80% is the lightest that reaches 4.5:1 on every cover.
    */
-  --gradient-caption: linear-gradient(to top, var(--multiply-80) 0%, var(--multiply-80) 70%, transparent);
+  --caption-fade: 48px;
+  --mask-caption: linear-gradient(to top, black calc(100% - var(--caption-fade)), transparent);
   /* Mobile bottom sheet's side padding (Vignesh, 2026-10-26; was the card's 52px). */
   --sheet-inset: 48px;
   --wheel-card-h-desktop: min(400px, 39dvh);

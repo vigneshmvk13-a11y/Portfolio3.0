@@ -41,14 +41,14 @@ const showMeta = year || cardMeta;
   <!--
     The page transition morphs the cover (data-vt-cover) into the case-study cover; the caption and badge on it
     are hidden first so they don't grow with it, and fade in as it lands on the way back. The frame goes with
-    the page. Clipped here, so the hover zoom (scale 1.03) stays inside. src/scripts/page-transition.js.
+    the page. Clipped here (.card-cover), so the hover zoom (scale 1.03) stays inside. src/scripts/page-transition.js.
   -->
   <div
     class:list={[
-      'relative overflow-hidden',
+      'card-cover relative',
       compact
-        ? 'min-h-22 w-card-thumb shrink-0 rounded-photo desktop:h-50 desktop:min-h-0 desktop:w-auto desktop:rounded-card-inner'
-        : 'min-h-0 flex-1 rounded-card-inner',
+        ? 'card-cover--compact min-h-22 w-card-thumb shrink-0 desktop:h-50 desktop:min-h-0 desktop:w-auto'
+        : 'min-h-0 flex-1',
     ]}
     data-vt-cover
   >
@@ -70,17 +70,21 @@ const showMeta = year || cardMeta;
     />
     <div
       class:list={[
-        'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 px-5 pt-4 pb-5 text-fg-on-media backdrop-blur-caption',
+        'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 px-5 pt-4 pb-5 text-fg-on-media',
         compact ? 'max-desktop:hidden' : 'desktop:p-6',
       ]}
       data-card-caption
     >
-      <p class:list={['line-clamp-2 min-w-0 flex-1 text-label-3 font-medium', !compact && 'desktop:text-label-1']}>
+      <span
+        class="card-caption__wash absolute inset-x-0 -top-8 bottom-0 bg-surface-caption-strong backdrop-blur-caption"
+        aria-hidden="true"
+        data-card-blur></span>
+      <p class:list={['relative line-clamp-2 min-w-0 flex-1 text-label-3 font-medium', !compact && 'desktop:text-label-1']}>
         {subtitle}
       </p>
       {
         showMeta && !compact && (
-          <p class="hidden min-w-0 flex-1 flex-col text-right text-label-1 desktop:flex">
+          <p class="relative hidden min-w-0 flex-1 flex-col text-right text-label-1 desktop:flex">
             {year && <span class="truncate font-medium text-fg-on-media-soft">{year}</span>}
             {cardMeta && <span class="truncate font-regular text-fg-on-media-muted">{cardMeta}</span>}
           </p>
@@ -109,8 +113,25 @@ const showMeta = year || cardMeta;
 </a>
 
 <style>
-  /* A dark wash rising from the bottom edge, under the blur (global.css --gradient-caption). */
-  .card-caption {
-    background-image: var(--gradient-caption);
+  /*
+   * Rounded by clip-path, not overflow + border-radius: clip-path makes the cover the caption blur's backdrop
+   * root, so the blur samples the unclipped cover. With a rounded overflow clip it sampled the grey frame
+   * outside the corners and smeared it into them as a pale fringe (the corners looked cut off).
+   */
+  .card-cover {
+    clip-path: inset(0 round var(--radius-card-inner));
+  }
+  @media (width < 75rem) {
+    .card-cover--compact {
+      clip-path: inset(0 round var(--radius-photo));
+    }
+  }
+
+  /*
+   * The dark wash and the blur behind the text, as one layer starting 32px above the caption: full under the
+   * text, both fading out together over its top 48px (global.css --mask-caption), so there is no top edge.
+   */
+  .card-caption__wash {
+    mask-image: var(--mask-caption);
   }
 </style>
