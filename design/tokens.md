@@ -46,8 +46,10 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-card` | `--gray-50` | Project card frame on desktop (Figma 348:14015) |
 | `fg-on-media-soft` | `--gray-50` | Project card caption, desktop: the year (Figma 348:10061) |
 | `fg-on-media-muted` | `--gray-100` | Project card caption, desktop: the tags (Figma 348:10062) |
-| `--caption-fade` | 48px | Project card caption: how far the wash and blur fade out at the top of their layer (32px above the caption to 16px inside); `:root`, not a utility (Vignesh 2026-10-29) |
-| `--mask-caption` | opaque, then transparent over the top `--caption-fade` | `mask-image` on the caption's wash-and-blur layer. The wash is `surface-caption-strong` (`--multiply-80`): Figma 348:14015 draws 20% grey in multiply (~10% darker), which left white text at 1.1–3:1 on the pale covers; 80% is the lightest that reaches 4.5:1 on all five (Vignesh 2026-10-29) |
+| `--backdrop-caption-tone` | `brightness(0.464) saturate(1.4)` | Project card caption: darkens the cover in its own colour. 0.464 is exactly `--multiply-80` (black 53.6%): Figma 348:14015 draws 20% grey in multiply (~10% darker), which left white text at 1.1–3:1 on the pale covers; 80% is the lightest that reaches 4.5:1 on all five. `:root`, not a utility (Vignesh 2026-10-29) |
+| `--caption-guard` | 16px | Clear top of the caption's blur and tone layers (a blur smears at its own edge) |
+| `--caption-fade` | 64px | Eased fade of those layers below the guard; they reach full strength at the text |
+| `--mask-caption` | transparent for `--caption-guard`, then 16 scrim (ease-in-out) stops over `--caption-fade` | `mask-image` on both caption layers. Eased so no straight-line knee reads as a band |
 | `surface-card-mobile` | `--gray-100` | Project card frame below the desktop breakpoint, so it stands off the gray/25 mobile home (Vignesh 2026-10-28) |
 | `surface-track` | `--gray-100` | The case-study tab bar: gray/50 blended into the gray/50 cards beside it (Vignesh 2026-10-26) |
 | `surface-subtle` | `--gray-50` | What gray/50 is used for now that the page is white: case-study cards (Context, Overview, Outcome, Reflection, System), the tab bar, gallery cards, About handle bar |
@@ -55,7 +57,7 @@ Naming avoids `text-text-*`: text and icon colours are `fg-*`, borders are `line
 | `surface-selected` | `--gray-50` | Active TOC item, mobile and desktop (was gray/100; Vignesh 2026-10-26). Also the cover's loading placeholder |
 | `surface-hover` | `--gray-50` | Hover on TOC items, mobile and desktop (Vignesh 2026-10-26; was gray/100) |
 | `surface-caption` | `--multiply-50` | Card caption bar over a cover (Figma: grey, 50%, multiply, background blur; Vignesh 2026-10-26). White text 4.5:1 or better only over covers darker than ~70% grey |
-| `surface-caption-strong` | `--multiply-80` | The same fill at 80%, where the backdrop is pale: captions of covers marked **Light cover**, the project card caption's wash (under `--mask-caption`), and the floating nav over the page (white text 4.6:1 on white) |
+| `surface-caption-strong` | `--multiply-80` | The same fill at 80%, where the backdrop is pale: captions of covers marked **Light cover**, and the floating nav over the page (white text 4.6:1 on white) |
 | `surface-caption-boost` | `--multiply-80-boost` | Layer over `surface-caption` that makes it 80%; the floating nav fades it out over a cover |
 | `surface-scrim` | `--scrim-24` **(proposed)** | Behind About: the mobile sheet (fades in as the bottom sheet grows into it) and the desktop drawer |
 | `surface-badge` | `--lime-200` | Card badge ("NDA protected", "Coming soon"); text `fg-strong` (~11:1) |

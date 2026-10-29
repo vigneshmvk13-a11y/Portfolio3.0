@@ -71,14 +71,14 @@ const showMeta = year || cardMeta;
     <div
       class:list={[
         'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 px-5 pt-4 pb-5 text-fg-on-media',
-        compact ? 'max-desktop:hidden' : 'desktop:p-6',
+        compact ? 'max-desktop:hidden' : 'card-caption--lg desktop:p-6',
       ]}
       data-card-caption
     >
-      <span
-        class="card-caption__wash absolute inset-x-0 -top-8 bottom-0 bg-surface-caption-strong backdrop-blur-caption"
-        aria-hidden="true"
-        data-card-blur></span>
+      <span class="card-caption__scrim card-caption__scrim--blur absolute inset-x-0 bottom-0" aria-hidden="true" data-card-blur
+      ></span>
+      <span class="card-caption__scrim card-caption__scrim--tone absolute inset-x-0 bottom-0" aria-hidden="true" data-card-tone
+      ></span>
       <p class:list={['relative line-clamp-2 min-w-0 flex-1 text-label-3 font-medium', !compact && 'desktop:text-label-1']}>
         {subtitle}
       </p>
@@ -128,10 +128,31 @@ const showMeta = year || cardMeta;
   }
 
   /*
-   * The dark wash and the blur behind the text, as one layer starting 32px above the caption: full under the
-   * text, both fading out together over its top 48px (global.css --mask-caption), so there is no top edge.
+   * The cover behind the text, blurred and darkened in its own colour (global.css --backdrop-caption). The
+   * layer rises so it reaches full strength exactly at the text (the caption's top padding, --caption-inset)
+   * after its clear guard and eased fade (--mask-caption): no top edge, no band.
    */
-  .card-caption__wash {
+  .card-caption {
+    --caption-inset: calc(var(--spacing) * 4);
+  }
+  @media (width >= 75rem) {
+    .card-caption--lg {
+      --caption-inset: calc(var(--spacing) * 6);
+    }
+  }
+  .card-caption__scrim {
+    top: calc(var(--caption-inset) - var(--caption-guard) - var(--caption-fade));
     mask-image: var(--mask-caption);
+  }
+  /*
+   * Two layers: a blur goes see-through near the cover's sides (it pulls in the nothing beyond them), so a
+   * darkening in the same filter would fade there and leave lighter strips. The tone layer is per-pixel and
+   * stays even to the edges.
+   */
+  .card-caption__scrim--blur {
+    backdrop-filter: blur(var(--blur-caption));
+  }
+  .card-caption__scrim--tone {
+    backdrop-filter: var(--backdrop-caption-tone);
   }
 </style>
