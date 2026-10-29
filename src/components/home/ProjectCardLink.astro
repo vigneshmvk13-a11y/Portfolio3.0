@@ -1,8 +1,9 @@
 ---
 /**
- * The face of a project card (Figma 348:14015): a link to /work/[slug], a grey frame holding the cover, with
- * the status badge and the caption over it. Used by the homepage wheel (ProjectCard) and the case-study More
- * projects grid, whose compact card is a row on mobile (Figma 351:9956). design/components.md → ProjectCard.
+ * The face of a project card (Figma 348:14015): a link to /work/[slug], the cover with the status badge and the
+ * caption over it. Used by the homepage wheel (ProjectCard), where the cover is the whole card, and the case-study
+ * More projects grid, whose compact card sits in a grey frame and is a row on mobile (Figma 351:9956).
+ * design/components.md → ProjectCard.
  */
 import MotionCover from '../media/MotionCover.astro';
 import Badge from '../ui/Badge.astro';
@@ -31,8 +32,8 @@ const showMeta = year || cardMeta;
 <a
   href={`/work/${entry.id}/`}
   class:list={[
-    'group flex overflow-hidden p-1 desktop:flex-col desktop:rounded-card',
-    compact ? 'rounded-media-sm bg-surface-card' : 'size-full flex-col rounded-card bg-surface-card-mobile desktop:bg-surface-card',
+    'group flex overflow-hidden desktop:flex-col desktop:rounded-card',
+    compact ? 'rounded-media-sm bg-surface-card p-1' : 'size-full flex-col rounded-card',
     className,
   ]}
   data-focus-offset="lg"
@@ -40,8 +41,8 @@ const showMeta = year || cardMeta;
 >
   <!--
     The page transition morphs the cover (data-vt-cover) into the case-study cover; the caption and badge on it
-    are hidden first so they don't grow with it, and fade in as it lands on the way back. The frame goes with
-    the page. Clipped here (.card-cover), so the hover zoom (scale 1.03) stays inside. src/scripts/page-transition.js.
+    are hidden first so they don't grow with it, and fade in as it lands on the way back. A compact card's
+    frame goes with the page. Clipped here (.card-cover), so the hover zoom (scale 1.03) stays inside. src/scripts/page-transition.js.
   -->
   <div
     class:list={[
@@ -65,13 +66,13 @@ const showMeta = year || cardMeta;
     />
     <Badge
       status={status}
-      class:list={['absolute top-2 right-2 desktop:top-3 desktop:right-3', compact && 'max-desktop:hidden']}
+      class:list={['absolute top-3 right-3', compact ? 'max-desktop:hidden' : 'desktop:top-4 desktop:right-4']}
       data-card-badge
     />
     <div
       class:list={[
-        'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 px-5 pt-4 pb-5 text-fg-on-media',
-        compact ? 'max-desktop:hidden' : 'card-caption--lg desktop:p-6',
+        'card-caption absolute inset-x-0 bottom-0 flex items-start gap-1 text-fg-on-media',
+        compact ? 'px-5 pt-4 pb-5 max-desktop:hidden' : 'card-caption--lg p-5 desktop:p-6',
         lightCover && 'card-caption--light',
       ]}
       data-card-caption
@@ -95,7 +96,7 @@ const showMeta = year || cardMeta;
   </div>
   {
     compact && (
-      <div class="flex min-w-0 flex-1 flex-col gap-3 py-2 pr-3 pl-5 desktop:hidden">
+      <div class="flex min-w-0 flex-1 flex-col gap-3 py-2 pr-3 pl-4 desktop:hidden">
         <p class="min-h-10 min-w-0 flex-1 text-label-2 font-medium text-fg-primary">{subtitle}</p>
         {showMeta && (
           <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary">
@@ -120,6 +121,9 @@ const showMeta = year || cardMeta;
    * outside the corners and smeared it into them as a pale fringe (the corners looked cut off).
    */
   .card-cover {
+    clip-path: inset(0 round var(--radius-card));
+  }
+  .card-cover--compact {
     clip-path: inset(0 round var(--radius-card-inner));
   }
   @media (width < 75rem) {
@@ -130,12 +134,15 @@ const showMeta = year || cardMeta;
 
   /*
    * The cover behind the text, blurred and darkened in its own colour (global.css --backdrop-caption-tone). The
-   * layers rise so they reach full strength exactly at the text (the caption's top padding, --caption-inset)
+   * layers rise so they reach full strength exactly at the text (the caption's top padding, --caption-inset: 16 compact, 20 / 24 on the wheel card)
    * after a clear guard and a long eased ramp: no top edge, no band. Two mask layers: the ramp, sized to the
    * card's fade, then solid from its end down (1px of overlap, so no seam).
    */
   .card-caption {
     --caption-inset: calc(var(--spacing) * 4);
+  }
+  .card-caption--lg {
+    --caption-inset: calc(var(--spacing) * 5);
   }
   @media (width >= 75rem) {
     .card-caption--lg {

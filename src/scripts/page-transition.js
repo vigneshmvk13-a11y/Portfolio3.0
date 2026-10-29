@@ -31,7 +31,7 @@
     const match = /^\/work\/([^/]+)\/?$/.exec(pathOf(url));
     return match ? decodeURIComponent(match[1]) : null;
   };
-  // A project card morphs by its cover (data-vt-cover inside the link); its frame and caption go with the page.
+  // A project card morphs by its cover (data-vt-cover inside the link); its caption (and a compact card's frame) go with the page.
   const cardLink = (slug) => document.querySelector(`[data-card-link="${CSS.escape(slug)}"]`);
   const coverIn = (card) => card?.querySelector('[data-vt-cover]') ?? null;
   const pageCover = () => document.querySelector('#case-cover [data-vt-cover]');
