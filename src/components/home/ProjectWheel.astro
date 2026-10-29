@@ -120,7 +120,7 @@ const offsetOf = (index: number) => {
 
   /*
    * Slow device (src/scripts/quality.ts): the caption blur re-renders every frame a card moves, so lite
-   * drops it. The caption keeps its grey wash.
+   * drops it. The tone layer stays, so the text keeps its contrast.
    */
   html[data-quality='lite'] .wheel-card [data-card-blur] {
     backdrop-filter: none;
