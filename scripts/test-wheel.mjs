@@ -176,7 +176,8 @@ try {
   const m = await page(393, 852);
   await m.goto('/');
   // Sheet: starts expanded; any swipe collapses it (either direction, any project) and it stays collapsed.
-  await m.drag(196, 420, 220);
+  // A deliberate drag (320ms), so momentum carries it one project: a quick 200px flick can carry two.
+  await m.drag(196, 420, 220, 320, 16);
   await sleep(60);
   s = await m.state();
   check('swipe up: sheet collapses while the wheel moves', s.sheet === true, JSON.stringify(s));
@@ -184,7 +185,7 @@ try {
   s = await m.state();
   check('swipe up: lands on the next project, sheet stays collapsed', s.index === '1' && s.sheet === true, JSON.stringify(s));
   await m.shot('after-swipe-393.png');
-  await m.drag(196, 220, 420);
+  await m.drag(196, 220, 420, 320, 16);
   await sleep(60);
   s = await m.state();
   check('swipe down: sheet collapses too (direction does not matter)', s.sheet === true, JSON.stringify(s));
@@ -298,7 +299,7 @@ try {
   const dragged = await m.eval(sheetState);
   await touch('touchEnd'); await sleep(900);
   sh = await m.eval(sheetState);
-  check('sheet: dragging down follows the finger, then collapses; handle gap is --sheet-handle-gap (32px, Figma 260:6936)', dragged.bgTop > open.bgTop + 50 && dragged.bgTop < sh.bgTop && sh.collapsed && sh.handleGap === 32, `open=${open.bgTop} mid=${dragged.bgTop} end=${JSON.stringify(sh)}`);
+  check('sheet: dragging down follows the finger, then collapses; handle gap is --sheet-handle-gap (24px, Vignesh 2026-10-26)', dragged.bgTop > open.bgTop + 50 && dragged.bgTop < sh.bgTop && sh.collapsed && sh.handleGap === 24, `open=${open.bgTop} mid=${dragged.bgTop} end=${JSON.stringify(sh)}`);
   // Fling up from the collapsed surface: opens.
   await touch('touchStart', 60, sh.bgTop + 8);
   for (let dy = 10; dy <= 60; dy += 10) { await touch('touchMove', 60, sh.bgTop + 8 - dy); await sleep(12); }
@@ -515,7 +516,7 @@ try {
   await r.close();
 
   // ---------- Adaptive quality ----------
-  const blur = `(() => ({ quality: document.documentElement.dataset.quality, blur: getComputedStyle(document.querySelector('[data-card-caption]')).backdropFilter }))()`;
+  const blur = `(() => ({ quality: document.documentElement.dataset.quality, blur: getComputedStyle(document.querySelector('[data-card-blur]')).backdropFilter }))()`;
   const q1 = await page(1440, 1024);
   await q1.goto('/');
   for (let i = 0; i < 4; i++) { await q1.wheel(100); await sleep(700); }
