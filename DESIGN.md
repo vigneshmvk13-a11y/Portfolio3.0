@@ -77,6 +77,10 @@ Agents: add to this list; don't resolve on your own.
 
 Newest first. Date · branch · change · why.
 
+- 2026-11-06 · layout-and-motion · **About on mobile closes by dragging the content down**, not only the handle, when the drag starts at the top of the content (a drag that starts scrolled only scrolls). 1:1 with the morph. A flick (≥ 800px/s) closes; a slow release closes only in the screen's lower third, otherwise it springs back (`sheet.aboutClosePoint`, `aboutCloseMin`, `aboutFlick`). The handle follows the same rule (it used to close past halfway). A finger held still before letting go no longer counts as a flick (`HOLD_MS`). 0 missed frames at 4× CPU. Why: Vignesh.
+- 2026-11-06 · components · **About gallery buttons pop in and out:** fade plus scale from `--scale-pop` (0.8) over `--duration-base` (was a 150ms fade). Under reduced motion they still fade, without the scale: a fade isn't movement (`data-reduced-fade`, the one exception to the instant rule in `global.css`). Why: Vignesh; his Windows reports reduced motion, so he saw them switch instantly.
+- 2026-11-06 · components · **About order:** Journey so far now comes before the gallery. Why: Vignesh.
+
 - 2026-11-06 · components · **More projects rows on mobile are one fixed height:** the thumbnail is 88px tall (`h-22`, was at least 88 and growing with a three-line title); the title clamps to two lines with an ellipsis, the tags stay one line with an ellipsis, and the title → tags gap is exactly 12px (the title no longer stretches to push the tags down); the text block is centred in the row. Supersedes "the title is never cut off" (2026-10-28). Why: Vignesh.
 
 - 2026-10-30 · components · **Badges restyled** (Figma `375:10315`): 1px white outline (`line-on-media`), padding 6 / 10 / 12 (was 8 / 12 / 16); NDA text and lock lime/900 on lime/200 (`fg-badge`), Coming soon amber/900 on amber/200 (`surface-badge-soon`, `fg-badge-soon`), both ~11:1. New primitives lime/900, amber/200, amber/900; spacing step 1.5 (6px). Why: Vignesh.

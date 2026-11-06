@@ -9,26 +9,46 @@ export const DRAG_SLOP_PX = 6;
 /** How far release speed carries the decision: projected = progress + velocity × this (seconds). */
 export const FLING_S = 0.15;
 
-export const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+/** A finger resting at least this long (ms) before lifting has let go from a hold: no flick. */
+export const HOLD_MS = 60;
+
+export const clamp01 =(n: number) => Math.min(1, Math.max(0, n));
+
+/** A pointer event, or a touch point paired with its event's timeStamp. */
+export interface DragPoint {
+  timeStamp: number;
+  clientY: number;
+}
 
 /** Recent pointer positions; the release speed is taken over the last 100ms. */
 export class DragSamples {
   private samples: { t: number; y: number }[] = [];
+  private liftedAt: number | null = null;
 
-  reset(event: PointerEvent): void {
+  reset(event: DragPoint): void {
     this.samples.length = 0;
+    this.liftedAt = null;
     this.add(event);
   }
 
-  add(event: PointerEvent): void {
+  add(event: DragPoint): void {
     this.samples.push({ t: event.timeStamp, y: event.clientY });
     if (this.samples.length > 6) this.samples.shift();
+  }
+
+  /**
+   * The finger lifted at `timeStamp`. If it rested longer than HOLD_MS since its last move, it let go
+   * from a hold, not a flick: velocity() is 0. (Only the time is used: some sources report no lift position.)
+   */
+  lift(timeStamp: number): void {
+    this.liftedAt = timeStamp;
   }
 
   /** px per second, down positive. */
   velocity(): number {
     const last = this.samples[this.samples.length - 1];
     if (!last) return 0;
+    if (this.liftedAt !== null && this.liftedAt - last.t > HOLD_MS) return 0;
     const first = this.samples.find((s) => last.t - s.t <= 100) ?? this.samples[0];
     return (last.y - first.y) / (Math.max(1, last.t - first.t) / 1000);
   }

@@ -196,6 +196,7 @@ Named spacing:
 | `--duration-base` | 300ms | `0.3` | TOC, sheet |
 | `--duration-slow` | 500ms | `0.5` | Drawer |
 | `--scale-settle` | 0.96 | (CSS only) | The homepage card settling in after a fade back from a case study (`layout-and-motion.md → Page transitions`) |
+| `--scale-pop` | 0.8 | (CSS only) | A small control appearing or leaving: the About gallery buttons scale from it as they fade in, and back to it as they fade out |
 | `--ease-spring` + `--duration-spring` | `linear(…)` over 600ms | `spring.css = { visualDuration: 0.4, bounce: 0.2 }` | CSS transitions that should move like a spring: the card ⇄ cover transition (the floating nav dropped it on 2026-10-23: no bounce). Motion's spring sampled into 33 `linear()` stops; 1.5% overshoot. Regenerate both together |
 
 Motion takes seconds and arrays, CSS takes ms and `cubic-bezier()`; keep both in sync by hand and test both.
@@ -223,6 +224,9 @@ JS only (`motion.ts`); behaviour in `layout-and-motion.md → TOC handle / Botto
 | `sheet.introBlur` | `10` px | Intro blur at that point |
 | `sheet.introFollow` | `0.5` | The intro slides at half the sheet's speed, sinking into it as it fades |
 | `sheet.aboutSwap` | `0.5` | Sheet → About (0 footer, 1 About): the footer's intro and buttons are gone by here, About's content appears only past it. Both blur by `sheet.introBlur` |
+| `sheet.aboutClosePoint` | `2/3` | Dragging About down: a slow release closes it only with the sheet's top edge in the screen's lower third (this fraction of its height); above that it springs back up |
+| `sheet.aboutCloseMin` | `0.15` | The close point is never deeper than this progress (0 footer, 1 About), so it stays reachable when the footer rests above the lower third |
+| `sheet.aboutFlick` | `800` px/s | A downward release this fast closes About from anywhere |
 
 ### Mobile sheet spacing (CSS, `global.css`)
 

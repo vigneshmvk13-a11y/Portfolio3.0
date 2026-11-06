@@ -63,6 +63,7 @@ const { images, id, class: className } = Astro.props;
         class="gallery__btn absolute left-4 desktop:left-6"
         aria-controls={id}
         data-gallery-btn
+        data-reduced-fade
         data-gallery-prev
         data-hidden
       />
@@ -74,6 +75,7 @@ const { images, id, class: className } = Astro.props;
         class="gallery__btn absolute right-4 desktop:right-6"
         aria-controls={id}
         data-gallery-btn
+        data-reduced-fade
         data-gallery-next
         data-hidden
       />
@@ -96,16 +98,29 @@ const { images, id, class: className } = Astro.props;
     translate: 0 -50%;
   }
 
-  /* Fade in and out at the ends of the row (a state change, so reduced motion makes it instant). */
+  /*
+   * Appear and leave at the ends of the row: fade and scale from --scale-pop (Vignesh, 2026-11-06). Opacity
+   * and visibility come first: under reduced motion global.css keeps only those two (data-reduced-fade), so the
+   * buttons still fade but don't scale. Hover colours stay quick.
+   */
   .gallery :global([data-gallery-btn]) {
     transition:
-      opacity var(--duration-fast) var(--ease-out),
-      visibility var(--duration-fast) allow-discrete,
-      scale var(--duration-fast) var(--ease-out);
+      opacity var(--duration-base) var(--ease-out),
+      visibility var(--duration-base) allow-discrete,
+      scale var(--duration-base) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
   }
   .gallery :global([data-gallery-btn][data-hidden]) {
     opacity: 0;
     visibility: hidden;
+    scale: var(--scale-pop);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gallery :global([data-gallery-btn][data-hidden]) {
+      scale: 1;
+    }
   }
 </style>
 

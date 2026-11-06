@@ -54,6 +54,18 @@ export const sheet = {
    * point and About's content appears only past it, so the two never overlap. Both blur by introBlur.
    */
   aboutSwap: 0.5,
+  /**
+   * Closing About by dragging (Vignesh, 2026-11-06). A slow release closes it only once the sheet's top edge is
+   * in the screen's lower third (this fraction of the screen's height); above that it springs back up.
+   */
+  aboutClosePoint: 2 / 3,
+  /**
+   * The close point never sits further than this progress (0 footer, 1 About), so it stays reachable when
+   * the footer rests above the lower third (open footer, short screens).
+   */
+  aboutCloseMin: 0.15,
+  /** A downward release at least this fast (px/s) closes About from anywhere: a flick. */
+  aboutFlick: 800,
 } as const;
 
 /**

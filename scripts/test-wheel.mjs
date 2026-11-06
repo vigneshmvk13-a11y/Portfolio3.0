@@ -364,6 +364,8 @@ try {
   const gal = `(() => { const t = document.querySelector('[data-gallery-track]'); return { left: Math.round(t.scrollLeft), max: t.scrollWidth - t.clientWidth, prev: !document.querySelector('[data-gallery-prev]').hasAttribute('data-hidden'), next: !document.querySelector('[data-gallery-next]').hasAttribute('data-hidden') }; })()`;
   let g = await ab.eval(gal);
   check('gallery: at the start only Next shows', !g.prev && g.next && g.left === 0, JSON.stringify(g));
+  const btn = await ab.eval(`(() => { const s = (q) => getComputedStyle(document.querySelector(q)); return { hidden: s('[data-gallery-prev]').scale, shown: s('[data-gallery-next]').scale, dur: s('[data-gallery-next]').transitionDuration }; })()`);
+  check('gallery: a hidden button is scaled down, a shown one full size, over 0.3s', btn.hidden === '0.8' && (btn.shown === 'none' || btn.shown === '1') && btn.dur.startsWith('0.3s'), JSON.stringify(btn));
   await ab.eval(`document.querySelector('[data-gallery-next]').click()`); await sleep(800);
   g = await ab.eval(gal);
   check('gallery: Next scrolls by whole photos; Previous appears', g.left > 0 && g.prev, JSON.stringify(g));
@@ -390,7 +392,61 @@ try {
   for (let dy = 220; dy <= 420; dy += 25) { await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: handle.x, y: handle.y + dy }] }, ab.sessionId); await sleep(12); }
   await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }, ab.sessionId); await sleep(900);
   a = await ab.eval(aboutState);
-  check('about: released past halfway it closes', !a.open && a.bgTop === rest.bgTop && a.intro === 1, JSON.stringify(a));
+  check('about: a fast drag down on the handle closes it', !a.open && a.bgTop === rest.bgTop && a.intro === 1, JSON.stringify(a));
+
+  // Drag the content down from the top (Vignesh, 2026-11-06). A slow release closes only in the lower third.
+  const touchAt = (type, x, y, timestamp) => send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y }], ...(timestamp ? { timestamp } : {}) }, ab.sessionId);
+  /** Touch at (x, y), move down by `to` in `step`px moves every `ms`, hold `hold`ms, let go. */
+  // Events carry their own timestamps (s): headless Chrome delivers each move ~50ms late, so the release
+  // speed is measured on the gesture as sent, not on the harness's pace.
+  const pull = async ({ x, y }, to, { step = 8, ms = 30, hold = 200 } = {}) => {
+    let t = Date.now() / 1000;
+    await touchAt('touchStart', x, y, t);
+    for (let dy = step; dy <= to; dy += step) { t += ms / 1000; await touchAt('touchMove', x, y + dy, t); await sleep(ms); }
+    t += Math.max(hold, 8) / 1000; await sleep(hold); await touchAt('touchEnd', 0, 0, t); await sleep(900);
+  };
+  const openAbout = async () => { await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900); };
+  const grip = { x: 100, y: 120 }; // on the banner, clear of the close button
+  const travel = rest.bgTop - 40;
+  const closeTop = 40 + (1 - Math.max(0.15, 1 - ((852 * 2) / 3 - 40) / travel)) * travel;
+  await openAbout();
+  await touchAt('touchStart', grip.x, grip.y);
+  for (let dy = 8; dy <= 160; dy += 8) { await touchAt('touchMove', grip.x, grip.y + dy); await sleep(30); }
+  a = await ab.eval(aboutState);
+  check('about: dragging the content at the top moves the sheet with the finger', a.open && Math.abs(a.bgTop - (40 + 152)) <= 12, JSON.stringify(a));
+  await sleep(200); await touchAt('touchEnd'); await sleep(900);
+  a = await ab.eval(aboutState);
+  check('about: …let go well above the lower third, it springs back', a.open && a.bgTop === 40 && a.content === 1, JSON.stringify(a));
+  await pull(grip, closeTop - 40 - 60 + 8, { step: 40, ms: 10 });
+  a = await ab.eval(aboutState);
+  check('about: a fast drag held still before letting go is not a flick: springs back', a.open && a.bgTop === 40, `${JSON.stringify(a)} closeTop=${closeTop}`);
+  await pull(grip, closeTop - 40 + 24);
+  a = await ab.eval(aboutState);
+  check('about: a slow drag let go in the lower third closes it', !a.open && a.bgTop === rest.bgTop, `${JSON.stringify(a)} closeTop=${closeTop}`);
+  await openAbout();
+  await pull(grip, 120, { step: 15, ms: 10, hold: 0 });
+  a = await ab.eval(aboutState);
+  check('about: a short flick down on the content closes it', !a.open && a.bgTop === rest.bgTop, JSON.stringify(a));
+  await openAbout();
+  await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop = 300`); await sleep(100);
+  await pull({ x: 196, y: 400 }, 400, { step: 20, ms: 16, hold: 0 });
+  a = await ab.eval(aboutState);
+  const scrolledBack = await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop`);
+  check('about: scrolled down, a drag down only scrolls (the sheet stays)', a.open && a.bgTop === 40 && scrolledBack < 300, `${JSON.stringify(a)} scrollTop=${scrolledBack}`);
+  await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop = 0`); await sleep(100);
+  await touchAt('touchStart', 300, 400);
+  for (let i = 1; i <= 10; i++) { await touchAt('touchMove', 300 - 15 * i, 400 + 2 * i); await sleep(16); }
+  await touchAt('touchEnd'); await sleep(600);
+  a = await ab.eval(aboutState);
+  check('about: a sideways swipe at the top does not move the sheet', a.open && a.bgTop === 40, JSON.stringify(a));
+  await touchAt('touchStart', 196, 600);
+  for (let i = 1; i <= 10; i++) { await touchAt('touchMove', 196, 600 - 20 * i); await sleep(16); }
+  await touchAt('touchEnd'); await sleep(600);
+  a = await ab.eval(aboutState);
+  const scrolledUp = await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop`);
+  check('about: a drag up at the top scrolls the content', a.open && a.bgTop === 40 && scrolledUp > 0, `${JSON.stringify(a)} scrollTop=${scrolledUp}`);
+  await ab.eval(`document.querySelector('[data-about-scroll]').scrollTop = 0`);
+  await tap(ab, await ab.eval(center('[data-about-close]'))); await sleep(900);
 
   // A short slow drag springs back open.
   await tap(ab, await ab.eval(center(aboutBtn))); await sleep(900);
@@ -431,6 +487,8 @@ try {
   await tap(ar, await ar.eval(center(aboutBtn))); await sleep(60);
   a = await ar.eval(aboutState);
   check('about (reduced motion): opens instantly', a.open && a.bgTop === 40 && a.content === 1, JSON.stringify(a));
+  const btnR = await ar.eval(`(() => { const s = getComputedStyle(document.querySelector('[data-gallery-prev]')); return { scale: s.scale, prop: s.transitionProperty, dur: s.transitionDuration }; })()`);
+  check('gallery buttons (reduced motion): fade only, no scale', (btnR.scale === 'none' || btnR.scale === '1') && btnR.prop === 'opacity, visibility' && btnR.dur.startsWith('0.3s'), JSON.stringify(btnR));
   await ar.close();
 
   const al = await page(393, 852);

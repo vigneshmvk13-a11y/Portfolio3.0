@@ -47,6 +47,7 @@
   --duration-spring: 600ms;
   --intro-failsafe: 3s;
   --scale-settle: 0.96; /* the homepage card settling in after a fade back from a case study */
+  --scale-pop: 0.8; /* a small control appearing or leaving (the About gallery buttons) */
 
   /* Wheel geometry (mirrored in src/lib/motion.ts; derivation in layout-and-motion.md) */
   --wheel-step: 38.1deg;
@@ -401,6 +402,16 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+    }
+
+    /*
+     * A fade isn't movement, so elements marked data-reduced-fade keep their opacity fade (and a discrete
+     * visibility switch at its end); everything else on them, scale included, stays instant. Vignesh, 2026-11-06.
+     */
+    [data-reduced-fade] {
+      transition-property: opacity, visibility !important;
+      transition-duration: var(--duration-base) !important;
+      transition-behavior: normal, allow-discrete !important;
     }
   }
 }

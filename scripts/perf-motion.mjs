@@ -146,8 +146,17 @@ try {
   // About: the sheet grows into it and plays back (design/layout-and-motion.md → About).
   await sleep(400);
   report('mobile: About open (sheet grows)', await m.measure(() => m.eval(`document.querySelector('[data-sheet-actions] [data-about-open]').click()`), 800));
-  report('mobile: About gallery Next', await m.measure(() => m.eval(`document.querySelector('[data-gallery-next]').click()`), 700));
+  // The gallery sits last (since 2026-11-06): scroll it into view first. Next also pops Previous in (fade + scale).
+  await m.eval(`document.querySelector('[data-gallery]').scrollIntoView({ block: 'center' })`);
+  await sleep(300);
+  report('mobile: About gallery Next (Previous pops in)', await m.measure(() => m.eval(`document.querySelector('[data-gallery-next]').click()`), 700));
+  report('mobile: About gallery back to start (Previous pops out)', await m.measure(() => m.eval(`document.querySelector('[data-gallery-prev]').click()`), 700));
+  await m.eval(`document.querySelector('[data-about-scroll]').scrollTop = 0`);
+  await sleep(300);
   report('mobile: About close (plays back)', await m.measure(() => m.eval(`document.querySelector('[data-about-close]').click()`), 800));
+  await m.eval(`document.querySelector('[data-sheet-actions] [data-about-open]').click()`);
+  await sleep(900);
+  report('mobile: About content drag down from the top + close', await m.measure(async () => { await m.touch('touchStart', 100, 300); for (let dy = 12; dy <= 360; dy += 12) { await m.touch('touchMove', 100, 300 + dy); await sleep(16); } await m.touch('touchEnd'); }, 800));
   await m.eval(`document.querySelector('[data-sheet-actions] [data-about-open]').click()`);
   await sleep(900);
   const grip = await m.eval(`(() => { const r = document.querySelector('[data-about-grabber]').getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; })()`);
