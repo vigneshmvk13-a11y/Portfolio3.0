@@ -12,7 +12,8 @@ import type { CaseStudy } from '../../lib/content';
 interface Props {
   entry: CaseStudy;
   /**
-   * Small card (More projects). Mobile: a row, thumbnail left, the whole title and "Year • Tags" right, no badge.
+   * Small card (More projects). Mobile: a row, a fixed 88px thumbnail left, the title (two lines, then ellipsis)
+   * and "Year • Tags" (one line, ellipsis) right, 12px apart, no badge.
    * Desktop: the cover with the title over it.
    */
   compact?: boolean;
@@ -48,7 +49,7 @@ const showMeta = year || cardMeta;
     class:list={[
       'card-cover relative',
       compact
-        ? 'card-cover--compact min-h-22 w-card-thumb shrink-0 desktop:h-50 desktop:min-h-0 desktop:w-auto'
+        ? 'card-cover--compact h-22 w-card-thumb shrink-0 desktop:h-50 desktop:w-auto'
         : 'min-h-0 flex-1',
     ]}
     data-vt-cover
@@ -96,8 +97,8 @@ const showMeta = year || cardMeta;
   </div>
   {
     compact && (
-      <div class="flex min-w-0 flex-1 flex-col gap-3 py-2 pr-3 pl-4 desktop:hidden">
-        <p class="min-h-10 min-w-0 flex-1 text-label-2 font-medium text-fg-primary">{subtitle}</p>
+      <div class="flex min-w-0 flex-1 flex-col justify-center gap-3 py-2 pr-3 pl-4 desktop:hidden">
+        <p class="line-clamp-2 min-w-0 text-label-2 font-medium text-fg-primary">{subtitle}</p>
         {showMeta && (
           <p class="flex min-w-0 gap-0.5 text-label-3 font-regular whitespace-nowrap text-fg-secondary">
             {year && <span class="shrink-0">{year}</span>}
